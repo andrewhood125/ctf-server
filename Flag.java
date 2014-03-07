@@ -4,7 +4,6 @@
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
 
-class Flag
+class Flag extends Locate
 {
-  double lat, long;
 }

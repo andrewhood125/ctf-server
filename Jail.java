@@ -4,8 +4,9 @@
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
 
-class Jail
+import java.util.ArrayList;
+
+class Jail extends Locate
 {
   ArrayList<Player> inmates = new ArrayList<Player>();
-  double lat, long;
 }

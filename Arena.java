@@ -3,7 +3,6 @@
  * Description: Store the boundaries for arena 
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
-class Arena
+class Arena extends Locate
 {
-  double lat, long;
 }
