@@ -18,11 +18,11 @@ class Player extends Locate implements Runnable
   String btMAC;
   String username;
   Socket socket;
+  boolean greeted, inLobby;
 
   Player(Socket socket)
   {
     this.socket = socket;
-
     try
     {
       out = new PrintWriter(socket.getOutputStream(), true);
@@ -39,7 +39,7 @@ class Player extends Locate implements Runnable
   {
     System.out.println(this.toString() + "'s thread was started.");
     out.println(this.toString() + "'s thread was started.");
-    // Listen for HELO
+
     try
     {
       String incomingCommunication;
@@ -51,8 +51,8 @@ class Player extends Locate implements Runnable
     } catch(Exception ex) {
       System.err.println(ex.getMessage());
       System.exit(6);
-    }    
-    
+    }
+
     try
     {
       out.close();
@@ -61,14 +61,48 @@ class Player extends Locate implements Runnable
     } catch(IOException ex) {
       System.err.println(ex.getMessage());
       System.exit(6);
-    }    
+    }
   }
 
   private void processCommand(String com)
   {
     switch(com)
     {
-      case "HELO": out.println("Hello."); break;
+      case "HELLO":
+        if(!greeted)
+        {
+          greeted = true;
+          out.println("Hello.");
+        } else {
+          out.println("..hi.");
+        }
+        break;
+      case "CREATE": 
+        if(greeted && !inLobby)
+        {
+          CTFServer.createLobby(this);
+          inLobby = true;
+          out.println("Establishing a lobby.");
+        } else {
+          out.println("You've not introduced yourself or are already in a lobby.");
+        }
+        break;
+      case "JOIN":
+       if(greeted && !inLobby)
+       {
+         try
+         {
+           inLobby = true;
+           String lobbyID = in.readLine();
+           out.println("Joining lobby " + lobbyID + "...");
+         } catch(IOException ex) {
+           System.err.println(ex.getMessage());
+           System.exit(7);
+         }
+       } else {
+         out.println("You've not introduced yourself or are already in a lobby.");
+       } 
+       break;
       default: out.println("Command not understood.");
     }
   }

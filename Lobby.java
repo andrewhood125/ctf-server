@@ -22,6 +22,9 @@ class Lobby
   // a unique 4 digit id amoing all the lobbies
   int lobbyID;
   
-
+  Lobby(Player host)
+  {
+    players.add(host);
+  }
 
 }

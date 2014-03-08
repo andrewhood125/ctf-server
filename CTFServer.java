@@ -11,6 +11,13 @@ import java.net.Socket;
 
 class CTFServer
 {
+  // Hold the running lobbies
+  public static ArrayList<Lobby> lobbies = new ArrayList<Lobby>();
+
+  public static void createLobby(Player host)
+  {
+    lobbies.add(new Lobby(host));
+  }
   public static void main(String[] args)
   {
     if(args.length != 1)
@@ -28,8 +35,6 @@ class CTFServer
       System.exit(2);
     }
 
-    // Hold the running lobbies
-    ArrayList<Lobby> lobbies = new ArrayList<Lobby>();
 
     ServerSocket serverSocket = null;
 
