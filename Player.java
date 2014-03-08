@@ -17,9 +17,12 @@ class Player extends Locate implements Runnable
   BufferedReader in;
   String btMAC;
   String username;
+  Socket socket;
 
   Player(Socket socket)
   {
+    this.socket = socket;
+
     try
     {
       out = new PrintWriter(socket.getOutputStream(), true);
@@ -31,6 +34,7 @@ class Player extends Locate implements Runnable
       System.exit(4);
     }
   }
+
   public void run()
   {
     System.out.println(this.toString() + "'s thread was started.");
@@ -38,11 +42,34 @@ class Player extends Locate implements Runnable
     // Listen for HELO
     try
     {
-      System.out.println(in.readLine());
+      String incomingCommunication;
+      while(!(incomingCommunication = in.readLine()).equals("QUIT"))
+        processCommand(incomingCommunication);
     } catch(IOException ex) {
       System.err.println(ex.getMessage());
       System.exit(5);
-    }
+    } catch(Exception ex) {
+      System.err.println(ex.getMessage());
+      System.exit(6);
+    }    
     
+    try
+    {
+      out.close();
+      in.close();
+      socket.close();
+    } catch(IOException ex) {
+      System.err.println(ex.getMessage());
+      System.exit(6);
+    }    
+  }
+
+  private void processCommand(String com)
+  {
+    switch(com)
+    {
+      case "HELO": out.println("Hello."); break;
+      default: out.println("Command not understood.");
+    }
   }
 }
