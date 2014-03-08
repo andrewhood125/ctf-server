@@ -50,7 +50,6 @@ class CTFServer
       try
       {
         // Listen for a new player to connect
-
         newPlayer = new Player(serverSocket.accept());
         Thread newPlayerThread = new Thread(newPlayer);
         newPlayerThread.start();
