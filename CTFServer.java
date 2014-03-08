@@ -31,16 +31,33 @@ class CTFServer
     // Hold the running lobbies
     ArrayList<Lobby> lobbies = new ArrayList<Lobby>();
 
-    try
+    ServerSocket serverSocket = null;
+
+      try
+      {
+        // Setup a socket locally to listen and accept connections
+        serverSocket = new ServerSocket(portNumber);
+      } catch(IOException ex) {
+        System.err.println(ex.getMessage());
+        System.exit(3);
+      }
+
+
+    // Loop listening for new connections
+    while(true)
     {
-      // Setup a socket locally to listen and accept connections
-      ServerSocket serverSocket = new ServerSocket(portNumber);
-      // Listen for an incoming connection
-      Socket clientSocket = serverSocket.accept();
-      System.out.println("Socket connection accepted from IP: " + clientSocket.getInetAddress());
-    } catch(IOException ex) {
-      System.err.println(ex.getMessage());
-      System.exit(3);
+      Player newPlayer;
+      try
+      {
+        // Listen for a new player to connect
+
+        newPlayer = new Player(serverSocket.accept());
+        Thread newPlayerThread = new Thread(newPlayer);
+        newPlayerThread.start();
+      } catch(IOException ex) {
+        System.err.println(ex.getMessage());
+        System.exit(3);
+      }
     }
   }
 }
