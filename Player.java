@@ -90,6 +90,21 @@ class Player extends Locate implements Runnable
     }
   } 
 
+  public void readLocation()
+  {
+    try
+    {
+      String location = in.readLine();
+      System.out.println(this.toString() + " location: " + location);
+      String[] coordinates = location.split(",");
+      latitude = Double.parseDouble(coordinates[0]);
+      longitude = Double.parseDouble(coordinates[1]);
+    } catch(Exception ex) {
+      System.err.println(ex.getMessage());
+      System.exit(13);
+    }
+  }
+  
   private void processCommand(String com)
   {
     switch(com)
