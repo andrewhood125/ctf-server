@@ -64,6 +64,32 @@ class Player extends Locate implements Runnable
     }
   }
 
+  private void readBluetoothMAC()
+  {
+    try 
+    {
+      String tempBtMac = in.readLine();
+      System.out.println(this.toString() + " BT MAC: " + tempBtMac);
+      btMAC = tempBtMac;
+    } catch(Exception ex) {
+      System.err.println(ex.getMessage());
+      System.exit(10);
+    }
+  }
+
+  private void readUsername()
+  {
+    try 
+    {
+      String tempUsername = in.readLine();
+      System.out.println(this.toString() + " username: " + tempUsername);
+      username = tempUsername;
+    } catch(Exception ex) {
+      System.err.println(ex.getMessage());
+      System.exit(11);
+    }
+  } 
+
   private void processCommand(String com)
   {
     switch(com)
@@ -72,7 +98,10 @@ class Player extends Locate implements Runnable
         if(!greeted)
         {
           greeted = true;
-          out.println("Hello.");
+          out.println("Proceed with blutooth MAC.");
+          readBluetoothMAC();
+          out.println("Proceed with username");
+          readUsername();
         } else {
           out.println("..hi.");
         }
