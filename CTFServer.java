@@ -18,6 +18,31 @@ class CTFServer
   {
     lobbies.add(new Lobby(host));
   }
+
+  public static boolean lobbyExists(String lobbyID)
+  {
+    for(int i = 0; i < lobbies.size(); i++)
+    {
+      if(lobbies.get(i).getLobbyID().equals(lobbyID))
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static void joinLobby(Player newPlayer, String lobbyID)
+  {
+    for(int i = 0; i < lobbies.size(); i++)
+    {
+      if(lobbies.get(i).getLobbyID().equals(lobbyID))
+      {
+        lobbies.get(i).addNewPlayer(newPlayer);
+      }
+    }
+  }
+
+
   public static void main(String[] args)
   {
     if(args.length != 1)

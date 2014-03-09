@@ -97,8 +97,20 @@ class Player extends Locate implements Runnable
       String location = in.readLine();
       System.out.println(this.toString() + " location: " + location);
       String[] coordinates = location.split(",");
-      latitude = Double.parseDouble(coordinates[0]);
-      longitude = Double.parseDouble(coordinates[1]);
+      if(coordinates.length != 2)
+      {
+        out.println("ERROR: GPS improperly formatted.");
+        readLocation();
+      } else {
+        try 
+        {
+          latitude = Double.parseDouble(coordinates[0]);
+          longitude = Double.parseDouble(coordinates[1]);
+        } catch(NumberFormatException ex) {
+          System.err.println(ex.getMessage());
+          System.exit(20);
+        }
+      }
     } catch(Exception ex) {
       System.err.println(ex.getMessage());
       System.exit(13);
@@ -119,6 +131,7 @@ class Player extends Locate implements Runnable
           readUsername();
           out.println("Proceed with location.");
           readLocation();
+          out.println("Welcome " + username + ".");
         } else {
           out.println("..hi.");
         }
@@ -142,21 +155,35 @@ class Player extends Locate implements Runnable
         break;
 
       case "JOIN":
-       if(greeted && !inLobby)
-       {
+        if(!greeted)
+        {
+          out.println("ERROR: Need to greet first.");
+        } else if(!inLobby) {
          try
          {
-           inLobby = true;
-           String lobbyID = in.readLine();
-           out.println("Joining lobby " + lobbyID + "...");
+           String lobbyID;
+           out.println("Proceed with lobby ID.");
+           if(CTFServer.lobbyExists(lobbyID = in.readLine()))
+           {
+             CTFServer.joinLobby(this, lobbyID);
+             inLobby = true;
+             out.println("Joining lobby " + lobbyID + "...");
+           } else {
+             out.println("ERROR: Lobby not found.");
+           }
          } catch(IOException ex) {
            System.err.println(ex.getMessage());
            System.exit(7);
          }
+       } else if (inLobby){
+         out.println("ERROR: You are already in a lobby.");
        } else {
-         out.println("You've not introduced yourself or are already in a lobby.");
-       } 
+         out.println("ERROR: Something went wrong but I don't know what.");
+         System.exit(18);
+       }
        break;
+
+
       default: out.println("Command not understood.");
     }
   }

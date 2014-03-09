@@ -20,11 +20,21 @@ class Lobby
   // Store the current game state of the lobby {lobby, in progress, destroy}
   int gameState;
   // a unique 4 digit id amoing all the lobbies
-  int lobbyID;
+  String lobbyID;
   
   Lobby(Player host)
   {
     players.add(host);
   }
 
+  public String getLobbyID()
+  {
+    return lobbyID;
+  }
+
+  public void addNewPlayer(Player newPlayer)
+  {
+    players.add(newPlayer);
+  }
 }
+
