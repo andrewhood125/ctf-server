@@ -13,4 +13,19 @@ abstract class Locate
   {
     return latitude;
   }
+
+  public void readLocation()
+  {
+    try
+    {
+      String location in.readLine();
+      System.out.println(this.toString() + " location: " + location);
+      String[] coordinates = location.split(",");
+      latitude = coordinates[0];
+      longitude = coordinates[1];
+    } catch(Exception ex) {
+      System.err.println(ex.getMessage());
+      System.exit(13);
+    }
+  }
 }

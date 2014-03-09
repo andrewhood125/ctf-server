@@ -100,8 +100,10 @@ class Player extends Locate implements Runnable
           greeted = true;
           out.println("Proceed with blutooth MAC.");
           readBluetoothMAC();
-          out.println("Proceed with username");
+          out.println("Proceed with username.");
           readUsername();
+          out.println("Proceed with location.");
+          readLocation();
         } else {
           out.println("..hi.");
         }
