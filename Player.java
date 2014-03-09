@@ -123,16 +123,24 @@ class Player extends Locate implements Runnable
           out.println("..hi.");
         }
         break;
+
       case "CREATE": 
-        if(greeted && !inLobby)
+        if(!greeted)
         {
+          out.println("ERROR: Need to greet first.");
+        } else if(!inLobby) {
+          // Create a lobby with this player as the host
           CTFServer.createLobby(this);
           inLobby = true;
           out.println("Establishing a lobby.");
+        } else if(!inLobby) {
+          out.println("You are already in a lobby.");
         } else {
-          out.println("You've not introduced yourself or are already in a lobby.");
+          out.println("ERROR: Something went wrong but I don't know what.");
+          System.exit(17);
         }
         break;
+
       case "JOIN":
        if(greeted && !inLobby)
        {
