@@ -11,7 +11,7 @@ class Lobby
   // All the players in the lobby
   ArrayList<Player> players = new ArrayList<Player>();
   // The N E S W boundaries in lat and long. 
-  Arena arena  = new Arena();
+  Arena arena;
   // The N E S W boundaries in lat and long.of the jail for each team
   Jail red = new Jail();
   Jail blue = new Jail();
@@ -22,8 +22,11 @@ class Lobby
   // a unique 4 digit id amoing all the lobbies
   String lobbyID;
   
-  Lobby(Player host)
+  Lobby(Player host, String lobbyID, double arenaSize)
   {
+    this.lobbyID = lobbyID;
+    // Create arena based on arenaSize and Players gps coordinates.
+    arena = new Arena(host.getLatitude(), host.getLongitude(), arenaSize);
     players.add(host);
   }
 

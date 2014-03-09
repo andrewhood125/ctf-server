@@ -14,9 +14,9 @@ class CTFServer
   // Hold the running lobbies
   public static ArrayList<Lobby> lobbies = new ArrayList<Lobby>();
 
-  public static void createLobby(Player host)
+  public static void createLobby(Player host, String lobbyID, double arenaSize)
   {
-    lobbies.add(new Lobby(host));
+    lobbies.add(new Lobby(host, lobbyID, arenaSize));
   }
 
   public static boolean lobbyExists(String lobbyID)

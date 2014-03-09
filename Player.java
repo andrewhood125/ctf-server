@@ -35,6 +35,16 @@ class Player extends Locate implements Runnable
     }
   }
 
+  public double getLatitude()
+  {
+    return latitude;
+  }
+
+  public double getLongitude()
+  {
+    return longitude;
+  }
+
   public void run()
   {
     System.out.println(this.toString() + "'s thread was started.");
@@ -142,8 +152,23 @@ class Player extends Locate implements Runnable
         {
           out.println("ERROR: Need to greet first.");
         } else if(!inLobby) {
+          double newLobbySize = 0;
+          String newLobbyID = "";
+          try 
+          {
+            out.println("Proceed with lobbyID.");
+            newLobbyID = in.readLine();
+            out.println("Proceed with arena size.");
+            newLobbySize  = Double.parseDouble(in.readLine());
+          } catch(NumberFormatException ex) {
+            System.err.println(ex.getMessage());
+            processCommand("CREATE");
+          } catch(IOException ex) {
+            System.err.println(ex.getMessage());
+            System.exit(25);
+          }
           // Create a lobby with this player as the host
-          CTFServer.createLobby(this);
+          CTFServer.createLobby(this, newLobbyID, newLobbySize);
           inLobby = true;
           out.println("Establishing a lobby.");
         } else if(!inLobby) {
