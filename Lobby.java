@@ -39,6 +39,20 @@ class Lobby
     return lobbyID;
   }
 
+  public int getNumberOfPlayers()
+  {
+    return players.size();
+  }
+
+  public String getGameState()
+  {
+    if(gameState == Lobby.atLobby)
+    {
+      return "Lobby";
+    } else {
+      return "In Progress";
+    }
+  }
   public void addNewPlayer(Player newPlayer)
   {
     players.add(newPlayer);

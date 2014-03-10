@@ -19,6 +19,7 @@ class Player extends Locate implements Runnable
   String username;
   Socket socket;
   boolean greeted, inLobby;
+  Lobby myLobby;
 
   Player(Socket socket)
   {
@@ -168,10 +169,10 @@ class Player extends Locate implements Runnable
             System.exit(25);
           }
           // Create a lobby with this player as the host
-          CTFServer.createLobby(this, newLobbyID, newLobbySize);
+          myLobby = CTFServer.createLobby(this, newLobbyID, newLobbySize);
           inLobby = true;
           out.println("Establishing a lobby.");
-        } else if(!inLobby) {
+        } else if(inLobby) {
           out.println("You are already in a lobby.");
         } else {
           out.println("ERROR: Something went wrong but I don't know what.");
@@ -190,7 +191,7 @@ class Player extends Locate implements Runnable
            out.println("Proceed with lobby ID.");
            if(CTFServer.lobbyExists(lobbyID = in.readLine()))
            {
-             CTFServer.joinLobby(this, lobbyID);
+             myLobby =  CTFServer.joinLobby(this, lobbyID);
              inLobby = true;
              out.println("Joining lobby " + lobbyID + "...");
            } else {
@@ -208,6 +209,17 @@ class Player extends Locate implements Runnable
        }
        break;
 
+      case "LOBBY": 
+        if(!greeted)
+        {
+          out.println("ERROR: Need to greet first.");
+        } else if(!inLobby) {
+          // List all lobbies
+          out.println(CTFServer.listLobbies());
+        } else if(inLobby) {
+          out.println(myLobby.toString());
+        }
+        break;
 
       default: out.println("Command not understood.");
     }

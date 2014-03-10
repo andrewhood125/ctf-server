@@ -14,9 +14,11 @@ class CTFServer
   // Hold the running lobbies
   public static ArrayList<Lobby> lobbies = new ArrayList<Lobby>();
 
-  public static void createLobby(Player host, String lobbyID, double arenaSize)
+  public static Lobby createLobby(Player host, String lobbyID, double arenaSize)
   {
-    lobbies.add(new Lobby(host, lobbyID, arenaSize));
+    Lobby tempLobby = new Lobby(host, lobbyID, arenaSize);
+    lobbies.add(tempLobby);
+    return tempLobby;
   }
 
   public static boolean lobbyExists(String lobbyID)
@@ -31,17 +33,35 @@ class CTFServer
     return false;
   }
 
-  public static void joinLobby(Player newPlayer, String lobbyID)
+  public static Lobby joinLobby(Player newPlayer, String lobbyID)
   {
     for(int i = 0; i < lobbies.size(); i++)
     {
       if(lobbies.get(i).getLobbyID().equals(lobbyID))
       {
         lobbies.get(i).addNewPlayer(newPlayer);
+        return lobbies.get(i);
       }
     }
+    return null;
   }
 
+  public static String listLobbies()
+  {
+    String returnString = "";
+    if(lobbies.size() == 0)
+    {
+      return "There are currently no lobbies.";
+    }
+
+    for(int i = 0; i < lobbies.size(); i++)
+    {
+      returnString += lobbies.get(i).getLobbyID() + "," 
+        + lobbies.get(i).getNumberOfPlayers() + ","
+        + lobbies.get(i).getGameState() + "\n";
+    }
+    return returnString;
+  }
 
   public static void main(String[] args)
   {
