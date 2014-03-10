@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,6 +63,9 @@ class Player extends Locate implements Runnable
     {
       this.team = team;
     }
+  }
+  public int getTeam(){
+	  return team;
   }
   public void run()
   {
@@ -233,6 +237,26 @@ class Player extends Locate implements Runnable
                myLobby =  CTFServer.joinLobby(this, lobbyID);
                inLobby = true;
                out.println("Joining lobby " + lobbyID + "...");
+               out.println("Arena Boundaries: " + myLobby.getSize());
+               ArrayList<Player> playerList = myLobby.getPlayers();
+               out.println("RED TEAM");
+               out.println("=========");
+               for(int i = 0; i < playerList.size(); i++)
+               {
+            	   if(playerList.get(i).getTeam() == 1)
+            	   {
+            		   out.println("Player: " + playerList.get(i).getUsername());
+            	   }            	   
+               }
+               out.println("BLUE TEAM");
+               out.println("=========");
+               for(int i = 0; i < playerList.size(); i++)
+               {
+            	   if(playerList.get(i).getTeam() == 2)
+            	   {
+            		   out.println("Player: " + playerList.get(i).getUsername());
+            	   }            	   
+               }
              } else {
                out.println("ERROR: Lobby not found.");
              }
