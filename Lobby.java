@@ -8,8 +8,12 @@ import java.util.ArrayList;
 
 class Lobby
 {
-  public static final int atLobby = 0;
-  public static final int inProgress = 1;
+  public static final int AT_LOBBY = 0;
+  public static final int IN_PROGRESS = 1;
+  public static final int SPECTATOR = 0;
+  public static final int RED_TEAM = 1;
+  public static final int BLUE_TEAM = 2;
+
   // All the players in the lobby
   ArrayList<Player> players = new ArrayList<Player>();
   // The N E S W boundaries in lat and long. 
@@ -31,7 +35,7 @@ class Lobby
     double flagLatitude = arena.getNorth() + arena.getSouth() / 2;
     redFlag = new Flag(flagLatitude, arena.getWest() + arenaSize*.15);
     blueFlag = new Flag(flagLatitude, arena.getEast() - arenaSize*.15);
-    gameState = Lobby.atLobby;
+    gameState = Lobby.AT_LOBBY;
   }
 
   public String getLobbyID()
@@ -50,6 +54,14 @@ class Lobby
   }
   public void addNewPlayer(Player newPlayer)
   {
+    if(players.size() % 2 != 0 )
+    {
+      newPlayer.setTeam(Lobby.BLUE_TEAM);
+      broadcast(newPlayer.getUsername() + " joined blue team.");
+    } else {
+      newPlayer.setTeam(Lobby.RED_TEAM);
+      broadcast(newPlayer.getUsername() + " joined red team.");
+    }
     players.add(newPlayer);
   }
   public void removePlayer(Player player)
@@ -61,6 +73,13 @@ class Lobby
         players.remove(i);
         break;
       }
+    }
+  }
+  public void broadcast(String broadcastMessage)
+  {
+    for(int i = 0; i < players.size(); i++)
+    {
+      players.get(i).send(broadcastMessage);
     }
   }
 }

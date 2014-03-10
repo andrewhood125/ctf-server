@@ -20,6 +20,7 @@ class Player extends Locate implements Runnable
   Socket socket;
   boolean greeted, inLobby;
   Lobby myLobby;
+  int team;
 
   Player(Socket socket)
   {
@@ -46,6 +47,18 @@ class Player extends Locate implements Runnable
     return longitude;
   }
 
+  public String getUsername()
+  {
+    return username;
+  }
+
+  public void setTeam(int team)
+  {
+    if(team >= 0 && team <= 2)
+    {
+      this.team = team;
+    }
+  }
   public void run()
   {
     System.out.println(this.toString() + "'s thread was started.");
@@ -131,6 +144,11 @@ class Player extends Locate implements Runnable
     }
   }
   
+  public void send(String message)
+  {
+    out.println(message);
+  }
+
   private void processCommand(String com)
   {
     switch(com)

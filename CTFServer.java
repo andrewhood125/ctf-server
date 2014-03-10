@@ -39,7 +39,7 @@ class CTFServer
     {
       if(lobbies.get(i).getLobbyID().equals(lobbyID))
       {
-        if(lobbies.get(i).getGameState() == Lobby.atLobby)
+        if(lobbies.get(i).getGameState() == Lobby.AT_LOBBY)
         {
           return true;
         } else {
