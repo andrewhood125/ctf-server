@@ -60,16 +60,21 @@ class CTFServer
 
   public static void leaveLobby(Player player, Lobby lobby)
   {
-    lobby.removePlayer(player);
-    if(lobby.getNumberOfPlayers() == 0)
+    try
     {
-      for(int  i = 0; 0 < lobbies.size(); i++)
+      lobby.removePlayer(player);
+      if(lobby.getNumberOfPlayers() == 0)
       {
-        if(lobbies.get(i).equals(lobby))
+        for(int  i = 0; 0 < lobbies.size(); i++)
         {
-          lobbies.remove(i);
+          if(lobbies.get(i).equals(lobby))
+          {
+            lobbies.remove(i);
+          }
         }
       }
+    } catch(Exception ex) {
+      System.err.println("ERROR: Error removing " + player + " from " + lobby);
     }
   }
 
@@ -114,6 +119,8 @@ class CTFServer
       {
         // Setup a socket locally to listen and accept connections
         serverSocket = new ServerSocket(portNumber);
+        System.out.println("CTFServer listening for connections.");
+        System.out.println(serverSocket);
       } catch(IOException ex) {
         System.err.println(ex.getMessage());
         System.exit(3);

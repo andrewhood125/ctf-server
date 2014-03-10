@@ -68,6 +68,10 @@ class Player extends Locate implements Runnable
       out.close();
       in.close();
       socket.close();
+      if(inLobby)
+      {
+        CTFServer.leaveLobby(this, myLobby);
+      }
     } catch(IOException ex) {
       System.err.println(ex.getMessage());
       System.exit(6);
