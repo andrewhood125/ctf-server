@@ -14,8 +14,20 @@ class CTFServer
   // Hold the running lobbies
   public static ArrayList<Lobby> lobbies = new ArrayList<Lobby>();
 
-  public static Lobby createLobby(Player host, String lobbyID, double arenaSize)
+  public static Lobby createLobby(Player host, double arenaSize)
   {
+    String lobbyID = "";
+    for(int i = 0; i < 5; i++)
+    {
+      int randomNumber =  ((int) (Math.random()*16))+48;
+      if(randomNumber >= 58)
+      {
+        randomNumber += 7;
+      }
+      char nextChar = (char) randomNumber;
+      lobbyID += nextChar;
+    }    
+    System.out.println("Generated lobbyID:" + lobbyID);
     Lobby tempLobby = new Lobby(host, lobbyID, arenaSize);
     lobbies.add(tempLobby);
     return tempLobby;

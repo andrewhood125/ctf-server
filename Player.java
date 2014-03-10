@@ -154,11 +154,8 @@ class Player extends Locate implements Runnable
           out.println("ERROR: Need to greet first.");
         } else if(!inLobby) {
           double newLobbySize = 0;
-          String newLobbyID = "";
           try 
           {
-            out.println("Proceed with lobbyID.");
-            newLobbyID = in.readLine();
             out.println("Proceed with arena size.");
             newLobbySize  = Double.parseDouble(in.readLine());
           } catch(NumberFormatException ex) {
@@ -169,7 +166,7 @@ class Player extends Locate implements Runnable
             System.exit(25);
           }
           // Create a lobby with this player as the host
-          myLobby = CTFServer.createLobby(this, newLobbyID, newLobbySize);
+          myLobby = CTFServer.createLobby(this, newLobbySize);
           inLobby = true;
           out.println("You're now in lobby " + myLobby.getLobbyID());
         } else if(inLobby) {
