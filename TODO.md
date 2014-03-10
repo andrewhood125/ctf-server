@@ -4,7 +4,7 @@ TODO
 - [X] After "HELLO" gather all required stats for a player. 
 - [x] Add a "LOBBY" command which returns all lobbies
 - [x] MAC format verification.
-- [ ] Location verification (lattitude and longitude)
+- [x] Location verification (lattitude and longitude)
 - [x] Provide a startup message server side with some diagnostic info.
 - [x] Figure out why program crashes with null when client <C^c>
 - [x] Handle teams in lobby.
@@ -14,3 +14,4 @@ TODO
 - [ ] Dump information to player when they join a lobby: Arena boundaries, player information, score....
 - [X] All commands entered into CMD should be .toUpper
 - [ ] All outbound messages should be json. 
+- [ ] START command 
