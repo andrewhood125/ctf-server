@@ -8,15 +8,15 @@ import java.util.ArrayList;
 
 class Lobby
 {
+  public static final int atLobby = 0;
+  public static final int inProgress = 1;
   // All the players in the lobby
   ArrayList<Player> players = new ArrayList<Player>();
   // The N E S W boundaries in lat and long. 
   Arena arena;
-  // The N E S W boundaries in lat and long.of the jail for each team
-  Jail red = new Jail();
-  Jail blue = new Jail();
   // The flags associated with this lobby
-  Flag[] flags = new Flag[2];
+  Flag redFlag;
+  Flag blueFlag;
   // Store the current game state of the lobby {lobby, in progress, destroy}
   int gameState;
   // a unique 4 digit id amoing all the lobbies
@@ -28,6 +28,10 @@ class Lobby
     // Create arena based on arenaSize and Players gps coordinates.
     arena = new Arena(host.getLatitude(), host.getLongitude(), arenaSize);
     players.add(host);
+    double flagLatitude = arena.getNorth() + arena.getSouth() / 2;
+    redFlag = new Flag(flagLatitude, arena.getWest() + arenaSize*.15);
+    blueFlag = new Flag(flagLatitude, arena.getEast() - arenaSize*.15);
+    gameState = Lobby.atLobby;
   }
 
   public String getLobbyID()

@@ -6,4 +6,10 @@
 
 class Flag extends Locate
 {
+
+  Flag(double latitude, double longitude)
+  {
+    this.latitude = latitude;
+    this.longitude = longitude;
+  } 
 }

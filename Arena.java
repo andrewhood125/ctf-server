@@ -14,4 +14,21 @@ class Arena extends Locate
     north = longitude + arenaSize;
     south = longitude - arenaSize;  
   }
+
+  public double getNorth()
+  {
+    return north;
+  }
+  public double getSouth()
+  {
+    return south;
+  }
+  public double getEast()
+  {
+    return east;
+  }
+  public double getWest()
+  {
+    return west;
+  }
 }
