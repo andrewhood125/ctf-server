@@ -5,14 +5,14 @@
  */
 class Arena extends Locate
 {
-  double north, south, east, west;
+  double north, south, east, west,size;
 
   Arena(double latitude, double longitude, double arenaSize)
   {
     west = latitude - arenaSize;
     east = latitude + arenaSize;
     north = longitude + arenaSize;
-    south = longitude - arenaSize;  
+    south = longitude - arenaSize; 
   }
 
   public double getNorth()

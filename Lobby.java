@@ -25,6 +25,7 @@ class Lobby
   int gameState;
   // a unique 4 digit id amoing all the lobbies
   String lobbyID;
+  double size;
   
   Lobby(Player host, String lobbyID, double arenaSize)
   {
@@ -36,11 +37,27 @@ class Lobby
     redFlag = new Flag(flagLatitude, arena.getWest() + arenaSize*.15);
     blueFlag = new Flag(flagLatitude, arena.getEast() - arenaSize*.15);
     gameState = Lobby.AT_LOBBY;
+    size = arenaSize;
   }
 
   public String getLobbyID()
   {
     return lobbyID;
+  }
+  
+  public ArrayList<Player> getPlayers()
+  {
+	  return players;
+  }
+  
+  public double getSize()
+  {
+	  return size;
+  }
+  
+  public Arena getArena()
+  {
+	  return arena;
   }
 
   public int getNumberOfPlayers()
@@ -51,6 +68,19 @@ class Lobby
   public int getGameState()
   {
     return gameState;
+  }
+  public String getGameStateString()
+  {
+	  if (gameState == 0)
+	  {
+		  return "AT_LOBBY";
+	  }else if (gameState == 1)
+	  {
+		  return "IN_PROGRESS";
+	  }else
+	  {
+		  return null;
+	  }
   }
   public void addNewPlayer(Player newPlayer)
   {
