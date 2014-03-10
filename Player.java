@@ -145,6 +145,10 @@ class Player extends Locate implements Runnable
         {
           latitude = Double.parseDouble(coordinates[0]);
           longitude = Double.parseDouble(coordinates[1]);
+          if(latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180)
+          {
+            out.println("ERROR: GPS improperly formatted.");
+          }
         } catch(NumberFormatException ex) {
           System.err.println(ex.getMessage());
           System.exit(20);
