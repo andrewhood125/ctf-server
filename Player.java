@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 class Player extends Locate implements Runnable
 {
-  public static final Pattern MACPAT = Pattern.compile("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$");
+  public static final String MACPAT = "^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$";
   
   int id;
   PrintWriter out;
@@ -100,8 +100,8 @@ class Player extends Locate implements Runnable
     try 
     {
       String tempBtMac = in.readLine();
-      Matcher m = MACPAT.matcher(tempBtMac);
-      if(m.groupCount() == 1)
+      tempBtMac.toUpperCase();
+      if(tempBtMac.matches(MACPAT))
       {
     	  System.out.println(this.toString() + " BT MAC: " + tempBtMac);
           btMAC = tempBtMac;
