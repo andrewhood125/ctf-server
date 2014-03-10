@@ -163,6 +163,7 @@ class Player extends Locate implements Runnable
 
   private void processCommand(String com)
   {
+	com.toUpperCase();
     switch(com)
     {
       case "HELLO":
