@@ -152,7 +152,7 @@ class Player extends Locate implements Runnable
       }
     } catch(Exception ex) {
       System.err.println(ex.getMessage());
-      System.exit(13);
+      out.println("ERROR: GPS improperly formatted.");
     }
   }
   
