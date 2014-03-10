@@ -75,9 +75,9 @@ class Player extends Locate implements Runnable
     try
     {
       String incomingCommunication;
-      incomingCommunication.toUpperCase();
       while(!(incomingCommunication = in.readLine()).equals("QUIT"))
-        processCommand(incomingCommunication);
+    	  incomingCommunication.toUpperCase();
+    	  processCommand(incomingCommunication);
     } catch(IOException ex) {
       System.err.println(ex.getMessage());
       System.exit(5);
