@@ -59,9 +59,8 @@ class Player extends Locate implements Runnable
     } catch(IOException ex) {
       System.err.println(ex.getMessage());
       System.exit(5);
-    } catch(Exception ex) {
-      System.err.println(ex.getMessage());
-      System.exit(6);
+    } catch (Exception ex) {
+      System.err.println("Shutting down " + this);
     }
 
     try
