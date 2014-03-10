@@ -15,3 +15,4 @@ TODO
 - [X] All commands entered into CMD should be .toUpper
 - [ ] All outbound messages should be json. 
 - [ ] START command 
+- [ ] At every join, broadcast team lists.
