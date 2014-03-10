@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 class Player extends Locate implements Runnable
@@ -20,6 +22,7 @@ class Player extends Locate implements Runnable
   Socket socket;
   boolean greeted, inLobby;
   Lobby myLobby;
+  final Pattern MACPAT = Pattern.compile("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$");
 
   Player(Socket socket)
   {
@@ -83,8 +86,16 @@ class Player extends Locate implements Runnable
     try 
     {
       String tempBtMac = in.readLine();
-      System.out.println(this.toString() + " BT MAC: " + tempBtMac);
-      btMAC = tempBtMac;
+      Matcher m = MACPAT.matcher(tempBtMac);
+      if(m.groupCount() == 1)
+      {
+    	  System.out.println(this.toString() + " BT MAC: " + tempBtMac);
+          btMAC = tempBtMac;
+      }else
+      {
+    	  readBluetoothMAC();
+      }
+      
     } catch(Exception ex) {
       System.err.println(ex.getMessage());
       System.exit(10);
