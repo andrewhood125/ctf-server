@@ -76,8 +76,7 @@ class Player extends Locate implements Runnable
     {
       String incomingCommunication;
       while(!(incomingCommunication = in.readLine()).equals("QUIT"))
-    	  incomingCommunication.toUpperCase();
-    	  processCommand(incomingCommunication);
+    	  processCommand(incomingCommunication.toUpperCase());
     } catch(IOException ex) {
       System.err.println(ex.getMessage());
       System.exit(5);
@@ -173,7 +172,6 @@ class Player extends Locate implements Runnable
 
   private void processCommand(String com)
   {
-	com.toUpperCase();
     switch(com)
     {
       case "HELLO":
