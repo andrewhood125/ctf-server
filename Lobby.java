@@ -57,5 +57,16 @@ class Lobby
   {
     players.add(newPlayer);
   }
+  public void removePlayer(Player player)
+  {
+    for(int i = 0; i < players.size(); i++)
+    {
+      if(players.get(i).equals(player))
+      {
+        players.remove(i);
+        break;
+      }
+    }
+  }
 }
 

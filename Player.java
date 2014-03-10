@@ -171,7 +171,7 @@ class Player extends Locate implements Runnable
           // Create a lobby with this player as the host
           myLobby = CTFServer.createLobby(this, newLobbyID, newLobbySize);
           inLobby = true;
-          out.println("Establishing a lobby.");
+          out.println("You're now in lobby " + myLobby.getLobbyID());
         } else if(inLobby) {
           out.println("You are already in a lobby.");
         } else {
@@ -185,21 +185,26 @@ class Player extends Locate implements Runnable
         {
           out.println("ERROR: Need to greet first.");
         } else if(!inLobby) {
-         try
-         {
-           String lobbyID;
-           out.println("Proceed with lobby ID.");
-           if(CTFServer.lobbyExists(lobbyID = in.readLine()))
+          if(CTFServer.lobbies.size() == 0)
+          {
+            out.println("There are currently no lobbies.");
+          } else { 
+           try
            {
-             myLobby =  CTFServer.joinLobby(this, lobbyID);
-             inLobby = true;
-             out.println("Joining lobby " + lobbyID + "...");
-           } else {
-             out.println("ERROR: Lobby not found.");
+             String lobbyID;
+             out.println("Proceed with lobby ID.");
+             if(CTFServer.lobbyExists(lobbyID = in.readLine()))
+             {
+               myLobby =  CTFServer.joinLobby(this, lobbyID);
+               inLobby = true;
+               out.println("Joining lobby " + lobbyID + "...");
+             } else {
+               out.println("ERROR: Lobby not found.");
+             }
+           } catch(IOException ex) {
+             System.err.println(ex.getMessage());
+             System.exit(7);
            }
-         } catch(IOException ex) {
-           System.err.println(ex.getMessage());
-           System.exit(7);
          }
        } else if (inLobby){
          out.println("ERROR: You are already in a lobby.");
@@ -218,6 +223,21 @@ class Player extends Locate implements Runnable
           out.println(CTFServer.listLobbies());
         } else if(inLobby) {
           out.println(myLobby.toString());
+        }
+        break;
+
+      case "LEAVE":
+        if(!greeted)
+        {
+          out.println("ERROR: Need to greet first.");
+        } else if (!inLobby) {
+          out.println("ERROR: You're not in a lobby.");
+        } else if(inLobby) {
+          CTFServer.leaveLobby(this, myLobby);
+          inLobby = false;
+          out.println("You've left the lobby.");
+        } else {
+          out.println("ERROR: Something went wrong but I don't know what.");
         }
         break;
 

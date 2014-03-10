@@ -46,6 +46,21 @@ class CTFServer
     return null;
   }
 
+  public static void leaveLobby(Player player, Lobby lobby)
+  {
+    lobby.removePlayer(player);
+    if(lobby.getNumberOfPlayers() == 0)
+    {
+      for(int  i = 0; 0 < lobbies.size(); i++)
+      {
+        if(lobbies.get(i).equals(lobby))
+        {
+          lobbies.remove(i);
+        }
+      }
+    }
+  }
+
   public static String listLobbies()
   {
     String returnString = "";
