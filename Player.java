@@ -193,7 +193,7 @@ class Player extends Locate implements Runnable
            {
              String lobbyID;
              out.println("Proceed with lobby ID.");
-             if(CTFServer.lobbyExists(lobbyID = in.readLine()))
+             if(CTFServer.lobbyJoinable(lobbyID = in.readLine()))
              {
                myLobby =  CTFServer.joinLobby(this, lobbyID);
                inLobby = true;

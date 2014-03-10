@@ -33,13 +33,18 @@ class CTFServer
     return tempLobby;
   }
 
-  public static boolean lobbyExists(String lobbyID)
+  public static boolean lobbyJoinable(String lobbyID)
   {
     for(int i = 0; i < lobbies.size(); i++)
     {
       if(lobbies.get(i).getLobbyID().equals(lobbyID))
       {
-        return true;
+        if(lobbies.get(i).getGameState() == Lobby.atLobby)
+        {
+          return true;
+        } else {
+          return false;
+        }
       }
     }
     return false;
