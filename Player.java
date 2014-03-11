@@ -268,31 +268,6 @@ class Player extends Locate implements Runnable
                inLobby = true;
                out.println("Joining lobby " + lobbyID + "...");
                out.println("Arena Boundaries: " + myLobby.getSize());
-<<<<<<< HEAD
-               // All this mess needs to go into a seperate method
-               // ***********************************************
-               ArrayList<Player> playerList = myLobby.getPlayers();
-               out.println("RED TEAM");
-               out.println("=========");
-               for(int i = 0; i < playerList.size(); i++)
-               {
-            	   if(playerList.get(i).getTeam() == 1)
-            	   {
-            		   out.println("Player: " + playerList.get(i).getUsername());
-            	   }            	   
-               }
-               out.println("BLUE TEAM");
-               out.println("=========");
-               for(int i = 0; i < playerList.size(); i++)
-               {
-            	   if(playerList.get(i).getTeam() == 2)
-            	   {
-            		   out.println("Player: " + playerList.get(i).getUsername());
-            	   }            	   
-               }
-               // *************************************************
-=======
->>>>>>> origin/Broad-on-Join
              } else {
                out.println("ERROR: Lobby not found.");
              }
