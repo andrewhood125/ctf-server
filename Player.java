@@ -209,6 +209,7 @@ class Player extends Locate implements Runnable
           }
           // Create a lobby with this player as the host
           myLobby = CTFServer.createLobby(this, newLobbySize);
+          myLobby =  CTFServer.joinLobby(this, myLobby.getLobbyID());
           inLobby = true;
           out.println("You're now in lobby " + myLobby.getLobbyID());
         } else if(inLobby) {
@@ -238,25 +239,6 @@ class Player extends Locate implements Runnable
                inLobby = true;
                out.println("Joining lobby " + lobbyID + "...");
                out.println("Arena Boundaries: " + myLobby.getSize());
-               ArrayList<Player> playerList = myLobby.getPlayers();
-               out.println("RED TEAM");
-               out.println("=========");
-               for(int i = 0; i < playerList.size(); i++)
-               {
-            	   if(playerList.get(i).getTeam() == 1)
-            	   {
-            		   out.println("Player: " + playerList.get(i).getUsername());
-            	   }            	   
-               }
-               out.println("BLUE TEAM");
-               out.println("=========");
-               for(int i = 0; i < playerList.size(); i++)
-               {
-            	   if(playerList.get(i).getTeam() == 2)
-            	   {
-            		   out.println("Player: " + playerList.get(i).getUsername());
-            	   }            	   
-               }
              } else {
                out.println("ERROR: Lobby not found.");
              }
