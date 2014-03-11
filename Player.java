@@ -226,7 +226,6 @@ class Player extends Locate implements Runnable
           }
           // Create a lobby with this player as the host
           myLobby = CTFServer.createLobby(this, newLobbySize);
-          myLobby =  CTFServer.joinLobby(this, myLobby.getLobbyID());
           inLobby = true;
           out.println("You're now in lobby " + myLobby.getLobbyID());
         } else if(inLobby) {

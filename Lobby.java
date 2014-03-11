@@ -32,6 +32,7 @@ class Lobby
     this.lobbyID = lobbyID;
     // Create arena based on arenaSize and Players gps coordinates.
     arena = new Arena(host.getLatitude(), host.getLongitude(), arenaSize);
+    host.setTeam(RED_TEAM);
     players.add(host);
     double flagLatitude = arena.getNorth() + arena.getSouth() / 2;
     redFlag = new Flag(flagLatitude, arena.getWest() + arenaSize*.15);
