@@ -82,6 +82,40 @@ class Lobby
 		  return null;
 	  }
   }
+
+  public void setGameState(int gameState)
+  {
+    if(gameState >= 0 && gameState <= 1)
+    {
+      this.gameState = gameState;
+    } 
+  }
+  public boolean isLobbyLeader(Player player)
+  {
+    if(player.equals(players.get(0)))
+    {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  public void start()
+  {
+    setGameState(Lobby.IN_PROGRESS);
+    broadcast("The game has been started.");
+    // Kill all players 
+    for(int i = 0; i < players.size(); i++)
+    {
+      kill(players.get(i));
+    }
+  }
+
+  public void kill(Player player)
+  {
+    player.setLifeState(Player.DEAD);
+  }
+
   public void addNewPlayer(Player newPlayer)
   {
     if(players.size() % 2 != 0 )

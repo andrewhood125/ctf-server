@@ -16,7 +16,11 @@ import java.util.regex.Pattern;
 class Player extends Locate implements Runnable
 {
   public static final String MACPAT = "^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$";
-  
+  public static final int DEAD = 0;
+  public static final int ALIVE = 1;
+
+ 
+
   int id;
   PrintWriter out;
   BufferedReader in;
@@ -26,6 +30,7 @@ class Player extends Locate implements Runnable
   boolean greeted, inLobby;
   Lobby myLobby;
   int team;
+  int lifeState;
 
   Player(Socket socket)
   {
@@ -57,6 +62,10 @@ class Player extends Locate implements Runnable
     return username;
   }
 
+  public int getTeam(){
+	  return team;
+  }
+  
   public void setTeam(int team)
   {
     if(team >= 0 && team <= 2)
@@ -64,9 +73,17 @@ class Player extends Locate implements Runnable
       this.team = team;
     }
   }
-  public int getTeam(){
-	  return team;
+  
+  public void setLifeState(int lifeState)
+  {
+    if(lifeState >= 0  && lifeState <= 1)
+    {
+      this.lifeState = lifeState;
+    } else {
+      this.lifeState = Player.ALIVE;
+    }
   }
+
   public void run()
   {
     System.out.println(this.toString() + "'s thread was started.");
@@ -219,6 +236,18 @@ class Player extends Locate implements Runnable
         }
         break;
 
+      case "START":
+        if(!greeted)
+        {
+          out.println("ERROR: Need to greet first.");
+        } else if(!inLobby) {
+          out.println("ERROR: Need to be in lobby.");
+        } else if(!myLobby.isLobbyLeader(this)) {
+          out.println("ERROR: Only the lobby leader can start the game.");
+        } else {
+          myLobby.start();
+        }
+        break;
       case "JOIN":
         if(!greeted)
         {
@@ -238,6 +267,8 @@ class Player extends Locate implements Runnable
                inLobby = true;
                out.println("Joining lobby " + lobbyID + "...");
                out.println("Arena Boundaries: " + myLobby.getSize());
+               // All this mess needs to go into a seperate method
+               // ***********************************************
                ArrayList<Player> playerList = myLobby.getPlayers();
                out.println("RED TEAM");
                out.println("=========");
@@ -257,6 +288,7 @@ class Player extends Locate implements Runnable
             		   out.println("Player: " + playerList.get(i).getUsername());
             	   }            	   
                }
+               // *************************************************
              } else {
                out.println("ERROR: Lobby not found.");
              }
