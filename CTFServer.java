@@ -57,6 +57,7 @@ class CTFServer
       if(lobbies.get(i).getLobbyID().equals(lobbyID))
       {
         lobbies.get(i).addNewPlayer(newPlayer);
+        lobbies.get(i).broadcastPlayers();
         return lobbies.get(i);
       }
     }
