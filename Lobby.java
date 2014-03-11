@@ -146,5 +146,26 @@ class Lobby
       players.get(i).send(broadcastMessage);
     }
   }
+  public void broadcastPlayers()
+  {
+	  broadcast("RED TEAM");
+      broadcast("=========");
+      for(int i = 0; i < players.size(); i++)
+      {
+   	   if(players.get(i).getTeam() == 1)
+   	   {
+   		   broadcast("Player: " + players.get(i).getUsername());
+   	   }            	   
+      }
+      broadcast("BLUE TEAM");
+      broadcast("=========");
+      for(int i = 0; i < players.size(); i++)
+      {
+   	   if(players.get(i).getTeam() == 2)
+   	   {
+   		broadcast("Player: " + players.get(i).getUsername());
+   	   }            	   
+      }  
+  }
 }
 

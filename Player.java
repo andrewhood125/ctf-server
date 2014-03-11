@@ -226,6 +226,7 @@ class Player extends Locate implements Runnable
           }
           // Create a lobby with this player as the host
           myLobby = CTFServer.createLobby(this, newLobbySize);
+          myLobby =  CTFServer.joinLobby(this, myLobby.getLobbyID());
           inLobby = true;
           out.println("You're now in lobby " + myLobby.getLobbyID());
         } else if(inLobby) {
@@ -267,6 +268,7 @@ class Player extends Locate implements Runnable
                inLobby = true;
                out.println("Joining lobby " + lobbyID + "...");
                out.println("Arena Boundaries: " + myLobby.getSize());
+<<<<<<< HEAD
                // All this mess needs to go into a seperate method
                // ***********************************************
                ArrayList<Player> playerList = myLobby.getPlayers();
@@ -289,6 +291,8 @@ class Player extends Locate implements Runnable
             	   }            	   
                }
                // *************************************************
+=======
+>>>>>>> origin/Broad-on-Join
              } else {
                out.println("ERROR: Lobby not found.");
              }
