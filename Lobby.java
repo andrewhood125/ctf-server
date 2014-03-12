@@ -40,7 +40,7 @@ class Lobby
     arena = new Arena(host.getLatitude(), host.getLongitude(), arenaSize);
     host.setTeam(RED_TEAM);
     players.add(host);
-    double flagLatitude = arena.getNorth() + arena.getSouth() / 2;
+    double flagLatitude = (arena.getNorth() + arena.getSouth()) / 2;
     redFlag = new Flag(flagLatitude, arena.getWest() + arenaSize*.15, accuracy);
     blueFlag = new Flag(flagLatitude, arena.getEast() - arenaSize*.15, accuracy);
     redBase = new Base(flagLatitude, arena.getWest() + arenaSize*.15, accuracy);
@@ -114,6 +114,10 @@ class Lobby
     setGameState(Lobby.IN_PROGRESS);
     broadcast("The game has been started.");
     System.out.println(this + " has been started.");
+    broadcast(redFlag + " {" + redFlag.getLatitude() + "," + redFlag.getLongitude() + "}");
+    broadcast(blueFlag + " {" + blueFlag.getLatitude() + "," + blueFlag.getLongitude() + "}");
+    broadcast(redBase + " {" + redBase.getLatitude() + "," + redBase.getLongitude() + "}");
+    broadcast(blueBase + " {" + blueBase.getLatitude() + "," + blueBase.getLongitude() + "}");
     // Kill all players 
     for(int i = 0; i < players.size(); i++)
     {
@@ -159,6 +163,7 @@ class Lobby
 
   public void checkIfScored(Player player)
   {
+    // TODO!!! Check if player is holding the opposite teams flag beore scoring. 
     if(player.getTeam() == Player.RED_TEAM)
     {
       // Check if at blue base
