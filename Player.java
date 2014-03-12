@@ -156,32 +156,78 @@ class Player extends Locate implements Runnable
     {
       String location = in.readLine();
       System.out.println(this.toString() + " location: " + location);
-      String[] coordinates = location.split(",");
-      if(coordinates.length != 2)
-      {
-        out.println("ERROR: GPS improperly formatted.");
-        readLocation();
-      } else {
-        try 
-        {
-          latitude = Double.parseDouble(coordinates[0]);
-          longitude = Double.parseDouble(coordinates[1]);
-          if(latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180)
-          {
-            out.println("ERROR: GPS improperly formatted.");
-            readLocation();
-          }
-        } catch(NumberFormatException ex) {
-          System.err.println(ex.getMessage());
-          System.exit(20);
-        }
-      }
+      double[] coordinates = parseCoordinates(location);
+      latitude = coordinates[0];
+      longitude = coordinates[1];
     } catch(Exception ex) {
       System.err.println(ex.getMessage());
       out.println("ERROR: GPS improperly formatted.");
+      readLocation();
     }
   }
+
+
+  private boolean isValidLatitude(double latitude)
+  {
+    if(latitude < -90 || latitude > 90)
+    {
+      return false;
+    }
+    return true;
+  }
+
+  public boolean isValidLongitude(double longitude)
+  {
+    if(longitude < -180 || longitude > 180)
+    {
+      return false;
+    }
+    return true;
+  }
+
   
+  public double[] parseCoordinates(String location) throws Exception
+  {
+    if(!location.contains(","))
+    {
+      throw new Exception();
+    }
+
+    String[] coord = location.split(",");
+
+    if(coord.length != 2)
+    {
+      throw new Exception();
+    }
+
+    double[] latlong = new double[2];
+
+    latlong[0] = Double.parseDouble(coord[0]);
+    latlong[1] = Double.parseDouble(coord[1]);
+
+
+    if(!isValidLatitude(latitude) || !isValidLongitude(longitude))
+    {
+      throw new Exception();
+    }
+    return latlong;
+  }
+
+  public void updateLocation()
+  {
+    try
+    {
+      String coordinates = in.readLine();
+      double[] latlong = parseCoordinates(coordinates);
+      latitude = latlong[0];
+      longitude = latlong[1];
+    } catch(Exception ex) {
+      System.out.println("Received bad location from " + this.toString());
+      send("ERROR: Improperly formatted location.");
+    }
+    myLobby.broadcastLocation(this);
+    System.out.println(this + " sent updated location: {" + latitude + "," + longitude + "}");
+  }
   public void send(String message)
   {
     out.println(message);
@@ -246,6 +292,19 @@ class Player extends Locate implements Runnable
           out.println("ERROR: Only the lobby leader can start the game.");
         } else {
           myLobby.start();
+        }
+        break;
+      case "GPS":
+        // GPS is used to accept location updates from clients
+        if(!greeted)
+        {
+          out.println("ERROR: Need to greet first.");
+        } else if(!inLobby) {
+          out.println("ERROR: Need to be in lobby.");
+        } else if(myLobby.getGameState()!= Lobby.IN_PROGRESS) {
+          out.println("ERROR: The game must be in progress.");
+        } else {
+          updateLocation();
         }
         break;
       case "JOIN":

@@ -105,6 +105,7 @@ class Lobby
   {
     setGameState(Lobby.IN_PROGRESS);
     broadcast("The game has been started.");
+    System.out.println(this + " has been started.");
     // Kill all players 
     for(int i = 0; i < players.size(); i++)
     {
@@ -145,6 +146,16 @@ class Lobby
     for(int i = 0; i < players.size(); i++)
     {
       players.get(i).send(broadcastMessage);
+    }
+  }
+  public void broadcastLocation(Player player)
+  {
+    for(int i = 0; i < players.size(); i++)
+    {
+      if(!players.get(i).equals(player))
+      {
+        players.get(i).send("GPS: " + player.getUsername() + " " + player.getLatitude() + "," + player.getLongitude());
+      }
     }
   }
   public void broadcastPlayers()

@@ -14,8 +14,11 @@ TODO
 - [X] Dump information to player when they join a lobby: Arena boundaries, player information, score....
 - [X] All commands entered into CMD should be .toUpper
 - [ ] All outbound messages should be json. 
-- [ ] START command 
+- [x] START command 
 - [ ] All input and output done in the processCommmands method should
   branch out to new methods to do so. i.e. in the HELLO case readBtMAC()
 is called. 
 - [ ] At every join, broadcast team lists.
+- [x] GPS command to accept a gps update from client.
+- [ ] Lobby command while in lobby should send information about the
+  lobby. 
