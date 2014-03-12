@@ -1,16 +1,15 @@
 /**
  * Author: Andrew Hood <andrewhood125@gmail.com>
- * Description: Store everything that a single lobby will need.
+ * Description: The location of a teams base. 
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
 
-class Flag extends Locate
+class Base extends Locate
 {
 
-  // Flag range
-  boolean isDropped;
+  // Base range
   double west, east, north, south;
-  Flag(double latitude, double longitude, double accuracy)
+  Base(double latitude, double longitude, double accuracy)
   {
     this.latitude = latitude;
     this.longitude = longitude;
@@ -18,15 +17,8 @@ class Flag extends Locate
     east = latitude + accuracy;
     north = longitude + accuracy;
     south = longitude - accuracy;
-    isDropped = true;
   } 
 
-  public void updateLocation(Base base)
-  {
-    latitude = base.getLatitude();
-    longitude = base.getLongitude();
-  }
-  
   public double getWest()
   {
     return west;
@@ -45,15 +37,5 @@ class Flag extends Locate
   public double getSouth()
   {
     return south;
-  }
-
-  public void setDropped(boolean bool)
-  {
-    isDropped = bool;
-  }
-
-  public boolean isDropped()
-  {
-    return isDropped;
   }
 }

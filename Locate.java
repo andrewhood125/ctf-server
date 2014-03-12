@@ -14,4 +14,8 @@ abstract class Locate
     return latitude;
   }
 
+  public double getLongitude()
+  {
+    return longitude;
+  }
 }

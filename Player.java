@@ -18,6 +18,8 @@ class Player extends Locate implements Runnable
   public static final String MACPAT = "^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$";
   public static final int DEAD = 0;
   public static final int ALIVE = 1;
+  public static final int RED_TEAM = 0;
+  public static final int BLUE_TEAM = 1;
 
  
 
@@ -31,6 +33,7 @@ class Player extends Locate implements Runnable
   Lobby myLobby;
   int team;
   int lifeState;
+  boolean isHoldingFlag;
 
   Player(Socket socket)
   {
@@ -82,6 +85,15 @@ class Player extends Locate implements Runnable
     } else {
       this.lifeState = Player.ALIVE;
     }
+  }
+
+  public boolean isDead()
+  {
+    return lifeState == Player.DEAD;
+  }
+  public void spawn()
+  {
+    setLifeState(Player.ALIVE);
   }
 
   public void run()
@@ -166,6 +178,15 @@ class Player extends Locate implements Runnable
     }
   }
 
+  public boolean isHoldingFlag()
+  {
+    return isHoldingFlag;
+  }
+
+  public void setHoldingFlag(boolean bool)
+  {
+    isHoldingFlag = bool;
+  }
 
   private boolean isValidLatitude(double latitude)
   {

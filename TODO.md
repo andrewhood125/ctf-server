@@ -29,3 +29,6 @@ so they can be killed. It will also set the flag holder as the user.
   scored, gone out of bounds, picked up the flag. 
 - [ ] Lobby command while in lobby should send information about the
   lobby. 
+- [ ] When creating a lobby a accuracy range should be included for how
+  close someone needs to be to pick up a flag or to score. 
+- [ ] Write a standard for the ctf protocol

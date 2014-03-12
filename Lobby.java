@@ -21,22 +21,30 @@ class Lobby
   // The flags associated with this lobby
   Flag redFlag;
   Flag blueFlag;
+  Base redBase;
+  Base blueBase;
   // Store the current game state of the lobby {lobby, in progress, destroy}
   int gameState;
   // a unique 4 digit id amoing all the lobbies
   String lobbyID;
   double size;
+  int redScore = 0;
+  int blueScore = 0;
   
   Lobby(Player host, String lobbyID, double arenaSize)
   {
+    // accuracy should be provided during lobby creation in the future defaults to 1 right now. 
+    int accuracy = 1;
     this.lobbyID = lobbyID;
     // Create arena based on arenaSize and Players gps coordinates.
     arena = new Arena(host.getLatitude(), host.getLongitude(), arenaSize);
     host.setTeam(RED_TEAM);
     players.add(host);
     double flagLatitude = arena.getNorth() + arena.getSouth() / 2;
-    redFlag = new Flag(flagLatitude, arena.getWest() + arenaSize*.15);
-    blueFlag = new Flag(flagLatitude, arena.getEast() - arenaSize*.15);
+    redFlag = new Flag(flagLatitude, arena.getWest() + arenaSize*.15, accuracy);
+    blueFlag = new Flag(flagLatitude, arena.getEast() - arenaSize*.15, accuracy);
+    redBase = new Base(flagLatitude, arena.getWest() + arenaSize*.15, accuracy);
+    blueBase = new Base(flagLatitude, arena.getEast() - arenaSize*.15, accuracy);
     gameState = Lobby.AT_LOBBY;
     size = arenaSize;
   }
@@ -148,8 +156,107 @@ class Lobby
       players.get(i).send(broadcastMessage);
     }
   }
+
+  public void checkIfScored(Player player)
+  {
+    if(player.getTeam() == Player.RED_TEAM)
+    {
+      // Check if at blue base
+      if(withinRange(player, blueBase))
+      {
+        // player has scored increment player teams score
+        // return flag back to base
+        // send all players new flag coordinates
+        redScore++;
+        broadcast("Blue team has scored.");
+        blueFlag.updateLocation(blueBase);
+      }
+    } else if(player.getTeam() == Player.BLUE_TEAM) {
+      if(withinRange(player, redBase))
+      {
+        blueScore++;
+        broadcast("Red team has scored.");
+        redFlag.updateLocation(redBase);
+      }
+    }
+  }
+
+  public void checkIfReturnedToBase(Player player)
+  {
+    if(player.getTeam() == Player.RED_TEAM)
+    {
+      if(withinRange(player, redBase))
+      {
+        player.spawn();
+      }
+    } else if(player.getTeam() == Player.BLUE_TEAM) {
+      if(withinRange(player, blueBase))
+      {
+        player.spawn();
+      }
+    }
+  }
+
+  public void checkIfPickedUpFlag(Player player)
+  {
+    if(player.getTeam() == Player.RED_TEAM && blueFlag.isDropped())
+    {
+      if(withinRange(player, blueFlag))
+      {
+        // player picks up blue flag
+        blueFlag.setDropped(false);
+        player.setHoldingFlag(true);
+      }
+    } else if(player.getTeam() == Player.BLUE_TEAM && redFlag.isDropped()) {
+      if(withinRange(player, redFlag))
+      {
+        redFlag.setDropped(false);
+        player.setHoldingFlag(true);
+      }
+    }
+
+  }
+  public boolean withinRange(Player player, Base base)
+  {
+    // if player is at base + or - scoring range
+    if(player.getLatitude() > base.getWest() && player.getLatitude() < base.getEast() &&
+        player.getLongitude() > base.getSouth() && player.getLongitude() < base.getNorth())
+    {
+      return true;
+    }
+    return false;
+  }
+
+  public boolean withinRange(Player player, Flag flag)
+  {
+    // if player is at base + or - scoring range
+    if(player.getLatitude() > flag.getWest() && player.getLatitude() < flag.getEast() &&
+        player.getLongitude() > flag.getSouth() && player.getLongitude() < flag.getNorth())
+    {
+      return true;
+    }
+    return false;
+  }
+
   public void broadcastLocation(Player player)
   {
+    // Check if player has scored if the player is holding the flag
+    if(player.isHoldingFlag())
+    {
+      //Check if scored
+      checkIfScored(player);
+    } else { 
+      // Check if the player picked up a flag 
+      checkIfPickedUpFlag(player);
+    }
+    
+
+    // Check if player is dead and came back to base to be spawned again
+    if(player.isDead())
+    {
+      checkIfReturnedToBase(player);
+    }
+    
     for(int i = 0; i < players.size(); i++)
     {
       if(!players.get(i).equals(player))
