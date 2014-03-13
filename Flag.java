@@ -1,59 +1,68 @@
 /**
- * Author: Andrew Hood <andrewhood125@gmail.com>
- * Description: Store everything that a single lobby will need.
+ * Store everything that a single lobby will need.
+ * @author Andrew Hood <andrewhood125@gmail.com>
+ * @version 0.1
+ * 
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
 
+// Should implement locatable
 class Flag extends Locate
 {
 
-  // Flag range
-  boolean isDropped;
-  double west, east, north, south;
-  Flag(double latitude, double longitude, double accuracy)
-  {
-    this.latitude = latitude;
-    this.longitude = longitude;
-    west = latitude - accuracy;
-    east = latitude + accuracy;
-    north = longitude + accuracy;
-    south = longitude - accuracy;
-    isDropped = true;
-  } 
+    /**
+     * Instanve variables
+     */
+    boolean isDropped;
+    double west, east, north, south;
 
-  public void updateLocation(Base base)
-  {
-    latitude = base.getLatitude();
-    longitude = base.getLongitude();
-  }
-  
-  public double getWest()
-  {
-    return west;
-  }
+    /**
+     * Constructors
+     */
+    Flag(double latitude, double longitude, double accuracy)
+    {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        west = latitude - accuracy;
+        east = latitude + accuracy;
+        north = longitude + accuracy;
+        south = longitude - accuracy;
+        isDropped = true;
+    } 
 
-  public double getEast()
-  {
-    return east;
-  }
+    public boolean isDropped()
+    {
+        return isDropped;
+    }
 
-  public double getNorth()
-  {
-    return north;
-  }
+    public double getEast()
+    {
+        return east;
+    }
 
-  public double getSouth()
-  {
-    return south;
-  }
+    public double getNorth()
+    {
+        return north;
+    }
 
-  public void setDropped(boolean bool)
-  {
-    isDropped = bool;
-  }
+    public double getSouth()
+    {
+        return south;
+    }
 
-  public boolean isDropped()
-  {
-    return isDropped;
-  }
+    public double getWest()
+    {
+        return west;
+    }
+
+    public void setDropped(boolean bool)
+    {
+        isDropped = bool;
+    }
+
+    public void updateLocation(Base base)
+    {
+        latitude = base.getLatitude();
+        longitude = base.getLongitude();
+    }
 }
