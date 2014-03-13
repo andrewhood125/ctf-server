@@ -20,9 +20,8 @@ Code Standards
      } else {
         // Other statement
      } 
-
-- Class methods top down order. Constructors, getters, setters,
-  alphabetical for everything else
+- Contants at top of class in all caps. 
+- Class methods Constructors first then alphabetical. 
 
 License
 -------
