@@ -8,7 +8,7 @@
 
 import java.util.ArrayList;
 
-class Lobby
+public class Lobby
 {
     /**
      * Constants
@@ -22,15 +22,15 @@ class Lobby
     /**
      * Instance variables
      */
-    ArrayList<Player> players = new ArrayList<Player>();
-    Arena arena;
-    Flag redFlag, blueFlag;
-    Base redBase, blueBase;
-    int gameState;
-    String lobbyID;
-    double size;
-    int redScore = 0;
-    int blueScore = 0;
+    private ArrayList<Player> players = new ArrayList<Player>();
+    private Arena arena;
+    private Flag redFlag, blueFlag;
+    private Base redBase, blueBase;
+    private int gameState;
+    private String lobbyID;
+    private double size;
+    private int redScore = 0;
+    private int blueScore = 0;
 
     /**
      * Constructors
@@ -298,7 +298,6 @@ class Lobby
         }
     }
 
-    
     // Belongs in player
     public boolean withinRange(Player player, Base base)
     {

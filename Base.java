@@ -8,12 +8,12 @@
  */
 
 // Shold implement locatable
-public class Base extends Locate
+public class Base implements Locatable
 {
     /**
      * Instanve variables
      */
-    double west, east, north, south;
+    private double west, east, north, south, latitude, longitude;
 
     /**
      * Constructors
@@ -27,6 +27,16 @@ public class Base extends Locate
         north = longitude + accuracy;
         south = longitude - accuracy;
     } 
+
+    public double getLatitude()
+    {
+        return latitude;
+    }
+
+    public double getLongitude()
+    {
+        return longitude;
+    }
 
     public double getEast()
     {

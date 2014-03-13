@@ -7,14 +7,14 @@
  */
 
 // Should implement locatable
-class Flag extends Locate
+public class Flag implements Locatable
 {
 
     /**
      * Instanve variables
      */
-    boolean isDropped;
-    double west, east, north, south;
+    private boolean isDropped;
+    private double west, east, north, south, latitude, longitude;
 
     /**
      * Constructors
@@ -33,6 +33,16 @@ class Flag extends Locate
     public boolean isDropped()
     {
         return isDropped;
+    }
+    
+    public double getLatitude()
+    {
+        return latitude;
+    }
+    
+    public double getLongitude()
+    {
+        return longitude;
     }
 
     public double getEast()

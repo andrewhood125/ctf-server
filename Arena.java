@@ -6,12 +6,12 @@
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
 // It should implement locatable
-class Arena extends Locate
+public class Arena implements Locatable
 {
     /**
      * Instance variables
      */
-    double north, south, east, west,size;
+    private double north, south, east, west,size, latitude, longitude;
 
     Arena(double latitude, double longitude, double arenaSize)
     {
@@ -21,6 +21,16 @@ class Arena extends Locate
         south = longitude - arenaSize; 
     }
 
+    public double getLatitude()
+    {
+        return latitude;
+    }
+    
+    public double getLongitude()
+    {
+        return longitude;
+    }
+    
     public double getEast()
     {
         return east;
