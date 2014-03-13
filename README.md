@@ -22,7 +22,7 @@ Code Standards
      } 
 - Contants at top of class in all caps. 
 - Class methods Constructors first then alphabetical. 
-
+- Imports should be alphabatized. 
 License
 -------
 Copyright (c) Andrew Hood. All rights reserved.
