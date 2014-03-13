@@ -22,8 +22,6 @@ public class Player implements Runnable, Locatable
     public static final String MACPAT = "^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$";
     public static final int DEAD = 0;
     public static final int ALIVE = 1;
-    public static final int RED_TEAM = 0;
-    public static final int BLUE_TEAM = 1;
 
     /** 
      * Instance variables

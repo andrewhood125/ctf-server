@@ -6,7 +6,6 @@
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
 
-// Should implement locatable
 public class Flag implements Locatable
 {
 

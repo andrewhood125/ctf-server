@@ -7,7 +7,6 @@
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
 
-// Shold implement locatable
 public class Base implements Locatable
 {
     /**

@@ -12,21 +12,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class CTFServer
-{
-    
-
- 
-    
-
-    // In lobby
-    
-
-    // in lobby
-    
-
-    // in lobby
-    
-
+{ 
     public static void main(String[] args)
     {
         if(args.length != 1)

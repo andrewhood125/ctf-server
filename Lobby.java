@@ -41,6 +41,7 @@ public class Lobby
     Lobby(Player host, double arenaSize)
     {
         players = new ArrayList<Player>();
+        players.add(host);
         // accuracy should be provided during lobby creation in the future defaults to 1 right now. 
         int accuracy = 1;
         this.lobbyID = generateLobbyID();
@@ -146,7 +147,7 @@ public class Lobby
     // This method should be in Player you check if a Player picks up a flag not a lobby. 
     public void checkIfPickedUpFlag(Player player)
     {
-        if(player.getTeam() == Player.RED_TEAM && blueFlag.isDropped())
+        if(player.getTeam() == Lobby.RED_TEAM && blueFlag.isDropped())
         {
             if(withinRange(player, blueFlag))
             {
@@ -154,7 +155,7 @@ public class Lobby
                 blueFlag.setDropped(false);
                 player.setHoldingFlag(true);
             }
-        } else if(player.getTeam() == Player.BLUE_TEAM && redFlag.isDropped()) {
+        } else if(player.getTeam() == Lobby.BLUE_TEAM && redFlag.isDropped()) {
             if(withinRange(player, redFlag))
             {
                 redFlag.setDropped(false);
@@ -166,13 +167,13 @@ public class Lobby
     // This method should be in Player you check if a Player picks up a flag not a lobby.
     public void checkIfReturnedToBase(Player player)
     {
-        if(player.getTeam() == Player.RED_TEAM)
+        if(player.getTeam() == Lobby.RED_TEAM)
         {
             if(withinRange(player, redBase))
             {
                 player.spawn();
             }
-        } else if(player.getTeam() == Player.BLUE_TEAM) {
+        } else if(player.getTeam() == Lobby.BLUE_TEAM) {
             if(withinRange(player, blueBase))
             {
                 player.spawn();
@@ -184,7 +185,7 @@ public class Lobby
     public void checkIfScored(Player player)
     {
         // TODO!!! Check if player is holding the opposite teams flag beore scoring. 
-        if(player.getTeam() == Player.RED_TEAM)
+        if(player.getTeam() == Lobby.RED_TEAM)
         {
             // Check if at blue base
             if(withinRange(player, blueBase))
@@ -196,7 +197,7 @@ public class Lobby
                 broadcast("Blue team has scored.");
                 blueFlag.updateLocation(blueBase);
             }
-        } else if(player.getTeam() == Player.BLUE_TEAM) {
+        } else if(player.getTeam() == Lobby.BLUE_TEAM) {
             if(withinRange(player, redBase))
             {
                 blueScore++;
@@ -268,16 +269,11 @@ public class Lobby
     
     public static boolean isJoinable(String lobbyID)
     {
-        for(int i = 0; i < lobbies.size(); i++)
+        for(int  i = 0; i < lobbies.size(); i++)
         {
             if(lobbies.get(i).getLobbyID().equals(lobbyID))
             {
-                if(lobbies.get(i).getGameState() == Lobby.AT_LOBBY)
-                {
-                    return true;
-                } else {
-                    return false;
-                }
+                return true;
             }
         }
         return false;
