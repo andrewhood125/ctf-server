@@ -32,4 +32,5 @@ so they can be killed. It will also set the flag holder as the user.
 - [ ] When creating a lobby a accuracy range should be included for how
   close someone needs to be to pick up a flag or to score. 
 - [ ] Write a standard for the ctf protocol
-- [ ] Check if player is holding the opposite teams flag beore scoring
+- [ ] Check if player is holding the opposite teams flag before scoring
+- [ ] Go through code and bring up to standards and organize. 
