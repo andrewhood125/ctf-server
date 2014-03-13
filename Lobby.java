@@ -20,26 +20,30 @@ public class Lobby
     public static final int BLUE_TEAM = 2;
 
     /**
+     * Static variables
+     */
+    public static ArrayList<Lobby> lobbies = new ArrayList<Lobby>();
+    
+    /**
      * Instance variables
      */
-    private ArrayList<Player> players = new ArrayList<Player>();
     private Arena arena;
-    private Flag redFlag, blueFlag;
-    private Base redBase, blueBase;
-    private int gameState;
-    private String lobbyID;
+    private ArrayList<Player> players;
+    private Base blueBase, redBase;
     private double size;
-    private int redScore = 0;
-    private int blueScore = 0;
-
+    private Flag blueFlag, redFlag;
+    private int blueScore, gameState, redScore;
+    private String lobbyID;
+    
     /**
      * Constructors
      */
-    Lobby(Player host, String lobbyID, double arenaSize)
+    Lobby(Player host, double arenaSize)
     {
+        players = new ArrayList<Player>();
         // accuracy should be provided during lobby creation in the future defaults to 1 right now. 
         int accuracy = 1;
-        this.lobbyID = lobbyID;
+        this.lobbyID = generateLobbyID();
         // Create arena based on arenaSize and Players gps coordinates.
         arena = new Arena(host.getLatitude(), host.getLongitude(), arenaSize);
         host.setTeam(RED_TEAM);
@@ -51,7 +55,23 @@ public class Lobby
         blueBase = new Base(flagLatitude, arena.getEast() - arenaSize*.15, accuracy);
         gameState = Lobby.AT_LOBBY;
         size = arenaSize;
+        // Add this new Lobby to the lobbies list
+        lobbies.add(this);
     }
+    
+    public static Lobby addPlayerToLobby(Player newPlayer, String lobbyID)
+    {
+        for(int i = 0; i < lobbies.size(); i++)
+        {
+            if(lobbies.get(i).getLobbyID().equals(lobbyID))
+            {
+                lobbies.get(i).addNewPlayer(newPlayer);
+                lobbies.get(i).broadcastPlayers();
+                return lobbies.get(i);
+            }
+        }
+        return null;
+    } 
 
     public void addNewPlayer(Player newPlayer)
     {
@@ -245,6 +265,23 @@ public class Lobby
     {
         return size;
     }
+    
+    public static boolean isJoinable(String lobbyID)
+    {
+        for(int i = 0; i < lobbies.size(); i++)
+        {
+            if(lobbies.get(i).getLobbyID().equals(lobbyID))
+            {
+                if(lobbies.get(i).getGameState() == Lobby.AT_LOBBY)
+                {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
 
     public boolean isLobbyLeader(Player player)
     {
@@ -271,6 +308,43 @@ public class Lobby
                 players.remove(i);
                 break;
             }
+        }
+    }
+    
+    public static String listLobbies()
+    {
+        String returnString = "";
+        if(lobbies.size() == 0)
+        {
+            return "There are currently no lobbies.";
+        }
+
+        for(int i = 0; i < lobbies.size(); i++)
+        {
+            returnString += lobbies.get(i).getLobbyID() + "," 
+            + lobbies.get(i).getNumberOfPlayers() + ","
+            + lobbies.get(i).getGameState() + "\n";
+        }
+        return returnString;
+    }
+    
+    public static void removePlayerFromLobby(Player player, Lobby lobby)
+    {
+        try
+        {
+            lobby.removePlayer(player);
+            if(lobby.getNumberOfPlayers() == 0)
+            {
+                for(int  i = 0; 0 < lobbies.size(); i++)
+                {
+                    if(lobbies.get(i).equals(lobby))
+                    {
+                        lobbies.remove(i);
+                    }
+                }
+            }
+        } catch(Exception ex) {
+            System.err.println("ERROR: Error removing " + player + " from " + lobby);
         }
     }
 
@@ -322,5 +396,6 @@ public class Lobby
         return false;
     }   
 
+    
 }
 

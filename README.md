@@ -23,6 +23,10 @@ Code Standards
 - Contants at top of class in all caps. 
 - Class methods Constructors first then alphabetical. 
 - Imports should be alphabatized. 
+- Instance variables should be initialized only in the constructor;
+- Constants and static variables should be initialized at declaration. 
+- Variables withing a category {static, instance, constants} should be
+  alphabatized. 
 License
 -------
 Copyright (c) Andrew Hood. All rights reserved.

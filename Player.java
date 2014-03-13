@@ -174,8 +174,7 @@ public class Player implements Runnable, Locatable
                     System.err.println(ex.getMessage());
                     System.exit(25);
                 }
-                // Create a lobby with this player as the host
-                myLobby = CTFServer.createLobby(this, newLobbySize);
+                
                 inLobby = true;
                 out.println("You're now in lobby " + myLobby.getLobbyID());
             } else if(inLobby) {
@@ -216,7 +215,7 @@ public class Player implements Runnable, Locatable
             {
                 out.println("ERROR: Need to greet first.");
             } else if(!inLobby) {
-                if(CTFServer.lobbies.size() == 0)
+                if(Lobby.lobbies.size() == 0)
                 {
                     out.println("There are currently no lobbies.");
                 } else { 
@@ -224,9 +223,9 @@ public class Player implements Runnable, Locatable
                     {
                         String lobbyID;
                         out.println("Proceed with lobby ID.");
-                        if(CTFServer.lobbyJoinable(lobbyID = in.readLine()))
+                        if(Lobby.isJoinable(lobbyID = in.readLine()))
                         {
-                            myLobby =  CTFServer.joinLobby(this, lobbyID);
+                            myLobby =  Lobby.addPlayerToLobby(this, lobbyID);
                             inLobby = true;
                             out.println("Joining lobby " + lobbyID + "...");
                             out.println("Arena Boundaries: " + myLobby.getSize());
@@ -252,7 +251,7 @@ public class Player implements Runnable, Locatable
                 out.println("ERROR: Need to greet first.");
             } else if(!inLobby) {
                 // List all lobbies
-                out.println(CTFServer.listLobbies());
+                out.println(Lobby.listLobbies());
             } else if(inLobby) {
                 out.println(myLobby.toString());
             }
@@ -265,7 +264,7 @@ public class Player implements Runnable, Locatable
             } else if (!inLobby) {
                 out.println("ERROR: You're not in a lobby.");
             } else if(inLobby) {
-                CTFServer.leaveLobby(this, myLobby);
+                Lobby.removePlayerFromLobby(this, myLobby);
                 inLobby = false;
                 out.println("You've left the lobby.");
             } else {
@@ -351,7 +350,7 @@ public class Player implements Runnable, Locatable
             socket.close();
             if(inLobby)
             {
-                CTFServer.leaveLobby(this, myLobby);
+                Lobby.removePlayerFromLobby(this, myLobby);
             }
         } catch(IOException ex) {
             System.err.println(ex.getMessage());
