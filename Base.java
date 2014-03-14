@@ -12,13 +12,15 @@ public class Base implements Locatable
     /**
      * Instanve variables
      */
+    private int team;
     private double west, east, north, south, latitude, longitude;
 
     /**
      * Constructors
      */
-    Base(double latitude, double longitude, double accuracy)
+    Base(int team, double latitude, double longitude, double accuracy)
     {
+        this.team = team;
         this.latitude = latitude;
         this.longitude = longitude;
         west = latitude - accuracy;

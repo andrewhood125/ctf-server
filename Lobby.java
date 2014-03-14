@@ -51,8 +51,8 @@ public class Lobby
 
         this.redFlag = new Flag(Lobby.RED_TEAM, flagLatitude, this.arena.getWest() + arenaSize*.15, accuracy);
         this.blueFlag = new Flag(Lobby.BLUE_TEAM, flagLatitude, this.arena.getEast() - arenaSize*.15, accuracy);
-        this.redBase = new Base(flagLatitude, this.arena.getWest() + arenaSize*.15, accuracy);
-        this.blueBase = new Base(flagLatitude, this.arena.getEast() - arenaSize*.15, accuracy);
+        this.redBase = new Base(Lobby.RED_TEAM, flagLatitude, this.arena.getWest() + arenaSize*.15, accuracy);
+        this.blueBase = new Base(Lobby.BLUE_TEAM, flagLatitude, this.arena.getEast() - arenaSize*.15, accuracy);
         this.setGameState(Lobby.AT_LOBBY);
         this.size = arenaSize;
         // Add this new Lobby to the lobbies list

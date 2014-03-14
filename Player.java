@@ -496,8 +496,8 @@ public class Player implements Runnable, Locatable
         {
             String coordinates = in.readLine();
             double[] latlong = parseCoordinates(coordinates);
-            latitude = latlong[0];
-            longitude = latlong[1];
+            this.latitude = latlong[0];
+            this.longitude = latlong[1];
         } catch(Exception ex) {
             System.out.println("Received bad location from " + this.toString());
             send("ERROR: Improperly formatted location.");
