@@ -355,7 +355,7 @@ public class Lobby
     public String toString()
     {
         return "LOBBY===========" + this.lobbyID + "\n"
-                + "Red Team " + this.redScore + " {" + this.getTeamPlayers(Lobby.RED_TEAM) + "\n"
+                + "Red Team " + this.redScore + " {" + this.getTeamPlayers(Lobby.RED_TEAM) + "}\n"
                 + "Blue Team " + this.blueScore + " {" + this.getTeamPlayers(Lobby.BLUE_TEAM) + "}\n";
     }
 }
