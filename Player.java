@@ -99,7 +99,7 @@ public class Player implements Runnable, Locatable
         if(this.getTeam() == Lobby.RED_TEAM)
         {
             // Check if at blue base
-            if(this.withinRange(myLobby.getBlueBase()))
+            if(this.myFlag.getTeam() == Lobby.BLUE_TEAM && this.withinRange(myLobby.getRedBase()))
             {
                 // player has scored increment player teams score
                 // return flag back to base
@@ -107,7 +107,7 @@ public class Player implements Runnable, Locatable
                 myLobby.redScored();
             }
         } else if(this.getTeam() == Lobby.BLUE_TEAM) {
-            if(this.withinRange(myLobby.getRedBase()))
+            if(this.myFlag.getTeam() == Lobby.RED_TEAM && this.withinRange(myLobby.getBlueBase()))
             {
                 myLobby.blueScored();
             }
@@ -140,6 +140,16 @@ public class Player implements Runnable, Locatable
         return lifeState == Player.DEAD;
     }
 
+    public boolean isHoldingFlag(int team)
+    {
+        if(this.myFlag.getTeam() == team)
+        {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     public boolean isHoldingFlag()
     {
         return isHoldingFlag;
