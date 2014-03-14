@@ -23,7 +23,7 @@ public class Lobby
      * Static variables
      */
     public static ArrayList<Lobby> lobbies = new ArrayList<Lobby>();
-    
+
     /**
      * Instance variables
      */
@@ -34,32 +34,31 @@ public class Lobby
     private Flag blueFlag, redFlag;
     private int blueScore, gameState, redScore;
     private String lobbyID;
-    
+
     /**
      * Constructors
      */
     Lobby(Player host, double arenaSize)
     {
-        players = new ArrayList<Player>();
-        players.add(host);
-        // accuracy should be provided during lobby creation in the future defaults to 1 right now. 
-        int accuracy = 1;
+        this.players = new ArrayList<Player>();
+        this.addNewPlayer(host);
         this.lobbyID = generateLobbyID();
         // Create arena based on arenaSize and Players gps coordinates.
-        arena = new Arena(host.getLatitude(), host.getLongitude(), arenaSize);
-        host.setTeam(RED_TEAM);
-        players.add(host);
+        this.arena = new Arena(host.getLatitude(), host.getLongitude(), arenaSize);
         double flagLatitude = (arena.getNorth() + arena.getSouth()) / 2;
-        redFlag = new Flag(flagLatitude, arena.getWest() + arenaSize*.15, accuracy);
-        blueFlag = new Flag(flagLatitude, arena.getEast() - arenaSize*.15, accuracy);
-        redBase = new Base(flagLatitude, arena.getWest() + arenaSize*.15, accuracy);
-        blueBase = new Base(flagLatitude, arena.getEast() - arenaSize*.15, accuracy);
-        gameState = Lobby.AT_LOBBY;
-        size = arenaSize;
+        // accuracy should be provided during lobby creation in the future defaults to 1 right now. 
+        int accuracy = 1;
+
+        this.redFlag = new Flag(flagLatitude, this.arena.getWest() + arenaSize*.15, accuracy);
+        this.blueFlag = new Flag(flagLatitude, this.arena.getEast() - arenaSize*.15, accuracy);
+        this.redBase = new Base(flagLatitude, this.arena.getWest() + arenaSize*.15, accuracy);
+        this.blueBase = new Base(flagLatitude, this.arena.getEast() - arenaSize*.15, accuracy);
+        this.setGameState(Lobby.AT_LOBBY);
+        this.size = arenaSize;
         // Add this new Lobby to the lobbies list
-        lobbies.add(this);
+        Lobby.lobbies.add(this);
     }
-    
+
     public static Lobby addPlayerToLobby(Player newPlayer, String lobbyID)
     {
         for(int i = 0; i < lobbies.size(); i++)
@@ -86,6 +85,13 @@ public class Lobby
         }
         players.add(newPlayer);
     }
+    
+    public void blueScored()
+    {
+        blueScore++;
+        broadcast("Blue team has scored.");
+        redFlag.updateLocation(redBase);
+    }
 
     public void broadcast(String broadcastMessage)
     {
@@ -101,16 +107,16 @@ public class Lobby
         if(player.isHoldingFlag())
         {
             //Check if scored
-            checkIfScored(player);
+            player.checkIfScored();
         } else { 
             // Check if the player picked up a flag 
-            checkIfPickedUpFlag(player);
+            player.checkIfPickedUpFlag();
         }
 
         // Check if player is dead and came back to base to be spawned again
         if(player.isDead())
         {
-            checkIfReturnedToBase(player);
+            player.checkIfReturnedToBase();
         }
 
         for(int i = 0; i < players.size(); i++)
@@ -144,69 +150,6 @@ public class Lobby
         }  
     }
 
-    // This method should be in Player you check if a Player picks up a flag not a lobby. 
-    public void checkIfPickedUpFlag(Player player)
-    {
-        if(player.getTeam() == Lobby.RED_TEAM && blueFlag.isDropped())
-        {
-            if(withinRange(player, blueFlag))
-            {
-                // player picks up blue flag
-                blueFlag.setDropped(false);
-                player.setHoldingFlag(true);
-            }
-        } else if(player.getTeam() == Lobby.BLUE_TEAM && redFlag.isDropped()) {
-            if(withinRange(player, redFlag))
-            {
-                redFlag.setDropped(false);
-                player.setHoldingFlag(true);
-            }
-        }
-    }
-
-    // This method should be in Player you check if a Player picks up a flag not a lobby.
-    public void checkIfReturnedToBase(Player player)
-    {
-        if(player.getTeam() == Lobby.RED_TEAM)
-        {
-            if(withinRange(player, redBase))
-            {
-                player.spawn();
-            }
-        } else if(player.getTeam() == Lobby.BLUE_TEAM) {
-            if(withinRange(player, blueBase))
-            {
-                player.spawn();
-            }
-        }
-    }
-
-    // // This method should be in Player. Players score not lobbies
-    public void checkIfScored(Player player)
-    {
-        // TODO!!! Check if player is holding the opposite teams flag beore scoring. 
-        if(player.getTeam() == Lobby.RED_TEAM)
-        {
-            // Check if at blue base
-            if(withinRange(player, blueBase))
-            {
-                // player has scored increment player teams score
-                // return flag back to base
-                // send all players new flag coordinates
-                redScore++;
-                broadcast("Blue team has scored.");
-                blueFlag.updateLocation(blueBase);
-            }
-        } else if(player.getTeam() == Lobby.BLUE_TEAM) {
-            if(withinRange(player, redBase))
-            {
-                blueScore++;
-                broadcast("Red team has scored.");
-                redFlag.updateLocation(redBase);
-            }
-        }
-    }
-
     public static String generateLobbyID()
     {
         String lobbyID = "";
@@ -226,6 +169,26 @@ public class Lobby
     public Arena getArena()
     {
         return arena;
+    }
+    
+    public Base getBlueBase()
+    {
+        return blueBase;
+    }
+    
+    public Flag getBlueFlag()
+    {
+        return blueFlag;
+    }
+    
+    public Base getRedBase()
+    {
+        return redBase;
+    }
+    
+    public Flag getRedFlag()
+    {
+        return redFlag;
     }
 
     public int getGameState()
@@ -266,7 +229,7 @@ public class Lobby
     {
         return size;
     }
-    
+
     public static boolean isJoinable(String lobbyID)
     {
         for(int  i = 0; i < lobbies.size(); i++)
@@ -289,24 +252,8 @@ public class Lobby
         }
     }
 
-    // This is killing a player not a lobby. It should be player.kill() in Player.java
-    public void kill(Player player)
-    {
-        player.setLifeState(Player.DEAD);
-    }
-
-    public void removePlayer(Player player)
-    {
-        for(int i = 0; i < players.size(); i++)
-        {
-            if(players.get(i).equals(player))
-            {
-                players.remove(i);
-                break;
-            }
-        }
-    }
     
+
     public static String listLobbies()
     {
         String returnString = "";
@@ -322,6 +269,25 @@ public class Lobby
             + lobbies.get(i).getGameState() + "\n";
         }
         return returnString;
+    }
+    
+    public void redScored()
+    {
+        redScore++;
+        broadcast("Red team has scored.");
+        blueFlag.updateLocation(blueBase);
+    }
+    
+    public void removePlayer(Player player)
+    {
+        for(int i = 0; i < players.size(); i++)
+        {
+            if(players.get(i).equals(player))
+            {
+                players.remove(i);
+                break;
+            }
+        }
     }
     
     public static void removePlayerFromLobby(Player player, Lobby lobby)
@@ -364,34 +330,8 @@ public class Lobby
         // Kill all players 
         for(int i = 0; i < players.size(); i++)
         {
-            kill(players.get(i));
+            players.get(i).kill();
         }
     }
-
-    // Belongs in player
-    public boolean withinRange(Player player, Base base)
-    {
-        // if player is at base + or - scoring range
-        if(player.getLatitude() > base.getWest() && player.getLatitude() < base.getEast() &&
-        player.getLongitude() > base.getSouth() && player.getLongitude() < base.getNorth())
-        {
-            return true;
-        }
-        return false;
-    }
-
-    // Belongs in player
-    public boolean withinRange(Player player, Flag flag)
-    {
-        // if player is at base + or - scoring range
-        if(player.getLatitude() > flag.getWest() && player.getLatitude() < flag.getEast() &&
-        player.getLongitude() > flag.getSouth() && player.getLongitude() < flag.getNorth())
-        {
-            return true;
-        }
-        return false;
-    }   
-
-    
 }
 

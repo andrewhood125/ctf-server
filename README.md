@@ -25,6 +25,8 @@ Code Standards
 - Imports should be alphabatized. 
 - Instance variables should be initialized only in the constructor;
 - Constants and static variables should be initialized at declaration. 
+- All instance variables and non static methods  should always be referenced with this to  prevent confusion. 
+- If a class has getters or setters use them. 
 - Variables withing a category {static, instance, constants} should be
   alphabatized. 
 License

@@ -56,6 +56,62 @@ public class Player implements Runnable, Locatable
             System.exit(4);
         }
     }
+    
+    public void checkIfPickedUpFlag()
+    {
+        if(this.getTeam() == Lobby.RED_TEAM && myLobby.getBlueFlag().isDropped())
+        {
+            if(this.withinRange(myLobby.getBlueFlag()))
+            {
+                // player picks up blue flag
+                myLobby.getBlueFlag().setDropped(false);
+                this.setHoldingFlag(true);
+            }
+        } else if(this.getTeam() == Lobby.BLUE_TEAM && myLobby.getRedFlag().isDropped()) {
+            if(this.withinRange(myLobby.getRedFlag()))
+            {
+                myLobby.getRedFlag().setDropped(false);
+                this.setHoldingFlag(true);
+            }
+        }
+    }
+
+    public void checkIfReturnedToBase()
+    {
+        if(this.getTeam() == Lobby.RED_TEAM)
+        {
+            if(this.withinRange(myLobby.getRedBase()))
+            {
+                this.spawn();
+            }
+        } else if(this.getTeam() == Lobby.BLUE_TEAM) {
+            if(this.withinRange(myLobby.getBlueBase()))
+            {
+                this.spawn();
+            }
+        }
+    }
+
+    public void checkIfScored()
+    {
+        // TODO!!! Check if player is holding the opposite teams flag beore scoring. 
+        if(this.getTeam() == Lobby.RED_TEAM)
+        {
+            // Check if at blue base
+            if(this.withinRange(myLobby.getBlueBase()))
+            {
+                // player has scored increment player teams score
+                // return flag back to base
+                // send all players new flag coordinates
+                myLobby.redScored();
+            }
+        } else if(this.getTeam() == Lobby.BLUE_TEAM) {
+            if(this.withinRange(myLobby.getRedBase()))
+            {
+                myLobby.blueScored();
+            }
+        }
+    }
 
     // Go in a parent class for all methods needing location methods
     public double getLatitude()
@@ -108,6 +164,11 @@ public class Player implements Runnable, Locatable
         return true;
     }
 
+    public void kill()
+    {
+        this.setLifeState(Player.DEAD);
+    }
+    
     // Go in a parent class for all methods needing location methods
     public double[] parseCoordinates(String location) throws Exception
     {
@@ -165,11 +226,12 @@ public class Player implements Runnable, Locatable
                 {
                     out.println("Proceed with arena size.");
                     newLobbySize  = Double.parseDouble(in.readLine());
+                    myLobby = new Lobby(this, newLobbySize);
                 } catch(NumberFormatException ex) {
                     System.err.println(ex.getMessage());
                     processCommand("CREATE");
                 } catch(IOException ex) {
-                    System.err.println(ex.getMessage());
+                    System.err.println("IOException while trying to create a new lobby: " + ex.getMessage());
                     System.exit(25);
                 }
                 
@@ -341,6 +403,7 @@ public class Player implements Runnable, Locatable
             System.err.println("Shutting down " + this);
         }
 
+        this.send("Shutting down per your request.\n Good bye.");
         try
         {
             out.close();
@@ -404,4 +467,26 @@ public class Player implements Runnable, Locatable
         myLobby.broadcastLocation(this);
         System.out.println(this + " sent updated location: {" + latitude + "," + longitude + "}");
     }
+    
+    public boolean withinRange(Base base)
+    {
+        // if player is at base + or - scoring range
+        if(this.getLatitude() > base.getWest() && this.getLatitude() < base.getEast() &&
+        this.getLongitude() > base.getSouth() && this.getLongitude() < base.getNorth())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean withinRange(Flag flag)
+    {
+        // if player is at base + or - scoring range
+        if(this.getLatitude() > flag.getWest() && this.getLatitude() < flag.getEast() &&
+        this.getLongitude() > flag.getSouth() && this.getLongitude() < flag.getNorth())
+        {
+            return true;
+        }
+        return false;
+    }   
 }
