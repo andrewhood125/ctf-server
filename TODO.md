@@ -37,4 +37,4 @@ so they can be killed. It will also set the flag holder as the user.
 There needs to be a intermediary between the top level and Base of Flag
 that includes N S E W and the associatied methods. 
 - [ ] Check if player is holding the opposite teams flag before scoring
-- [ ] Go through code and bring up to standards and organize. 
+- [x] Go through code and bring up to standards and organize. 

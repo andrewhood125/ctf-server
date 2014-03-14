@@ -167,6 +167,7 @@ public class Player implements Runnable, Locatable
     public void kill()
     {
         this.setLifeState(Player.DEAD);
+        this.send("You have been killed.");
     }
     
     // Go in a parent class for all methods needing location methods
@@ -421,12 +422,12 @@ public class Player implements Runnable, Locatable
 
     public void send(String message)
     {
-        out.println(message);
+        this.out.println(message);
     }
 
     public void setHoldingFlag(boolean bool)
     {
-        isHoldingFlag = bool;
+        this.isHoldingFlag = bool;
     }
 
     public void setLifeState(int lifeState)
@@ -449,7 +450,8 @@ public class Player implements Runnable, Locatable
 
     public void spawn()
     {
-        setLifeState(Player.ALIVE);
+        this.setLifeState(Player.ALIVE);
+        this.send("You have now spawned.");
     }
     
     public void updateLocation()
