@@ -137,7 +137,7 @@ public class Lobby
             if(players.get(i).getTeam() == 1)
             {
                 broadcast("Player: " + players.get(i).getUsername());
-            }            	   
+            }                  
         }
         broadcast("BLUE TEAM");
         broadcast("=========");
@@ -146,7 +146,7 @@ public class Lobby
             if(players.get(i).getTeam() == 2)
             {
                 broadcast("Player: " + players.get(i).getUsername());
-            }            	   
+            }                  
         }  
     }
 
@@ -228,6 +228,19 @@ public class Lobby
     public double getSize()
     {
         return size;
+    }
+    
+    public String getTeamPlayers(int team)
+    {
+        String returnString = "";
+        for(int i = 0; i < this.players.size(); i++)
+        {
+            if(this.players.get(i).getTeam() == team)
+            {
+                returnString += players.get(i).toString() + ",";
+            }
+        }
+        return returnString.substring(0,returnString.length()-1);
     }
 
     public static boolean isJoinable(String lobbyID)
@@ -332,6 +345,13 @@ public class Lobby
         {
             players.get(i).kill();
         }
+    }
+    
+    public String toString()
+    {
+        return "LOBBY===========" + this.lobbyID 
+                + "Red Team " + this.redScore + " {" + this.getTeamPlayers(Lobby.RED_TEAM) + "}"
+                + "Blue Team " + this.blueScore + " {" + this.getTeamPlayers(Lobby.BLUE_TEAM) + "}";
     }
 }
 

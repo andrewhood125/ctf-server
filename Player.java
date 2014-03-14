@@ -460,6 +460,17 @@ public class Player implements Runnable, Locatable
         this.send("You have now spawned.");
     }
     
+    public String toString()
+    {
+        if(this.username == null)
+        {
+            return this.getClass().getName() + "@" + Integer.toHexString(this.hashCode());
+        } else {
+            return this.username;
+        }
+        
+    }
+    
     public void updateLocation()
     {
         try
