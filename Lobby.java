@@ -49,8 +49,8 @@ public class Lobby
         // accuracy should be provided during lobby creation in the future defaults to 1 right now. 
         int accuracy = 1;
 
-        this.redFlag = new Flag(flagLatitude, this.arena.getWest() + arenaSize*.15, accuracy);
-        this.blueFlag = new Flag(flagLatitude, this.arena.getEast() - arenaSize*.15, accuracy);
+        this.redFlag = new Flag(Lobby.RED_TEAM, flagLatitude, this.arena.getWest() + arenaSize*.15, accuracy);
+        this.blueFlag = new Flag(Lobby.BLUE_TEAM, flagLatitude, this.arena.getEast() - arenaSize*.15, accuracy);
         this.redBase = new Base(flagLatitude, this.arena.getWest() + arenaSize*.15, accuracy);
         this.blueBase = new Base(flagLatitude, this.arena.getEast() - arenaSize*.15, accuracy);
         this.setGameState(Lobby.AT_LOBBY);
@@ -354,9 +354,9 @@ public class Lobby
     
     public String toString()
     {
-        return "LOBBY===========" + this.lobbyID 
-                + "Red Team " + this.redScore + " {" + this.getTeamPlayers(Lobby.RED_TEAM) + "}"
-                + "Blue Team " + this.blueScore + " {" + this.getTeamPlayers(Lobby.BLUE_TEAM) + "}";
+        return "LOBBY===========" + this.lobbyID + "\n"
+                + "Red Team " + this.redScore + " {" + this.getTeamPlayers(Lobby.RED_TEAM) + "\n"
+                + "Blue Team " + this.blueScore + " {" + this.getTeamPlayers(Lobby.BLUE_TEAM) + "}\n";
     }
 }
 

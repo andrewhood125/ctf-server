@@ -29,6 +29,7 @@ public class Player implements Runnable, Locatable
     private int id;
     private PrintWriter out;
     private BufferedReader in;
+    private Flag myFlag;
     private String btMAC;
     private String username;
     private Socket socket;
@@ -65,13 +66,13 @@ public class Player implements Runnable, Locatable
             {
                 // player picks up blue flag
                 myLobby.getBlueFlag().setDropped(false);
-                this.setHoldingFlag(true);
+                this.setFlag(myLobby.getBlueFlag());
             }
         } else if(this.getTeam() == Lobby.BLUE_TEAM && myLobby.getRedFlag().isDropped()) {
             if(this.withinRange(myLobby.getRedFlag()))
             {
                 myLobby.getRedFlag().setDropped(false);
-                this.setHoldingFlag(true);
+                this.setFlag(myLobby.getRedFlag());
             }
         }
     }
@@ -424,16 +425,34 @@ public class Player implements Runnable, Locatable
     {
         this.out.println(message);
     }
+    
+    public void setFlag(Flag newFlag)
+    {
+        if(newFlag.getTeam() == this.getTeam())
+        {
+            this.send("You retrieved your flag.");
+        } else {
+            this.send("You captured your opponents flag.");
+        }
+        this.myFlag = newFlag;
+        this.setHoldingFlag(true);
+    }
+    
+    public void droppedFlag()
+    {
+        if(myFlag.getTeam() == this.getTeam())
+        {
+            this.send("You dropped your flag.");
+        } else {
+            this.send("You dropped your opponents flag.");
+        }
+        this.myFlag = null;
+        this.setHoldingFlag(false);
+    }
 
     public void setHoldingFlag(boolean bool)
     {
         this.isHoldingFlag = bool;
-        if(bool)
-        {
-            this.send("You picked up a flag.");
-        } else {
-            this.send("You dropped a flag.");
-        }
     }
 
     public void setLifeState(int lifeState)

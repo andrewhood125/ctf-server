@@ -12,14 +12,16 @@ public class Flag implements Locatable
     /**
      * Instanve variables
      */
+    private int team;
     private boolean isDropped;
     private double west, east, north, south, latitude, longitude;
 
     /**
      * Constructors
      */
-    Flag(double latitude, double longitude, double accuracy)
+    Flag(int team, double latitude, double longitude, double accuracy)
     {
+        this.team = team;
         this.latitude = latitude;
         this.longitude = longitude;
         west = latitude - accuracy;
@@ -57,6 +59,11 @@ public class Flag implements Locatable
     public double getSouth()
     {
         return south;
+    }
+    
+    public int getTeam()
+    {
+        return this.team;
     }
 
     public double getWest()

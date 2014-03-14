@@ -26,3 +26,6 @@ TODO
 - [ ] Check if player is holding the opposite teams flag before scoring
 - [x] Go through code and bring up to standards and organize. 
 - [ ] game should end after x minutes or x points.
+- [ ] Scoring points when going to oppoonents base. Something is
+  switched around. 
+- [ ] Latitude, and longitude is flip flopped on flags and bases. 
