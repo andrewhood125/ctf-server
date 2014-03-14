@@ -240,7 +240,12 @@ public class Lobby
                 returnString += players.get(i).toString() + ",";
             }
         }
-        return returnString.substring(0,returnString.length()-1);
+        if(returnString.length() > 1)
+        {
+            return returnString.substring(0,returnString.length()-1);
+        } else {
+            return returnString;
+        }
     }
 
     public static boolean isJoinable(String lobbyID)
