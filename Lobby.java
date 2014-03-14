@@ -323,10 +323,10 @@ public class Lobby
         setGameState(Lobby.IN_PROGRESS);
         broadcast("The game has been started.");
         System.out.println(this + " has been started.");
-        broadcast(redFlag + " {" + redFlag.getLatitude() + "," + redFlag.getLongitude() + "}");
-        broadcast(blueFlag + " {" + blueFlag.getLatitude() + "," + blueFlag.getLongitude() + "}");
-        broadcast(redBase + " {" + redBase.getLatitude() + "," + redBase.getLongitude() + "}");
-        broadcast(blueBase + " {" + blueBase.getLatitude() + "," + blueBase.getLongitude() + "}");
+        broadcast("Red Flag {" + redFlag.getLatitude() + "," + redFlag.getLongitude() + "}");
+        broadcast("Blue Flag {" + blueFlag.getLatitude() + "," + blueFlag.getLongitude() + "}");
+        broadcast("Red Base {" + redBase.getLatitude() + "," + redBase.getLongitude() + "}");
+        broadcast("Blue Base {" + blueBase.getLatitude() + "," + blueBase.getLongitude() + "}");
         // Kill all players 
         for(int i = 0; i < players.size(); i++)
         {

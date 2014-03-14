@@ -428,6 +428,12 @@ public class Player implements Runnable, Locatable
     public void setHoldingFlag(boolean bool)
     {
         this.isHoldingFlag = bool;
+        if(bool)
+        {
+            this.send("You picked up a flag.");
+        } else {
+            this.send("You dropped a flag.");
+        }
     }
 
     public void setLifeState(int lifeState)
