@@ -90,7 +90,7 @@ public class Lobby
     {
         blueScore++;
         broadcast("Blue team has scored.");
-        redFlag.updateLocation(redBase);
+        redFlag.setPoint(redBase);
     }
 
     public void broadcast(String broadcastMessage)
@@ -293,7 +293,7 @@ public class Lobby
     {
         redScore++;
         broadcast("Red team has scored.");
-        blueFlag.updateLocation(blueBase);
+        blueFlag.setPoint(blueFlag);
     }
     
     public void removePlayer(Player player)
@@ -356,7 +356,19 @@ public class Lobby
     {
         return "LOBBY===========" + this.lobbyID + "\n"
                 + "Red Team " + this.redScore + " {" + this.getTeamPlayers(Lobby.RED_TEAM) + "}\n"
-                + "Blue Team " + this.blueScore + " {" + this.getTeamPlayers(Lobby.BLUE_TEAM) + "}\n";
+                + "Blue Team " + this.blueScore + " {" + this.getTeamPlayers(Lobby.BLUE_TEAM) + "}\n"
+                + "Red Flag {" + redFlag.getLocation() + "}\n"
+                + "Blue Flag {" + blueFlag.getLocation() + "}\n"
+                + "Red Base {" + redBase.getLocation() + "}\n"
+                + "Blue Base {" + blueBase.getLocation() + "}\n"
+                + "----------------" + this.arena.getNorth() + "----------------\n"
+                + "|                                     |\n"
+                + "|                                     |\n"
+                + "   " + this.arena.getSouth()
+                + "|                                              " + this.arena.getEast() + "\n"
+                + "|                                     |\n"
+                + "|                                     |\n"
+                + "----------------" + this.arena.getSouth() + "----------------\n";
     }
 }
 
