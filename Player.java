@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Player implements Runnable, Locatable
+public class Player extends Point implements Runnable
 {
     /**
      * Constants
@@ -38,13 +38,13 @@ public class Player implements Runnable, Locatable
     private int team;
     private int lifeState;
     private boolean isHoldingFlag;
-    private double latitude, longitude;
 
     /**
      * Constructors
      */
     Player(Socket socket)
     {
+        super(35.1174,-89.9711);   // Initialize location to Memphis, TN.
         this.socket = socket;
         try
         {
@@ -62,14 +62,14 @@ public class Player implements Runnable, Locatable
     {
         if(this.getTeam() == Lobby.RED_TEAM && myLobby.getBlueFlag().isDropped())
         {
-            if(this.withinRange(myLobby.getBlueFlag()))
+            if(this.isWithinArea(myLobby.getBlueFlag()))
             {
                 // player picks up blue flag
                 myLobby.getBlueFlag().setDropped(false);
                 this.setFlag(myLobby.getBlueFlag());
             }
         } else if(this.getTeam() == Lobby.BLUE_TEAM && myLobby.getRedFlag().isDropped()) {
-            if(this.withinRange(myLobby.getRedFlag()))
+            if(this.isWithinArea(myLobby.getRedFlag()))
             {
                 myLobby.getRedFlag().setDropped(false);
                 this.setFlag(myLobby.getRedFlag());
@@ -81,12 +81,12 @@ public class Player implements Runnable, Locatable
     {
         if(this.getTeam() == Lobby.RED_TEAM)
         {
-            if(this.withinRange(myLobby.getRedBase()))
+            if(this.isWithinArea(myLobby.getRedBase()))
             {
                 this.spawn();
             }
         } else if(this.getTeam() == Lobby.BLUE_TEAM) {
-            if(this.withinRange(myLobby.getBlueBase()))
+            if(this.isWithinArea(myLobby.getBlueBase()))
             {
                 this.spawn();
             }
@@ -95,11 +95,10 @@ public class Player implements Runnable, Locatable
 
     public void checkIfScored()
     {
-        // TODO!!! Check if player is holding the opposite teams flag beore scoring. 
         if(this.getTeam() == Lobby.RED_TEAM)
         {
             // Check if at blue base
-            if(this.myFlag.getTeam() == Lobby.BLUE_TEAM && this.withinRange(myLobby.getRedBase()))
+            if(this.myFlag.getTeam() == Lobby.BLUE_TEAM && this.isWithinArea(myLobby.getRedBase()))
             {
                 // player has scored increment player teams score
                 // return flag back to base
@@ -107,23 +106,11 @@ public class Player implements Runnable, Locatable
                 myLobby.redScored();
             }
         } else if(this.getTeam() == Lobby.BLUE_TEAM) {
-            if(this.myFlag.getTeam() == Lobby.RED_TEAM && this.withinRange(myLobby.getBlueBase()))
+            if(this.myFlag.getTeam() == Lobby.RED_TEAM && this.isWithinArea(myLobby.getBlueBase()))
             {
                 myLobby.blueScored();
             }
         }
-    }
-
-    // Go in a parent class for all methods needing location methods
-    public double getLatitude()
-    {
-        return latitude;
-    }
-
-    // Go in a parent class for all methods needing location methods
-    public double getLongitude()
-    {
-        return longitude;
     }
 
     public int getTeam(){
@@ -154,58 +141,17 @@ public class Player implements Runnable, Locatable
     {
         return isHoldingFlag;
     }
-
-    // Go in a parent class for all methods needing location methods
-    private boolean isValidLatitude(double latitude)
+    
+    private void notifyError(String message)
     {
-        if(latitude < -90 || latitude > 90)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    // Go in a parent class for all methods needing location methods
-    public boolean isValidLongitude(double longitude)
-    {
-        if(longitude < -180 || longitude > 180)
-        {
-            return false;
-        }
-        return true;
+        System.err.println(message);
+        this.out.println(message);
     }
 
     public void kill()
     {
         this.setLifeState(Player.DEAD);
         this.send("You have been killed.");
-    }
-    
-    // Go in a parent class for all methods needing location methods
-    public double[] parseCoordinates(String location) throws Exception
-    {
-        if(!location.contains(","))
-        {
-            throw new Exception();
-        }
-
-        String[] coord = location.split(",");
-
-        if(coord.length != 2)
-        {
-            throw new Exception();
-        }
-
-        double[] latlong = new double[2];
-
-        latlong[0] = Double.parseDouble(coord[0]);
-        latlong[1] = Double.parseDouble(coord[1]);
-
-        if(!isValidLatitude(latitude) || !isValidLongitude(longitude))
-        {
-            throw new Exception();
-        }
-        return latlong;
     }
 
     private void processCommand(String com)
@@ -279,7 +225,8 @@ public class Player implements Runnable, Locatable
             } else if(myLobby.getGameState()!= Lobby.IN_PROGRESS) {
                 out.println("ERROR: The game must be in progress.");
             } else {
-                updateLocation();
+                readLocation();
+                myLobby.broadcastLocation(this);
             }
             break;
             case "JOIN":
@@ -369,22 +316,6 @@ public class Player implements Runnable, Locatable
         }
     }
 
-    public void readLocation()
-    {
-        try
-        {
-            String location = in.readLine();
-            System.out.println(this.toString() + " location: " + location);
-            double[] coordinates = parseCoordinates(location);
-            latitude = coordinates[0];
-            longitude = coordinates[1];
-        } catch(Exception ex) {
-            System.err.println(ex.getMessage());
-            out.println("ERROR: GPS improperly formatted.");
-            readLocation();
-        }
-    }
-
     private void readUsername()
     {
         try 
@@ -397,6 +328,22 @@ public class Player implements Runnable, Locatable
             System.exit(11);
         }
     } 
+    
+    private void readLocation()
+    {
+        String location = "";
+        try 
+        {
+            location = in.readLine();
+            this.setPoint(location);
+        } catch(IOException ex) {
+            this.notifyError(ex.getMessage());
+            readLocation();
+        } catch(PointException ex) {
+            this.notifyError(ex.getMessage());
+            readLocation();
+        }
+    }
 
     public void run()
     {
@@ -409,13 +356,13 @@ public class Player implements Runnable, Locatable
             while(!(incomingCommunication = in.readLine()).equals("QUIT"))
                 processCommand(incomingCommunication.toUpperCase());
         } catch(IOException ex) {
-            System.err.println(ex.getMessage());
-            System.exit(5);
-        } catch (Exception ex) {
-            System.err.println("Shutting down " + this);
+            this.notifyError(ex.getMessage());
+        } catch(NullPointerException ex) {
+            this.notifyError(this + " socket shutdown? NullPointerException.");
         }
 
-        this.send("Shutting down per your request.\n Good bye.");
+        this.notifyError(this + " shutting down.");
+        
         try
         {
             out.close();
@@ -499,42 +446,4 @@ public class Player implements Runnable, Locatable
         }
         
     }
-    
-    public void updateLocation()
-    {
-        try
-        {
-            String coordinates = in.readLine();
-            double[] latlong = parseCoordinates(coordinates);
-            this.latitude = latlong[0];
-            this.longitude = latlong[1];
-        } catch(Exception ex) {
-            System.out.println("Received bad location from " + this.toString());
-            send("ERROR: Improperly formatted location.");
-        }
-        myLobby.broadcastLocation(this);
-        System.out.println(this + " sent updated location: {" + latitude + "," + longitude + "}");
-    }
-    
-    public boolean withinRange(Base base)
-    {
-        // if player is at base + or - scoring range
-        if(this.getLatitude() > base.getWest() && this.getLatitude() < base.getEast() &&
-        this.getLongitude() > base.getSouth() && this.getLongitude() < base.getNorth())
-        {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean withinRange(Flag flag)
-    {
-        // if player is at base + or - scoring range
-        if(this.getLatitude() > flag.getWest() && this.getLatitude() < flag.getEast() &&
-        this.getLongitude() > flag.getSouth() && this.getLongitude() < flag.getNorth())
-        {
-            return true;
-        }
-        return false;
-    }   
 }

@@ -6,29 +6,22 @@
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
 
-public class Flag implements Locatable
+public class Flag extends Area
 {
-
     /**
-     * Instanve variables
+     * Instance variables
      */
     private int team;
     private boolean isDropped;
-    private double west, east, north, south, latitude, longitude;
 
     /**
      * Constructors
      */
-    Flag(int team, double latitude, double longitude, double accuracy)
+    Flag(int team, double latitude, double longitude, double radius)
     {
+        super(latitude, longitude, radius);
         this.team = team;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        west = latitude - accuracy;
-        east = latitude + accuracy;
-        north = longitude + accuracy;
-        south = longitude - accuracy;
-        isDropped = true;
+        this.setDropped(true);
     } 
 
     public boolean isDropped()
@@ -36,49 +29,13 @@ public class Flag implements Locatable
         return isDropped;
     }
     
-    public double getLatitude()
-    {
-        return latitude;
-    }
-    
-    public double getLongitude()
-    {
-        return longitude;
-    }
-
-    public double getEast()
-    {
-        return east;
-    }
-
-    public double getNorth()
-    {
-        return north;
-    }
-
-    public double getSouth()
-    {
-        return south;
-    }
-    
     public int getTeam()
     {
         return this.team;
     }
 
-    public double getWest()
-    {
-        return west;
-    }
-
     public void setDropped(boolean bool)
     {
         isDropped = bool;
-    }
-
-    public void updateLocation(Base base)
-    {
-        latitude = base.getLatitude();
-        longitude = base.getLongitude();
     }
 }

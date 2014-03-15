@@ -6,48 +6,10 @@
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
 // It should implement locatable
-public class Arena implements Locatable
+public class Arena extends Area
 {
-    /**
-     * Instance variables
-     */
-    private double north, south, east, west,size, latitude, longitude;
-
-    Arena(double latitude, double longitude, double arenaSize)
+    Arena(double latitude, double longitude, double radius)
     {
-        west = latitude - arenaSize;
-        east = latitude + arenaSize;
-        north = longitude + arenaSize;
-        south = longitude - arenaSize; 
-    }
-
-    public double getLatitude()
-    {
-        return latitude;
-    }
-    
-    public double getLongitude()
-    {
-        return longitude;
-    }
-    
-    public double getEast()
-    {
-        return east;
-    }
-
-    public double getNorth()
-    {
-        return north;
-    }
-
-    public double getSouth()
-    {
-        return south;
-    }
-
-    public double getWest()
-    {
-        return west;
+        super(latitude, longitude, radius);
     }
 }
