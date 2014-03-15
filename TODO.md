@@ -18,13 +18,13 @@ TODO
 - [ ] When a player joins the player should get info on the arena, flag   locations, all the other players coordinates and usernames, and the scores. Existing players should get the new players username and location. 
 - [x] GPS command to accept a gps update from client.
 - [ ] Support a command for when client has forced a flag holder to drop the flag. It will need to send the bt mac of the player that dropped so they can be killed. It will also set the flag holder as the user. 
-- [ ] Upon receiving an update from players location check if they have scored, gone out of bounds, picked up the flag. 
+- [\] Upon receiving an update from players location check if they have scored, gone out of bounds, picked up the flag. 
 - [x] Lobby command while in lobby should send information about the lobby. 
 - [ ] When creating a lobby a accuracy range should be included for how close someone needs to be to pick up a flag or to score. 
-- [ ] Come up with a hierarchy that Arena, Base, Flag and Player can inherit from to get everything having to do with location methods. There needs to be a intermediary between the top level and Base of Flag that includes N S E W and the associatied methods. 
+- [x] Come up with a hierarchy that Arena, Base, Flag and Player can inherit from to get everything having to do with location methods. There needs to be a intermediary between the top level and Base of Flag that includes N S E W and the associatied methods. 
 - [x] Check if player is holding the opposite teams flag before scoring
 - [x] Go through code and bring up to standards and organize. 
 - [ ] game should end after x minutes or x points.
 - [x] Scoring points when going to oppoonents base. Something is
   switched around. 
-- [ ] Latitude, and longitude is flip flopped on flags and bases. 
+- [x] Latitude, and longitude is flip flopped on flags and bases. 
