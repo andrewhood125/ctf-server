@@ -26,7 +26,129 @@ public class Area extends Point
         this.setRadius(radius);
     }
     
-    public Point generateRedFlagPoint(Flag flag)
+    public void generateBlueBasePoint(Flag flag)
+    {
+        // Get width of the arena
+        double width = this.getEast() - this.getWest();
+        // Get width of a single Q
+        width /= 6;
+        //Subtract the diameter of the flag
+        width -= flag.getRadius()*2;
+        
+        // Width is now the range to generate the longitude;
+        double newLongitude = Math.random()*width;
+        
+        // Now add west and flag radius
+        newLongitude +=  this.getEast() - flag.getRadius();
+        
+        // Get height of the arena
+        double height = this.getNorth() - this.getSouth();
+        // Subtract the diameter of the flag
+        height -= flag.getRadius()*2;
+        
+        // Height is now the range to generate the latitude
+        double newLatitude = Math.random()*height;
+        
+        // Now add south and flag radius
+        newLatitude += this.getSouth() + flag.getRadius();
+        
+        try {
+			flag.setLatitude(newLatitude);
+		} catch (LatitudeException ex) {
+			// TODO Auto-generated catch block
+			System.err.println(ex.getMessage());
+		}
+        try {
+			flag.setLongitude(newLongitude);
+		} catch (LongitudeException ex) {
+			// TODO Auto-generated catch block
+			System.err.println(ex.getMessage());
+		}
+    }
+    
+    public void generateBlueFlagPoint(Flag flag)
+    {
+        // Get width of the arena
+        double width = this.getEast() - this.getWest();
+        // Get width of a single Q
+        width /= 6;
+        // Double the Q
+        width *= 2;
+        //Subtract the diameter of the flag
+        width -= flag.getRadius()*2;
+        
+        // Width is now the range to generate the longitude;
+        double newLongitude = Math.random()*width;
+        
+        // Now add west and flag radius
+        newLongitude +=  this.getEast() - flag.getRadius();
+        
+        // Get height of the arena
+        double height = this.getNorth() - this.getSouth();
+        // Subtract the diameter of the flag
+        height -= flag.getRadius()*2;
+        
+        // Height is now the range to generate the latitude
+        double newLatitude = Math.random()*height;
+        
+        // Now add south and flag radius
+        newLatitude += this.getSouth() + flag.getRadius();
+       
+        try {
+			flag.setLatitude(newLatitude);
+		} catch (LatitudeException ex) {
+			// TODO Auto-generated catch block
+			System.err.println(ex.getMessage());
+		}
+        try {
+			flag.setLongitude(newLongitude);
+		} catch (LongitudeException ex) {
+			// TODO Auto-generated catch block
+			System.err.println(ex.getMessage());
+		}
+    }
+    
+    public void generateRedBasePoint(Flag flag)
+    {
+        // Get width of the arena
+        double width = this.getEast() - this.getWest();
+        // Get width of a single Q
+        width /= 6;
+        //Subtract the diameter of the flag
+        width -= flag.getRadius()*2;
+        
+        // Width is now the range to generate the longitude;
+        double newLongitude = Math.random()*width;
+        
+        // Now add west and flag radius
+        newLongitude += this.getWest() + flag.getRadius();
+        
+        // Get height of the arena
+        double height = this.getNorth() - this.getSouth();
+        // Subtract the diameter of the flag
+        height -= flag.getRadius()*2;
+        
+        // Height is now the range to generate the latitude
+        double newLatitude = Math.random()*height;
+        
+        // Now add south and flag radius
+        newLatitude += this.getSouth() + flag.getRadius();
+       
+        try {
+			flag.setLatitude(newLatitude);
+		} catch (LatitudeException ex) {
+			// TODO Auto-generated catch block
+			System.err.println(ex.getMessage());
+		}
+        try {
+			flag.setLongitude(newLongitude);
+		} catch (LongitudeException ex) {
+			// TODO Auto-generated catch block
+			System.err.println(ex.getMessage());
+		}
+    }
+    
+    public void generateRedFlagPoint(Flag flag)
     {
         // Get width of the arena
         double width = this.getEast() - this.getWest();
@@ -54,7 +176,18 @@ public class Area extends Point
         // Now add south and flag radius
         newLatitude += this.getSouth() + flag.getRadius();
        
-        return new Point(newLatitude, newLongitude);
+        try {
+			flag.setLatitude(newLatitude);
+		} catch (LatitudeException ex) {
+			// TODO Auto-generated catch block
+			System.err.println(ex.getMessage());
+		}
+        try {
+			flag.setLongitude(newLongitude);
+		} catch (LongitudeException ex) {
+			// TODO Auto-generated catch block
+			System.err.println(ex.getMessage());
+		}
     }
     
     public double getEast()
