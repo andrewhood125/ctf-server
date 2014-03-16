@@ -6,7 +6,7 @@
  * @author Andrew Hood 
  * @version 0.1
  */
-public class Area extends Point
+public abstract class Area extends Point
 {
     /**
      * Instance variable
@@ -19,10 +19,10 @@ public class Area extends Point
     public Area(double latitude, double longitude, double radius)
     {
         super(latitude, longitude);
-        this.setEast(radius*2);
+        this.setEast(radius);
         this.setNorth(radius);
         this.setSouth(radius);
-        this.setWest(radius*2);
+        this.setWest(radius);
         this.setRadius(radius);
     }
     
@@ -52,18 +52,7 @@ public class Area extends Point
         // Now add south and flag radius
         newLatitude += this.getSouth() + base.getRadius();
         
-        try {
-			base.setLatitude(newLatitude);
-		} catch (LatitudeException ex) {
-			// TODO Auto-generated catch block
-			System.err.println(ex.getMessage());
-		}
-        try {
-			base.setLongitude(newLongitude);
-		} catch (LongitudeException ex) {
-			// TODO Auto-generated catch block
-			System.err.println(ex.getMessage());
-		}
+        base.updateLocation(newLatitude, newLongitude);
     }
     
     public void generateBlueFlagPoint(Flag flag)
@@ -94,18 +83,7 @@ public class Area extends Point
         // Now add south and flag radius
         newLatitude += this.getSouth() + flag.getRadius();
        
-        try {
-			flag.setLatitude(newLatitude);
-		} catch (LatitudeException ex) {
-			// TODO Auto-generated catch block
-			System.err.println(ex.getMessage());
-		}
-        try {
-			flag.setLongitude(newLongitude);
-		} catch (LongitudeException ex) {
-			// TODO Auto-generated catch block
-			System.err.println(ex.getMessage());
-		}
+        flag.updateLocation(newLatitude, newLongitude);
     }
     
     public void generateRedBasePoint(Base base)
@@ -134,18 +112,7 @@ public class Area extends Point
         // Now add south and flag radius
         newLatitude += this.getSouth() + base.getRadius();
        
-        try {
-			base.setLatitude(newLatitude);
-		} catch (LatitudeException ex) {
-			// TODO Auto-generated catch block
-			System.err.println(ex.getMessage());
-		}
-        try {
-			base.setLongitude(newLongitude);
-		} catch (LongitudeException ex) {
-			// TODO Auto-generated catch block
-			System.err.println(ex.getMessage());
-		}
+        base.updateLocation(newLatitude, newLongitude);
     }
     
     public void generateRedFlagPoint(Flag flag)
@@ -176,18 +143,7 @@ public class Area extends Point
         // Now add south and flag radius
         newLatitude += this.getSouth() + flag.getRadius();
        
-        try {
-			flag.setLatitude(newLatitude);
-		} catch (LatitudeException ex) {
-			// TODO Auto-generated catch block
-			System.err.println(ex.getMessage());
-		}
-        try {
-			flag.setLongitude(newLongitude);
-		} catch (LongitudeException ex) {
-			// TODO Auto-generated catch block
-			System.err.println(ex.getMessage());
-		}
+        flag.updateLocation(newLatitude, newLongitude);
     }
     
     public double getEast()
@@ -239,5 +195,7 @@ public class Area extends Point
     {
         this.west = this.getLongitude() - radius;
     }
+    
+    public abstract void updateLocation(double latitude, double longitude);
 
 }
