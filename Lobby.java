@@ -95,49 +95,6 @@ public class Lobby
         }
     }
 
-    /**
-     * Process updates from players and perform game logic. 
-     * Finally broadcast this players location to all other players
-     */
-    public void playerUpdate(Player player)
-    {
-        // Check if player has scored if the player is holding the flag
-        if(player.isHoldingFlag())
-        {
-            //Check if scored
-            player.checkIfScored();
-        } else { 
-            // Check if the player picked up a flag 
-            player.checkIfPickedUpFlag();
-        }
-
-        // Check if player is dead and came back to base to be spawned again
-        if(player.isDead())
-        {
-            player.checkIfReturnedToBase();
-        }
-
-        for(int i = 0; i < players.size(); i++)
-        {
-            if(!players.get(i).equals(player))
-            {
-                players.get(i).send("GPS: " + player.getUsername() + " " + player.getLatitude() + "," + player.getLongitude());
-            }
-        }
-        
-        // Check if the time limit has been reached. 
-        if(System.currentTimeMillis() > endTime)
-        {
-            this.endGame("Time limit hit");
-        }
-        
-        // Check if the score limit has been reached.
-        if(redScore >= Lobby.MAX_SCORE || blueScore >= Lobby.MAX_SCORE)
-        {
-            this.endGame("Max score limit hit");
-        }
-    }
-
     public void broadcastPlayers()
     {
         broadcast("RED TEAM");
@@ -184,6 +141,19 @@ public class Lobby
         }
         
         return true;
+    }
+    
+    public Player findPlayerByMAC(String mac)
+    {
+        for(int i = 0; i < players.size(); i++)
+        {
+            if(players.get(i).getMac().equals(mac))
+            {
+                return players.get(i);
+            }
+        }
+        
+        return null;
     }
 
     public static String generateLobbyID()
@@ -350,6 +320,66 @@ public class Lobby
             + lobbies.get(i).getGameState() + "\n";
         }
         return returnString;
+    }
+    
+    /**
+     * Process updates from players and perform game logic. 
+     * Finally broadcast this players location to all other players
+     */
+    public void playerUpdate(Player player)
+    {
+        // Check if player has scored if the player is holding the flag
+        if(player.isHoldingFlag())
+        {
+            //Check if scored
+            player.checkIfScored();
+        } else { 
+            // Check if the player picked up a flag 
+            player.checkIfPickedUpFlag();
+        }
+
+        // Check if player is dead and came back to base to be spawned again
+        // Or the player is holding their flag and returning it to their base.
+        if(player.isDead() || player.isHoldingFlag(player.getTeam()))
+        {
+            player.checkIfReturnedToBase();
+        }
+
+        for(int i = 0; i < players.size(); i++)
+        {
+            if(!players.get(i).equals(player))
+            {
+                players.get(i).send("GPS: " + player.getUsername() + " " + player.getLatitude() + "," + player.getLongitude());
+            }
+        }
+        
+        // Check if player has come within range of the opposite team flag holder
+        if(player.getOtherMac() != "")
+        {
+            Player otherPlayer = this.findPlayerByMAC(player.getOtherMac());
+            // We are on opposite teams and other player is holding my flag. 
+            // Force him to drop the flag
+            if(player.getTeam() != otherPlayer.getTeam() && otherPlayer.isHoldingFlag(player.getTeam()))
+            {
+                Flag tempFlag = otherPlayer.getFlag();
+                otherPlayer.dropFlag();
+                otherPlayer.kill();
+                otherPlayer.setOtherMac("");
+                player.setFlag(tempFlag);
+            }
+        }
+        
+        // Check if the time limit has been reached. 
+        if(System.currentTimeMillis() > endTime)
+        {
+            this.endGame("Time limit hit");
+        }
+        
+        // Check if the score limit has been reached.
+        if(redScore >= Lobby.MAX_SCORE || blueScore >= Lobby.MAX_SCORE)
+        {
+            this.endGame("Max score limit hit");
+        }
     }
     
     public void removePlayer(Player player)

@@ -29,7 +29,7 @@ public class Player extends Point implements Runnable
     private PrintWriter out;
     private BufferedReader in;
     private Flag myFlag;
-    private String btMAC;
+    private String btMAC, otherMac;
     private String username;
     private Socket socket;
     private boolean greeted;
@@ -54,6 +54,7 @@ public class Player extends Point implements Runnable
             System.err.println(ex.getMessage());
             System.exit(4);
         }
+        this.setOtherMac("");
     }
     
     public void checkIfPickedUpFlag()
@@ -86,6 +87,13 @@ public class Player extends Point implements Runnable
             {
                 this.spawn();
             }
+        }
+        
+        //I returned my flag to base
+        if(this.isHoldingFlag(this.getTeam()) && this.isWithinArea(myLobby.getBase(this.getTeam())))
+        {
+            this.dropFlag();
+            myLobby.broadcast(this + " saved the flag");
         }
     }
 
@@ -124,6 +132,16 @@ public class Player extends Point implements Runnable
     {
         return myFlag;
     }
+    
+    public String getMac()
+    {
+        return this.btMAC;
+    }
+    
+    public String getOtherMac()
+    {
+        return this.otherMac;
+    }
 
     public int getTeam(){
         return team;
@@ -151,7 +169,7 @@ public class Player extends Point implements Runnable
 
     public boolean isHoldingFlag(int team)
     {
-        if(this.myFlag.getTeam() == team)
+        if(this.isHoldingFlag() && this.myFlag.getTeam() == team)
         {
             return true;
         } else {
@@ -288,7 +306,6 @@ public class Player extends Point implements Runnable
                         {
                             myLobby =  Lobby.addPlayerToLobby(this, lobbyID);
                             out.println("Joining lobby " + lobbyID + "...");
-                            //out.println("Arena Boundaries: " + myLobby.getSize());
                         } else {
                             out.println("ERROR: Lobby not found.");
                         }
@@ -330,6 +347,24 @@ public class Player extends Point implements Runnable
                 out.println("ERROR: Something went wrong but I don't know what.");
             }
             break;
+            
+            case "DROP":
+            if(!greeted)
+            {
+                out.println("ERROR: Need to greet first.");
+            } else if (!this.isInLobby()) {
+                out.println("ERROR: You're not in a lobby.");
+            } else if(this.isInLobby()) {
+                try
+                {
+                    this.otherMac = in.readLine();
+                } catch(IOException ex) {
+                    System.err.println(ex.getMessage());
+                }
+                myLobby.playerUpdate(this);
+            } else {
+                out.println("ERROR: Something went wrong but I don't know what.");
+            } 
 
             default: out.println("Command not understood.");
         }
@@ -397,9 +432,9 @@ public class Player extends Point implements Runnable
                 processCommand(incomingCommunication.toUpperCase());
         } catch(IOException ex) {
             this.notifyError(ex.getMessage());
-        } catch(NullPointerException ex) {
+        } /*catch(NullPointerException ex) {
             this.notifyError(this + " socket shutdown? NullPointerException.");
-        }
+        } */
 
         this.notifyError(this + " shutting down.");
         
@@ -444,6 +479,11 @@ public class Player extends Point implements Runnable
         }
     }
 
+    public void setOtherMac(String mac)
+    {
+        this.otherMac = mac;
+    }
+    
     public void setTeam(int team)
     {
         if(team >= 0 && team <= 2)
