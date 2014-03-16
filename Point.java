@@ -111,8 +111,8 @@ public class Point implements Locatable
     
     public boolean isWithinArea(Area area)
     {
-        if(this.getLatitude() > area.getWest() && this.getLatitude() < area.getEast() &&
-        this.getLongitude() > area.getSouth() && this.getLongitude() < area.getNorth())
+        if(this.getLongitude() >= area.getWest() && this.getLongitude() <= area.getEast() &&
+        this.getLatitude() >= area.getSouth() && this.getLatitude() <= area.getNorth())
         {
             return true;
         } else {
