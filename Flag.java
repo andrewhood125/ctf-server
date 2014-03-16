@@ -12,31 +12,20 @@ public class Flag extends Area
      * Instance variables
      */
     private int team;
-    private boolean isDropped;
-
+    
     /**
      * Constructors
      */
-    Flag(int team, double latitude, double longitude, double radius)
+    Flag(int team, double latitude, double longitude, double radius, Arena arena)
     {
-        super(latitude, longitude, radius);
+        super(latitude, longitude, radius, arena);
         this.team = team;
-        this.setDropped(true);
-    } 
-
-    public boolean isDropped()
-    {
-        return isDropped;
+        this.setRandomLocation(this);
     }
     
     public int getTeam()
     {
         return this.team;
-    }
-
-    public void setDropped(boolean bool)
-    {
-        isDropped = bool;
     }
     
     public void updateLocation(double latitude, double longitude)

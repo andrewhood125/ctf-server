@@ -17,10 +17,16 @@ public class Base extends Area
     /**
      * Constructors
      */
-    Base(int team, double latitude, double longitude, double radius)
+    Base(int team, double latitude, double longitude, double radius, Arena arena)
     {
-        super(latitude, longitude, radius);
+        super(latitude, longitude, radius, arena);
         this.team = team;
+        this.setRandomLocation(this);
+    }
+    
+    public int getTeam()
+    {
+        return this.team;
     }
     
     public void updateLocation(double latitude, double longitude)

@@ -5,7 +5,6 @@
  * 
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
-// It should implement locatable
 public class Arena extends Area
 {
     Arena(double latitude, double longitude, double radius)
