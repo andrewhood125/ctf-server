@@ -130,6 +130,12 @@ public class Lobby
         {
             this.endGame("Time limit hit");
         }
+        
+        // Check if the score limit has been reached.
+        if(redScore >= Lobby.MAX_SCORE || blueScore >= Lobby.MAX_SCORE)
+        {
+            this.endGame("Max score limit hit");
+        }
     }
 
     public void broadcastPlayers()
