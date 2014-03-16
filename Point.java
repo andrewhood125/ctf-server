@@ -1,6 +1,6 @@
 
 /**
- * Parent for all classes that have a lattitude and longitude. 
+ * Parent for all classes that have a latitude and longitude. 
  * 
  * @author Andrew Hood 
  * @version 0.1

@@ -30,3 +30,6 @@ TODO
 - [x] Latitude, and longitude is flip flopped on flags and bases. 
 - [ ] Remove gps from Hello command and move it to when you join a
   lobby.
+- [ ] Parent class for player, flag and base that has team and arena
+  methods.
+- [x] Blue Flags and Bases are being generated outside the bound of the arena or too close to the edge.
