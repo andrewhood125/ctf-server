@@ -15,7 +15,6 @@ public abstract class Area extends Point
     private double east, north, south, west, radius;
     
     // Constructors
-    
     /**
      * Constructor for Flag and Base which provide the Arena
      */

@@ -24,7 +24,7 @@ TODO
 - [x] Come up with a hierarchy that Arena, Base, Flag and Player can inherit from to get everything having to do with location methods. There needs to be a intermediary between the top level and Base of Flag that includes N S E W and the associatied methods. 
 - [x] Check if player is holding the opposite teams flag before scoring
 - [x] Go through code and bring up to standards and organize. 
-- [ ] game should end after x minutes or x points.
+- [\] game should end after x minutes or x points.
 - [x] Scoring points when going to oppoonents base. Something is
   switched around. 
 - [x] Latitude, and longitude is flip flopped on flags and bases. 

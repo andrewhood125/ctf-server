@@ -254,7 +254,7 @@ public class Player extends Point implements Runnable
             } else if(!myLobby.isLobbyLeader(this)) {
                 out.println("ERROR: Only the lobby leader can start the game.");
             } else {
-                myLobby.start();
+                myLobby.startGame();
             }
             break;
             case "GPS":
@@ -397,9 +397,9 @@ public class Player extends Point implements Runnable
                 processCommand(incomingCommunication.toUpperCase());
         } catch(IOException ex) {
             this.notifyError(ex.getMessage());
-        } /*catch(NullPointerException ex) {
+        } catch(NullPointerException ex) {
             this.notifyError(this + " socket shutdown? NullPointerException.");
-        }*/
+        }
 
         this.notifyError(this + " shutting down.");
         

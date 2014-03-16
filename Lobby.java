@@ -18,6 +18,7 @@ public class Lobby
     public static final int SPECTATOR = 0;
     public static final int RED_TEAM = 1;
     public static final int BLUE_TEAM = 2;
+    public static final int MAX_SCORE = 5;
 
     /**
      * Static variables
@@ -30,11 +31,10 @@ public class Lobby
     private Arena arena;
     private ArrayList<Player> players;
     private Base blueBase, redBase;
-    //private double size;
     private Flag blueFlag, redFlag;
-    private int blueScore, gameState, redScore;
+    private int blueScore, duration, gameState, redScore;
     private String lobbyID;
-    private long startTime;
+    private long endTime;
 
     /**
      * Constructors
@@ -48,6 +48,7 @@ public class Lobby
         this.arena = new Arena(host.getLatitude(), host.getLongitude(), arenaSize);
         // accuracy should be provided during lobby creation in the future defaults to 1 right now. 
         int radius = 1;
+        this.duration = 5;
 
         this.redFlag = new Flag(Lobby.RED_TEAM, 0, 0, radius, this.arena);
         this.blueFlag = new Flag(Lobby.BLUE_TEAM, 0, 0, radius, this.arena);
@@ -100,7 +101,6 @@ public class Lobby
      */
     public void playerUpdate(Player player)
     {
-        
         // Check if player has scored if the player is holding the flag
         if(player.isHoldingFlag())
         {
@@ -124,6 +124,12 @@ public class Lobby
                 players.get(i).send("GPS: " + player.getUsername() + " " + player.getLatitude() + "," + player.getLongitude());
             }
         }
+        
+        // Check if the time limit has been reached. 
+        if(System.currentTimeMillis() > endTime)
+        {
+            this.endGame("Time limit hit");
+        }
     }
 
     public void broadcastPlayers()
@@ -146,6 +152,17 @@ public class Lobby
                 broadcast("Player: " + players.get(i).getUsername());
             }                  
         }  
+    }
+    
+    public void endGame(String message)
+    {
+        // Wrap up the game.
+        // Kill all the players
+        this.killAllPlayers();
+        // Set the lobby status to at lobby
+        this.setGameState(Lobby.AT_LOBBY);
+        // Broadcast what ended the game
+        this.broadcast(message);
     }
     
     public boolean isFlagDropped(int team)
@@ -203,6 +220,21 @@ public class Lobby
             return redFlag;
         }
     }
+    
+    public String getFlagHolder(int team)
+    {
+        for(int i = 0; i < players.size(); i++)
+        {
+            Player tempPlayer = players.get(i);
+            Flag tempFlag = tempPlayer.getFlag();
+            if(tempFlag != null && tempFlag.getTeam() == team)
+            {
+                return players.get(i) + " @ " + players.get(i).getLocation();
+            }
+        }
+        
+        return "dropped @ " + this.getFlag(team).getLocation();
+    }
 
     public int getGameState()
     {
@@ -232,20 +264,6 @@ public class Lobby
     {
         return players.size();
     }
-
-    /*
-    public ArrayList<Player> getPlayers()
-    {
-        return players;
-    }
-    */
-
-    /*
-    public double getSize()
-    {
-        return size;
-    }
-    */
     
     public String getTeamPlayers(int team)
     {
@@ -302,6 +320,13 @@ public class Lobby
         }
     }
 
+    public void killAllPlayers()
+    {
+        for(int i = 0; i < players.size(); i++)
+        {
+            players.get(i).kill();
+        }
+    }
     
 
     public static String listLobbies()
@@ -369,29 +394,32 @@ public class Lobby
         } 
     }
 
-    public void start()
+    public void startGame()
     {
         setGameState(Lobby.IN_PROGRESS);
         broadcast("The game has been started.");
         System.out.println(this + " has been started.");
         
-        // Kill all players 
-        for(int i = 0; i < players.size(); i++)
-        {
-            players.get(i).kill();
-        }
-        this.startTime = System.currentTimeMillis();
+        this.killAllPlayers();
+        // Set the end time to duration minutes after the start time. 
+        long timeToAdd = duration*60*1000;
+        System.out.println("Curren time" + System.currentTimeMillis());
+        System.out.println("Time to add to current time: " + timeToAdd);
+        this.endTime = System.currentTimeMillis() + timeToAdd;
     }
     
     public String toString()
     {
-        return "LOBBY===========" + this.lobbyID + "\n"
+        return "LOBBY=====" + this.getGameStateString() + "======" + this.lobbyID + "\n"
+                + "End Time " + endTime + "\n"
+                + "Current Time " + System.currentTimeMillis() + "\n"
+                + "Time left " + (endTime - System.currentTimeMillis()) + "\n"
                 + "Red Team " + this.redScore + " {" + this.getTeamPlayers(Lobby.RED_TEAM) + "}\n"
-                + "Blue Team " + this.blueScore + " {" + this.getTeamPlayers(Lobby.BLUE_TEAM) + "}\n"
-                + "Red Flag {" + redFlag.getLocation() + "}\n"
-                + "Blue Flag {" + blueFlag.getLocation() + "}\n"
                 + "Red Base {" + redBase.getLocation() + "}\n"
+                + "Red Flag held by " + this.getFlagHolder(Lobby.RED_TEAM) + "\n"
+                + "Blue Team " + this.blueScore + " {" + this.getTeamPlayers(Lobby.BLUE_TEAM) + "}\n"
                 + "Blue Base {" + blueBase.getLocation() + "}\n"
+                + "Blue Flag held by " + this.getFlagHolder(Lobby.BLUE_TEAM) + "\n"
                 + "----------------" + this.arena.getNorth() + "----------------\n"
                 + "|                                     |\n"
                 + "|                                     |\n"
