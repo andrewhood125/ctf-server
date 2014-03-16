@@ -26,18 +26,16 @@ public class Player extends Point implements Runnable
     /** 
      * Instance variables
      */
-    private int id;
     private PrintWriter out;
     private BufferedReader in;
     private Flag myFlag;
     private String btMAC;
     private String username;
     private Socket socket;
-    private boolean greeted, inLobby;
+    private boolean greeted;
     private Lobby myLobby;
     private int team;
     private int lifeState;
-    private boolean isHoldingFlag;
 
     /**
      * Constructors
@@ -60,19 +58,17 @@ public class Player extends Point implements Runnable
     
     public void checkIfPickedUpFlag()
     {
-        if(this.getTeam() == Lobby.RED_TEAM && myLobby.getBlueFlag().isDropped())
+        if(this.getTeam() == Lobby.RED_TEAM && myLobby.isFlagDropped(Lobby.BLUE_TEAM))
         {
-            if(this.isWithinArea(myLobby.getBlueFlag()))
+            if(this.isWithinArea(myLobby.getFlag(Lobby.BLUE_TEAM)))
             {
                 // player picks up blue flag
-                myLobby.getBlueFlag().setDropped(false);
-                this.setFlag(myLobby.getBlueFlag());
+                this.setFlag(myLobby.getFlag(Lobby.BLUE_TEAM));
             }
-        } else if(this.getTeam() == Lobby.BLUE_TEAM && myLobby.getRedFlag().isDropped()) {
-            if(this.isWithinArea(myLobby.getRedFlag()))
+        } else if(this.getTeam() == Lobby.BLUE_TEAM && myLobby.isFlagDropped(Lobby.RED_TEAM)) {
+            if(this.isWithinArea(myLobby.getFlag(Lobby.RED_TEAM)))
             {
-                myLobby.getRedFlag().setDropped(false);
-                this.setFlag(myLobby.getRedFlag());
+                this.setFlag(myLobby.getFlag(Lobby.RED_TEAM));
             }
         }
     }
@@ -81,12 +77,12 @@ public class Player extends Point implements Runnable
     {
         if(this.getTeam() == Lobby.RED_TEAM)
         {
-            if(this.isWithinArea(myLobby.getRedBase()))
+            if(this.isWithinArea(myLobby.getBase(Lobby.RED_TEAM)))
             {
                 this.spawn();
             }
         } else if(this.getTeam() == Lobby.BLUE_TEAM) {
-            if(this.isWithinArea(myLobby.getBlueBase()))
+            if(this.isWithinArea(myLobby.getBase(Lobby.BLUE_TEAM)))
             {
                 this.spawn();
             }
@@ -98,24 +94,22 @@ public class Player extends Point implements Runnable
         if(this.getTeam() == Lobby.RED_TEAM)
         {
             // Check if at blue base
-            if(this.myFlag.getTeam() == Lobby.BLUE_TEAM && this.isWithinArea(myLobby.getRedBase()))
+            if(this.myFlag.getTeam() == Lobby.BLUE_TEAM && this.isWithinArea(myLobby.getBase(Lobby.RED_TEAM)))
             {
                 // player has scored increment player teams score
                 // return flag back to base
                 // send all players new flag coordinates
-                myLobby.redScored();
-                this.setHoldingFlag(false);
+                myLobby.scored(this);
             }
         } else if(this.getTeam() == Lobby.BLUE_TEAM) {
-            if(this.myFlag.getTeam() == Lobby.RED_TEAM && this.isWithinArea(myLobby.getBlueBase()))
+            if(this.myFlag.getTeam() == Lobby.RED_TEAM && this.isWithinArea(myLobby.getBase(Lobby.BLUE_TEAM)))
             {
-                myLobby.blueScored();
-                this.setHoldingFlag(false);
+                myLobby.scored(this);
             }
         }
     }
     
-    public void droppedFlag()
+    public void dropFlag()
     {
         if(myFlag.getTeam() == this.getTeam())
         {
@@ -124,11 +118,25 @@ public class Player extends Point implements Runnable
             this.send("You dropped your opponents flag.");
         }
         this.myFlag = null;
-        this.setHoldingFlag(false);
+    }
+    
+    public Flag getFlag()
+    {
+        return myFlag;
     }
 
     public int getTeam(){
         return team;
+    }
+    
+    public String getTeamString()
+    {
+        if(team == Lobby.BLUE_TEAM)
+        {
+            return "Blue";
+        } else {
+            return "Red";
+        } 
     }
 
     public String getUsername()
@@ -153,7 +161,28 @@ public class Player extends Point implements Runnable
     
     public boolean isHoldingFlag()
     {
-        return isHoldingFlag;
+        if(myFlag == null)
+        {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    public boolean isInLobby()
+    {
+        if(myLobby == null)
+        {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    private void notify(String message)
+    {
+        System.out.println(message);
+        this.out.println(message);
     }
     
     private void notifyError(String message)
@@ -193,7 +222,7 @@ public class Player extends Point implements Runnable
             if(!greeted)
             {
                 out.println("ERROR: Need to greet first.");
-            } else if(!inLobby) {
+            } else if(!this.isInLobby()) {
                 double newLobbySize = 0;
                 try 
                 {
@@ -207,10 +236,8 @@ public class Player extends Point implements Runnable
                     System.err.println("IOException while trying to create a new lobby: " + ex.getMessage());
                     System.exit(25);
                 }
-                
-                inLobby = true;
                 out.println("You're now in lobby " + myLobby.getLobbyID());
-            } else if(inLobby) {
+            } else if(this.isInLobby()) {
                 out.println("You are already in a lobby.");
             } else {
                 out.println("ERROR: Something went wrong but I don't know what.");
@@ -222,7 +249,7 @@ public class Player extends Point implements Runnable
             if(!greeted)
             {
                 out.println("ERROR: Need to greet first.");
-            } else if(!inLobby) {
+            } else if(!isInLobby()) {
                 out.println("ERROR: Need to be in lobby.");
             } else if(!myLobby.isLobbyLeader(this)) {
                 out.println("ERROR: Only the lobby leader can start the game.");
@@ -235,20 +262,20 @@ public class Player extends Point implements Runnable
             if(!greeted)
             {
                 out.println("ERROR: Need to greet first.");
-            } else if(!inLobby) {
+            } else if(!isInLobby()) {
                 out.println("ERROR: Need to be in lobby.");
             } else if(myLobby.getGameState()!= Lobby.IN_PROGRESS) {
                 out.println("ERROR: The game must be in progress.");
             } else {
                 readLocation();
-                myLobby.broadcastLocation(this);
+                myLobby.playerUpdate(this);
             }
             break;
             case "JOIN":
             if(!greeted)
             {
                 out.println("ERROR: Need to greet first.");
-            } else if(!inLobby) {
+            } else if(!isInLobby()) {
                 if(Lobby.lobbies.size() == 0)
                 {
                     out.println("There are currently no lobbies.");
@@ -260,9 +287,8 @@ public class Player extends Point implements Runnable
                         if(Lobby.isJoinable(lobbyID = in.readLine()))
                         {
                             myLobby =  Lobby.addPlayerToLobby(this, lobbyID);
-                            inLobby = true;
                             out.println("Joining lobby " + lobbyID + "...");
-                            out.println("Arena Boundaries: " + myLobby.getSize());
+                            //out.println("Arena Boundaries: " + myLobby.getSize());
                         } else {
                             out.println("ERROR: Lobby not found.");
                         }
@@ -271,7 +297,7 @@ public class Player extends Point implements Runnable
                         System.exit(7);
                     }
                 }
-            } else if (inLobby){
+            } else if (this.isInLobby()){
                 out.println("ERROR: You are already in a lobby.");
             } else {
                 out.println("ERROR: Something went wrong but I don't know what.");
@@ -283,10 +309,10 @@ public class Player extends Point implements Runnable
             if(!greeted)
             {
                 out.println("ERROR: Need to greet first.");
-            } else if(!inLobby) {
+            } else if(!this.isInLobby()) {
                 // List all lobbies
                 out.println(Lobby.listLobbies());
-            } else if(inLobby) {
+            } else if(this.isInLobby()) {
                 out.println(myLobby.toString());
             }
             break;
@@ -295,11 +321,10 @@ public class Player extends Point implements Runnable
             if(!greeted)
             {
                 out.println("ERROR: Need to greet first.");
-            } else if (!inLobby) {
+            } else if (!this.isInLobby()) {
                 out.println("ERROR: You're not in a lobby.");
-            } else if(inLobby) {
+            } else if(this.isInLobby()) {
                 Lobby.removePlayerFromLobby(this, myLobby);
-                inLobby = false;
                 out.println("You've left the lobby.");
             } else {
                 out.println("ERROR: Something went wrong but I don't know what.");
@@ -372,9 +397,9 @@ public class Player extends Point implements Runnable
                 processCommand(incomingCommunication.toUpperCase());
         } catch(IOException ex) {
             this.notifyError(ex.getMessage());
-        } catch(NullPointerException ex) {
+        } /*catch(NullPointerException ex) {
             this.notifyError(this + " socket shutdown? NullPointerException.");
-        }
+        }*/
 
         this.notifyError(this + " shutting down.");
         
@@ -383,7 +408,7 @@ public class Player extends Point implements Runnable
             out.close();
             in.close();
             socket.close();
-            if(inLobby)
+            if(this.isInLobby())
             {
                 Lobby.removePlayerFromLobby(this, myLobby);
             }
@@ -407,14 +432,6 @@ public class Player extends Point implements Runnable
             this.send("You captured your opponents flag.");
         }
         this.myFlag = newFlag;
-        this.setHoldingFlag(true);
-    }
-    
-    
-
-    public void setHoldingFlag(boolean bool)
-    {
-        this.isHoldingFlag = bool;
     }
 
     public void setLifeState(int lifeState)
@@ -423,7 +440,7 @@ public class Player extends Point implements Runnable
         {
             this.lifeState = lifeState;
         } else {
-            this.lifeState = Player.ALIVE;
+            System.err.println(this + " attempted to set its lifestate to a invalid number");
         }
     }
 
@@ -432,6 +449,8 @@ public class Player extends Point implements Runnable
         if(team >= 0 && team <= 2)
         {
             this.team = team;
+        } else {
+            System.err.println(this + " attempted to set its team to a invalid number");
         }
     }
 
