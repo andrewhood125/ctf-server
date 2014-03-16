@@ -11,7 +11,7 @@ public class Area extends Point
     /**
      * Instance variable
      */
-    private double east, north, south, west;
+    private double east, north, south, west,radius;
     
     /**
      * Constructor
@@ -19,10 +19,42 @@ public class Area extends Point
     public Area(double latitude, double longitude, double radius)
     {
         super(latitude, longitude);
-        this.setEast(radius);
+        this.setEast(radius*2);
         this.setNorth(radius);
         this.setSouth(radius);
-        this.setWest(radius);
+        this.setWest(radius*2);
+        this.setRadius(radius);
+    }
+    
+    public Point generateRedFlagPoint(Flag flag)
+    {
+        // Get width of the arena
+        double width = this.getEast() - this.getWest();
+        // Get width of a single Q
+        width /= 6;
+        // Double the Q
+        width *= 2;
+        //Subtract the diameter of the flag
+        width -= flag.getRadius()*2;
+        
+        // Width is now the range to generate the longitude;
+        double newLongitude = Math.random()*width;
+        
+        // Now add west and flag radius
+        newLongitude += this.getWest() + flag.getRadius();
+        
+        // Get height of the arena
+        double height = this.getNorth() - this.getSouth();
+        // Subtract the diameter of the flag
+        height -= flag.getRadius()*2;
+        
+        // Height is now the range to generate the latitude
+        double newLatitude = Math.random()*height;
+        
+        // Now add south and flag radius
+        newLatitude += this.getSouth() + flag.getRadius();
+       
+        return new Point(newLatitude, newLongitude);
     }
     
     public double getEast()
@@ -33,6 +65,11 @@ public class Area extends Point
     public double getNorth()
     {
         return north;
+    }
+    
+    public double getRadius()
+    {
+    	return radius;
     }
 
     public double getSouth()
@@ -55,6 +92,11 @@ public class Area extends Point
         this.north = this.getLatitude() + radius;
     }
     
+    public void setRadius(double radius)
+    {
+    	this.radius = radius;
+    }
+    
     public void setSouth(double radius)
     {
         this.south = this.getLatitude() - radius;
@@ -64,4 +106,5 @@ public class Area extends Point
     {
         this.west = this.getLongitude() - radius;
     }
+
 }
