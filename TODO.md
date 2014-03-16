@@ -17,7 +17,7 @@ TODO
 - [x] START command 
 - [ ] When a player joins the player should get info on the arena, flag   locations, all the other players coordinates and usernames, and the scores. Existing players should get the new players username and location. 
 - [x] GPS command to accept a gps update from client.
-- [ ] Support a command for when client has forced a flag holder to drop the flag. It will need to send the bt mac of the player that dropped so they can be killed. It will also set the flag holder as the user. 
+- [x] Support a command for when client has forced a flag holder to drop the flag. It will need to send the bt mac of the player that dropped so they can be killed. It will also set the flag holder as the user. 
 - [\] Upon receiving an update from players location check if they have scored, gone out of bounds, picked up the flag. 
 - [x] Lobby command while in lobby should send information about the lobby. 
 - [ ] When creating a lobby a accuracy range should be included for how close someone needs to be to pick up a flag or to score. 

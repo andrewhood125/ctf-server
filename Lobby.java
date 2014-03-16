@@ -457,12 +457,12 @@ public class Lobby
                 + "Blue Base {" + blueBase.getLocation() + "}\n"
                 + "Blue Flag held by " + this.getFlagHolder(Lobby.BLUE_TEAM) + "\n"
                 + "----------------" + this.arena.getNorth() + "----------------\n"
-                + "|                                     |\n"
-                + "|                                     |\n"
-                + this.arena.getWest() + "                                     |\n"
-                + "|                                " + this.arena.getEast() + "\n"
-                + "|                                     |\n"
-                + "|                                     |\n"
+                + "|                                  |\n"
+                + "|                                  |\n"
+                + this.arena.getWest() + "\n"
+                + "|                                    " + this.arena.getEast() + "\n"
+                + "|                                  |\n"
+                + "|                                  |\n"
                 + "----------------" + this.arena.getSouth() + "----------------\n";
     }
 }
