@@ -50,10 +50,14 @@ public class Lobby
         // accuracy should be provided during lobby creation in the future defaults to 1 right now. 
         int radius = 1;
 
-        this.redFlag = new Flag(Lobby.RED_TEAM, flagLatitude, this.arena.getWest() + arenaSize*.15, radius);
-        this.blueFlag = new Flag(Lobby.BLUE_TEAM, flagLatitude, this.arena.getEast() - arenaSize*.15, radius);
-        this.redBase = new Base(Lobby.RED_TEAM, flagLatitude, this.arena.getWest() + arenaSize*.15, radius);
-        this.blueBase = new Base(Lobby.BLUE_TEAM, flagLatitude, this.arena.getEast() - arenaSize*.15, radius);
+        this.redFlag = new Flag(Lobby.RED_TEAM, 0, 0, radius);
+        arena.generateRedFlagPoint(redFlag);
+        this.blueFlag = new Flag(Lobby.BLUE_TEAM, 0, 0, radius);
+        arena.generateBlueFlagPoint(blueFlag);
+        this.redBase = new Base(Lobby.RED_TEAM, 0, 0, radius);
+        arena.generateRedBasePoint(redBase);
+        this.blueBase = new Base(Lobby.BLUE_TEAM, 0, 0, radius);
+        arena.generateBlueBasePoint(blueBase);
         this.setGameState(Lobby.AT_LOBBY);
         this.size = arenaSize;
         // Add this new Lobby to the lobbies list
@@ -91,7 +95,7 @@ public class Lobby
     {
         blueScore++;
         broadcast("Blue team has scored.");
-        redFlag.setPoint(redBase);
+        arena.generateRedFlagPoint(redFlag);
     }
 
     public void broadcast(String broadcastMessage)
@@ -294,7 +298,7 @@ public class Lobby
     {
         redScore++;
         broadcast("Red team has scored.");
-        blueFlag.setPoint(blueFlag);
+        arena.generateBlueFlagPoint(blueFlag);
     }
     
     public void removePlayer(Player player)

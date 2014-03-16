@@ -104,11 +104,13 @@ public class Player extends Point implements Runnable
                 // return flag back to base
                 // send all players new flag coordinates
                 myLobby.redScored();
+                this.setHoldingFlag(false);
             }
         } else if(this.getTeam() == Lobby.BLUE_TEAM) {
             if(this.myFlag.getTeam() == Lobby.RED_TEAM && this.isWithinArea(myLobby.getBlueBase()))
             {
                 myLobby.blueScored();
+                this.setHoldingFlag(false);
             }
         }
     }
