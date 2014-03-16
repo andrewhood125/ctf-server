@@ -34,6 +34,7 @@ public class Lobby
     private Flag blueFlag, redFlag;
     private int blueScore, gameState, redScore;
     private String lobbyID;
+    private long startTime;
 
     /**
      * Constructors
@@ -47,12 +48,12 @@ public class Lobby
         this.arena = new Arena(host.getLatitude(), host.getLongitude(), arenaSize);
         double flagLatitude = (arena.getNorth() + arena.getSouth()) / 2;
         // accuracy should be provided during lobby creation in the future defaults to 1 right now. 
-        int accuracy = 1;
+        int radius = 1;
 
-        this.redFlag = new Flag(Lobby.RED_TEAM, flagLatitude, this.arena.getWest() + arenaSize*.15, accuracy);
-        this.blueFlag = new Flag(Lobby.BLUE_TEAM, flagLatitude, this.arena.getEast() - arenaSize*.15, accuracy);
-        this.redBase = new Base(Lobby.RED_TEAM, flagLatitude, this.arena.getWest() + arenaSize*.15, accuracy);
-        this.blueBase = new Base(Lobby.BLUE_TEAM, flagLatitude, this.arena.getEast() - arenaSize*.15, accuracy);
+        this.redFlag = new Flag(Lobby.RED_TEAM, flagLatitude, this.arena.getWest() + arenaSize*.15, radius);
+        this.blueFlag = new Flag(Lobby.BLUE_TEAM, flagLatitude, this.arena.getEast() - arenaSize*.15, radius);
+        this.redBase = new Base(Lobby.RED_TEAM, flagLatitude, this.arena.getWest() + arenaSize*.15, radius);
+        this.blueBase = new Base(Lobby.BLUE_TEAM, flagLatitude, this.arena.getEast() - arenaSize*.15, radius);
         this.setGameState(Lobby.AT_LOBBY);
         this.size = arenaSize;
         // Add this new Lobby to the lobbies list
@@ -341,15 +342,13 @@ public class Lobby
         setGameState(Lobby.IN_PROGRESS);
         broadcast("The game has been started.");
         System.out.println(this + " has been started.");
-        broadcast("Red Flag {" + redFlag.getLatitude() + "," + redFlag.getLongitude() + "}");
-        broadcast("Blue Flag {" + blueFlag.getLatitude() + "," + blueFlag.getLongitude() + "}");
-        broadcast("Red Base {" + redBase.getLatitude() + "," + redBase.getLongitude() + "}");
-        broadcast("Blue Base {" + blueBase.getLatitude() + "," + blueBase.getLongitude() + "}");
+        
         // Kill all players 
         for(int i = 0; i < players.size(); i++)
         {
             players.get(i).kill();
         }
+        this.startTime = System.currentTimeMillis();
     }
     
     public String toString()
@@ -364,8 +363,8 @@ public class Lobby
                 + "----------------" + this.arena.getNorth() + "----------------\n"
                 + "|                                     |\n"
                 + "|                                     |\n"
-                + "   " + this.arena.getSouth()
-                + "|                                              " + this.arena.getEast() + "\n"
+                + this.arena.getWest() + "                                     |\n"
+                + "|                                " + this.arena.getEast() + "\n"
                 + "|                                     |\n"
                 + "|                                     |\n"
                 + "----------------" + this.arena.getSouth() + "----------------\n";

@@ -28,3 +28,5 @@ TODO
 - [x] Scoring points when going to oppoonents base. Something is
   switched around. 
 - [x] Latitude, and longitude is flip flopped on flags and bases. 
+- [ ] Remove gps from Hello command and move it to when you join a
+  lobby.

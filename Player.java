@@ -112,6 +112,18 @@ public class Player extends Point implements Runnable
             }
         }
     }
+    
+    public void droppedFlag()
+    {
+        if(myFlag.getTeam() == this.getTeam())
+        {
+            this.send("You dropped your flag.");
+        } else {
+            this.send("You dropped your opponents flag.");
+        }
+        this.myFlag = null;
+        this.setHoldingFlag(false);
+    }
 
     public int getTeam(){
         return team;
@@ -151,6 +163,7 @@ public class Player extends Point implements Runnable
     public void kill()
     {
         this.setLifeState(Player.DEAD);
+        System.out.println(this + " killed.");
         this.send("You have been killed.");
     }
 
@@ -395,17 +408,7 @@ public class Player extends Point implements Runnable
         this.setHoldingFlag(true);
     }
     
-    public void droppedFlag()
-    {
-        if(myFlag.getTeam() == this.getTeam())
-        {
-            this.send("You dropped your flag.");
-        } else {
-            this.send("You dropped your opponents flag.");
-        }
-        this.myFlag = null;
-        this.setHoldingFlag(false);
-    }
+    
 
     public void setHoldingFlag(boolean bool)
     {
@@ -433,6 +436,7 @@ public class Player extends Point implements Runnable
     public void spawn()
     {
         this.setLifeState(Player.ALIVE);
+        System.out.println(this + " has spawned.");
         this.send("You have now spawned.");
     }
     
