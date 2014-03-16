@@ -30,7 +30,7 @@ public class Lobby
     private Arena arena;
     private ArrayList<Player> players;
     private Base blueBase, redBase;
-    private double size;
+    //private double size;
     private Flag blueFlag, redFlag;
     private int blueScore, gameState, redScore;
     private String lobbyID;
@@ -46,20 +46,15 @@ public class Lobby
         this.lobbyID = generateLobbyID();
         // Create arena based on arenaSize and Players gps coordinates.
         this.arena = new Arena(host.getLatitude(), host.getLongitude(), arenaSize);
-        double flagLatitude = (arena.getNorth() + arena.getSouth()) / 2;
         // accuracy should be provided during lobby creation in the future defaults to 1 right now. 
         int radius = 1;
 
-        this.redFlag = new Flag(Lobby.RED_TEAM, 0, 0, radius);
-        arena.generateRedFlagPoint(redFlag);
-        this.blueFlag = new Flag(Lobby.BLUE_TEAM, 0, 0, radius);
-        arena.generateBlueFlagPoint(blueFlag);
-        this.redBase = new Base(Lobby.RED_TEAM, 0, 0, radius);
-        arena.generateRedBasePoint(redBase);
-        this.blueBase = new Base(Lobby.BLUE_TEAM, 0, 0, radius);
-        arena.generateBlueBasePoint(blueBase);
+        this.redFlag = new Flag(Lobby.RED_TEAM, 0, 0, radius, this.arena);
+        this.blueFlag = new Flag(Lobby.BLUE_TEAM, 0, 0, radius, this.arena);
+        this.redBase = new Base(Lobby.RED_TEAM, 0, 0, radius, this.arena);
+        this.blueBase = new Base(Lobby.BLUE_TEAM, 0, 0, radius, this.arena);
         this.setGameState(Lobby.AT_LOBBY);
-        this.size = arenaSize;
+        //this.size = arenaSize;
         // Add this new Lobby to the lobbies list
         Lobby.lobbies.add(this);
     }
@@ -90,13 +85,6 @@ public class Lobby
         }
         players.add(newPlayer);
     }
-    
-    public void blueScored()
-    {
-        blueScore++;
-        broadcast("Blue team has scored.");
-        arena.generateRedFlagPoint(redFlag);
-    }
 
     public void broadcast(String broadcastMessage)
     {
@@ -106,8 +94,13 @@ public class Lobby
         }
     }
 
-    public void broadcastLocation(Player player)
+    /**
+     * Process updates from players and perform game logic. 
+     * Finally broadcast this players location to all other players
+     */
+    public void playerUpdate(Player player)
     {
+        
         // Check if player has scored if the player is holding the flag
         if(player.isHoldingFlag())
         {
@@ -154,6 +147,21 @@ public class Lobby
             }                  
         }  
     }
+    
+    public boolean isFlagDropped(int team)
+    {
+        for(int i = 0; i < players.size(); i++)
+        {
+            Player tempPlayer = players.get(i);
+            Flag tempFlag = tempPlayer.getFlag();
+            if(tempFlag != null && tempFlag.getTeam() == team)
+            {
+                return true;
+            }
+        }
+        
+        return true;
+    }
 
     public static String generateLobbyID()
     {
@@ -176,24 +184,24 @@ public class Lobby
         return arena;
     }
     
-    public Base getBlueBase()
+    public Base getBase(int team)
     {
-        return blueBase;
+        if(team == Lobby.BLUE_TEAM)
+        {
+            return blueBase;
+        } else {
+            return redBase;
+        }
     }
     
-    public Flag getBlueFlag()
+    public Flag getFlag(int team)
     {
-        return blueFlag;
-    }
-    
-    public Base getRedBase()
-    {
-        return redBase;
-    }
-    
-    public Flag getRedFlag()
-    {
-        return redFlag;
+        if(team == Lobby.BLUE_TEAM)
+        {
+            return blueFlag;
+        } else {
+            return redFlag;
+        }
     }
 
     public int getGameState()
@@ -225,15 +233,19 @@ public class Lobby
         return players.size();
     }
 
+    /*
     public ArrayList<Player> getPlayers()
     {
         return players;
     }
+    */
 
+    /*
     public double getSize()
     {
         return size;
     }
+    */
     
     public String getTeamPlayers(int team)
     {
@@ -252,6 +264,18 @@ public class Lobby
             return returnString;
         }
     }
+    
+    public void incrementScore(int team)
+    {
+        if(team == Lobby.BLUE_TEAM)
+        {
+            blueScore++;
+        } else if(team == Lobby.RED_TEAM) {
+            redScore++;
+        } else {
+            System.err.println("Attempted to score on a invalid team: " + team);
+        }
+    }
 
     public static boolean isJoinable(String lobbyID)
     {
@@ -259,7 +283,10 @@ public class Lobby
         {
             if(lobbies.get(i).getLobbyID().equals(lobbyID))
             {
-                return true;
+                if(lobbies.get(i).getGameState() == Lobby.AT_LOBBY)
+                {
+                    return true;
+                } 
             }
         }
         return false;
@@ -294,13 +321,6 @@ public class Lobby
         return returnString;
     }
     
-    public void redScored()
-    {
-        redScore++;
-        broadcast("Red team has scored.");
-        arena.generateBlueFlagPoint(blueFlag);
-    }
-    
     public void removePlayer(Player player)
     {
         for(int i = 0; i < players.size(); i++)
@@ -331,6 +351,14 @@ public class Lobby
         } catch(Exception ex) {
             System.err.println("ERROR: Error removing " + player + " from " + lobby);
         }
+    }
+    
+    public void scored(Player player)
+    {
+        this.incrementScore(player.getTeam());
+        arena.setRandomLocation(player.getFlag());
+        player.dropFlag();
+        broadcast(player + " scored a point for team " + player.getTeamString());
     }
 
     public void setGameState(int gameState)
