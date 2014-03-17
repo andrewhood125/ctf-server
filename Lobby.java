@@ -432,16 +432,22 @@ public class Lobby
 
     public void startGame()
     {
-        setGameState(Lobby.IN_PROGRESS);
-        broadcast("The game has been started.");
-        System.out.println(this + " has been started.");
+    	if(this.getNumberOfPlayers()>=2)
+    	{
+    		setGameState(Lobby.IN_PROGRESS);
+            broadcast("The game has been started.");
+            System.out.println(this + " has been started.");
+            
+            this.killAllPlayers();
+            // Set the end time to duration minutes after the start time. 
+            long timeToAdd = duration*60*1000;
+            System.out.println("Curren time" + System.currentTimeMillis());
+            System.out.println("Time to add to current time: " + timeToAdd);
+            this.endTime = System.currentTimeMillis() + timeToAdd;
+    	}else{
+    		broadcast("Not enough players");
+    	}
         
-        this.killAllPlayers();
-        // Set the end time to duration minutes after the start time. 
-        long timeToAdd = duration*60*1000;
-        System.out.println("Curren time" + System.currentTimeMillis());
-        System.out.println("Time to add to current time: " + timeToAdd);
-        this.endTime = System.currentTimeMillis() + timeToAdd;
     }
     
     public String toString()
