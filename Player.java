@@ -19,7 +19,7 @@ public class Player extends Point implements Runnable
     /**
      * Constants
      */
-    public static final String MACPAT = "^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$";
+    public static final String MACPAT = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$";
     public static final int DEAD = 0;
     public static final int ALIVE = 1;
 

@@ -34,7 +34,7 @@ TODO
   methods.
 - [x] Blue Flags and Bases are being generated outside the bound of the arena or too close to the edge.
 - [ ] Don't spawn when you go to your base unless you're dead.
-- [ ] Not accepting 10:40:f3:97:28:9e as a valid mac.
+- [X] Not accepting 10:40:f3:97:28:9e as a valid mac.
 - [ ] Start needs min 2 players.
 - [ ] Leave is not leaving the lobby. 
 - [ ] Flags and Bases latitudes being generated outside the arena.
