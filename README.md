@@ -7,6 +7,12 @@ Author
 ------
 Andrew Hood <andrewhood125@gmail.com>
 
+Usage
+-----
+- Compile the server. `javac CTFServer.java`
+- Start the server. `java CTFServer 4444`
+- Connect to the server from telnet or nc `nc localhost 4444`
+- Commands: `HELLO, CREATE, LOBBY, JOIN, LEAVE, DROP, QUIT`
 
 Code Standards
 --------------
