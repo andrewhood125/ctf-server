@@ -228,8 +228,6 @@ public class Player extends Point implements Runnable
                 readBluetoothMAC();
                 out.println("Proceed with username.");
                 readUsername();
-                out.println("Proceed with location.");
-                readLocation();
                 out.println("Welcome " + username + ".");
             } else {
                 out.println("..hi.");
@@ -241,6 +239,8 @@ public class Player extends Point implements Runnable
             {
                 out.println("ERROR: Need to greet first.");
             } else if(!this.isInLobby()) {
+            	out.println("Proceed with location.");
+                readLocation();
                 double newLobbySize = 0;
                 try 
                 {
@@ -294,6 +294,8 @@ public class Player extends Point implements Runnable
             {
                 out.println("ERROR: Need to greet first.");
             } else if(!isInLobby()) {
+            	out.println("Proceed with location.");
+                readLocation();
                 if(Lobby.lobbies.size() == 0)
                 {
                     out.println("There are currently no lobbies.");
