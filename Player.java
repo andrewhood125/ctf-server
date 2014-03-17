@@ -498,9 +498,13 @@ public class Player extends Point implements Runnable
 
     public void spawn()
     {
-        this.setLifeState(Player.ALIVE);
-        System.out.println(this + " has spawned.");
-        this.send("You have now spawned.");
+        if(this.isDead())
+        {
+        	this.setLifeState(Player.ALIVE);
+            System.out.println(this + " has spawned.");
+            this.send("You have now spawned.");
+        }
+    	
     }
     
     public String toString()
