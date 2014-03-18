@@ -67,7 +67,6 @@ public class Lobby
             if(lobbies.get(i).getLobbyID().equals(lobbyID))
             {
                 lobbies.get(i).addNewPlayer(newPlayer);
-                lobbies.get(i).broadcastPlayers();
                 return lobbies.get(i);
             }
         }
@@ -79,22 +78,27 @@ public class Lobby
         if(players.size() % 2 != 0 )
         {
             newPlayer.setTeam(Lobby.BLUE_TEAM);
-            broadcast(newPlayer.getUsername() + " joined blue team.");
+            
         } else {
             newPlayer.setTeam(Lobby.RED_TEAM);
-            broadcast(newPlayer.getUsername() + " joined red team.");
         }
+        
+        broadcast("JOINED", new String[] {"player", newPlayer.toString(),
+                                              "location", newPlayer.getLocation(),
+                                              "team", newPlayer.getTeamString(),
+                                               "bluetooth", newPlayer.getMyBluetoothMac()});
         players.add(newPlayer);
     }
 
-    public void broadcast(String broadcastMessage)
+    public void broadcast(String object, String[] payload)
     {
         for(int i = 0; i < players.size(); i++)
         {
-            players.get(i).send(broadcastMessage);
+            players.get(i).send(object, payload);
         }
     }
 
+    /*
     public void broadcastPlayers()
     {
         broadcast("RED TEAM");
@@ -116,6 +120,7 @@ public class Lobby
             }                  
         }  
     }
+    */
     
     public void endGame(String message)
     {
@@ -125,7 +130,7 @@ public class Lobby
         // Set the lobby status to at lobby
         this.setGameState(Lobby.AT_LOBBY);
         // Broadcast what ended the game
-        this.broadcast(message);
+        this.broadcast("STOP", new String[] {"winner", "BLUE, this is static"});
     }
     
     public boolean isFlagDropped(int team)
@@ -147,7 +152,7 @@ public class Lobby
     {
         for(int i = 0; i < players.size(); i++)
         {
-            if(players.get(i).getMac().equals(mac))
+            if(players.get(i).getMyBluetoothMac().equals(mac))
             {
                 return players.get(i);
             }
@@ -349,14 +354,15 @@ public class Lobby
         {
             if(!players.get(i).equals(player))
             {
-                players.get(i).send("GPS: " + player.getUsername() + " " + player.getLatitude() + "," + player.getLongitude());
+                players.get(i).send("GPS", new String[] {"player", player.getUsername(), 
+                                                         "location", player.getLocation()});
             }
         }
         
         // Check if player has come within range of the opposite team flag holder
-        if(player.getOtherMac() != "")
+        if(player.getObservedBluetoothMac() != "")
         {
-            Player otherPlayer = this.findPlayerByMAC(player.getOtherMac());
+            Player otherPlayer = this.findPlayerByMAC(player.getObservedBluetoothMac());
             // We are on opposite teams and other player is holding my flag. 
             // Force him to drop the flag
             if(player.getTeam() != otherPlayer.getTeam() && otherPlayer.isHoldingFlag(player.getTeam()))
@@ -364,7 +370,7 @@ public class Lobby
                 Flag tempFlag = otherPlayer.getFlag();
                 otherPlayer.dropFlag();
                 otherPlayer.kill();
-                otherPlayer.setOtherMac("");
+                otherPlayer.setObservedBluetoothMac("");
                 player.setFlag(tempFlag);
             }
         }
@@ -419,7 +425,7 @@ public class Lobby
         this.incrementScore(player.getTeam());
         arena.setRandomLocation(player.getFlag());
         player.dropFlag();
-        broadcast(player + " scored a point for team " + player.getTeamString());
+        broadcast("SCORE", new String[] {"team", player.getTeamString()});
     }
 
     public void setGameState(int gameState)
@@ -432,10 +438,10 @@ public class Lobby
 
     public void startGame()
     {
-    	if(this.getNumberOfPlayers()>=2)
-    	{
-    		setGameState(Lobby.IN_PROGRESS);
-            broadcast("The game has been started.");
+        if(this.getNumberOfPlayers()>=2)
+        {
+            setGameState(Lobby.IN_PROGRESS);
+            broadcast("START", new String[] {"timeleft", "static"});
             System.out.println(this + " has been started.");
             
             this.killAllPlayers();
@@ -444,9 +450,9 @@ public class Lobby
             System.out.println("Curren time" + System.currentTimeMillis());
             System.out.println("Time to add to current time: " + timeToAdd);
             this.endTime = System.currentTimeMillis() + timeToAdd;
-    	}else{
-    		broadcast("Not enough players");
-    	}
+        }else{
+            broadcast("LOG", new String[] {"ERROR", "Not enough players to start game."});
+        }
         
     }
     

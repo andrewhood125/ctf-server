@@ -1,14 +1,13 @@
 /**
  * Store everything that a single player will need.
  * @author Andrew Hood <andrewhood125@gmail.com>
- * @version 0.1
+ * @version 0.2.0
  * 
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+
+
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -26,13 +25,10 @@ public class Player extends Point implements Runnable
     /** 
      * Instance variables
      */
-    private PrintWriter out;
-    private BufferedReader in;
+    private ComLink comLink;
     private Flag myFlag;
-    private String btMAC, otherMac;
+    private String myBluetoothMac, observedBluetoothMac;
     private String username;
-    private Socket socket;
-    private boolean greeted;
     private Lobby myLobby;
     private int team;
     private int lifeState;
@@ -43,18 +39,9 @@ public class Player extends Point implements Runnable
     Player(Socket socket)
     {
         super(35.1174,-89.9711);   // Initialize location to Memphis, TN.
-        this.socket = socket;
-        try
-        {
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            System.out.println("New player connected from IP: " + socket.getInetAddress());
-            out.println("New player connected from IP: " + socket.getInetAddress());
-        } catch(IOException ex) {
-            System.err.println(ex.getMessage());
-            System.exit(4);
-        }
-        this.setOtherMac("");
+        comLink = new ComLink(socket, this);
+        this.setObservedBluetoothMac("");
+        this.setMyBluetoothMac("");
     }
     
     public void checkIfPickedUpFlag()
@@ -92,8 +79,9 @@ public class Player extends Point implements Runnable
         //I returned my flag to base
         if(this.isHoldingFlag(this.getTeam()) && this.isWithinArea(myLobby.getBase(this.getTeam())))
         {
+            myLobby.broadcast("SAVED", new String[] {"flag", myFlag.toString(),
+                                                     "player", this.toString()});
             this.dropFlag();
-            myLobby.broadcast(this + " saved the flag");
         }
     }
 
@@ -119,12 +107,8 @@ public class Player extends Point implements Runnable
     
     public void dropFlag()
     {
-        if(myFlag.getTeam() == this.getTeam())
-        {
-            this.send("You dropped your flag.");
-        } else {
-            this.send("You dropped your opponents flag.");
-        }
+        comLink.send("DROP", new String[] {"flag", myFlag.toString(),
+                                           "player", this.toString()});
         this.myFlag = null;
     }
     
@@ -133,14 +117,19 @@ public class Player extends Point implements Runnable
         return myFlag;
     }
     
-    public String getMac()
+    public Lobby getLobby()
     {
-        return this.btMAC;
+        return myLobby;
     }
     
-    public String getOtherMac()
+    public String getMyBluetoothMac()
     {
-        return this.otherMac;
+        return this.myBluetoothMac;
+    }
+    
+    public String getObservedBluetoothMac()
+    {
+        return this.observedBluetoothMac;
     }
 
     public int getTeam(){
@@ -187,6 +176,16 @@ public class Player extends Point implements Runnable
         }
     }
     
+    public boolean isInitialized()
+    {
+        if(this.myBluetoothMac.equals(""))
+        {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
     public boolean isInLobby()
     {
         if(myLobby == null)
@@ -196,279 +195,59 @@ public class Player extends Point implements Runnable
             return true;
         }
     }
-    
-    private void notify(String message)
-    {
-        System.out.println(message);
-        this.out.println(message);
-    }
-    
-    private void notifyError(String message)
-    {
-        System.err.println(message);
-        this.out.println(message);
-    }
 
     public void kill()
     {
         this.setLifeState(Player.DEAD);
-        System.out.println(this + " killed.");
-        this.send("You have been killed.");
+        comLink.send("KILL", new String[] {"player", this.toString()});
     }
 
-    private void processCommand(String com)
-    {
-        switch(com)
-        {
-            case "HELLO":
-            if(!greeted)
-            {
-                greeted = true;
-                out.println("Proceed with blutooth MAC.");
-                readBluetoothMAC();
-                out.println("Proceed with username.");
-                readUsername();
-                out.println("Welcome " + username + ".");
-            } else {
-                out.println("..hi.");
-            }
-            break;
-
-            case "CREATE": 
-            if(!greeted)
-            {
-                out.println("ERROR: Need to greet first.");
-            } else if(!this.isInLobby()) {
-            	out.println("Proceed with location.");
-                readLocation();
-                double newLobbySize = 0;
-                try 
-                {
-                    out.println("Proceed with arena size.");
-                    newLobbySize  = Double.parseDouble(in.readLine());
-                    myLobby = new Lobby(this, newLobbySize);
-                } catch(NumberFormatException ex) {
-                    System.err.println(ex.getMessage());
-                    processCommand("CREATE");
-                } catch(IOException ex) {
-                    System.err.println("IOException while trying to create a new lobby: " + ex.getMessage());
-                    System.exit(25);
-                }
-                out.println("You're now in lobby " + myLobby.getLobbyID());
-            } else if(this.isInLobby()) {
-                out.println("You are already in a lobby.");
-            } else {
-                out.println("ERROR: Something went wrong but I don't know what.");
-                System.exit(17);
-            }
-            break;
-
-            case "START":
-            if(!greeted)
-            {
-                out.println("ERROR: Need to greet first.");
-            } else if(!isInLobby()) {
-                out.println("ERROR: Need to be in lobby.");
-            } else if(!myLobby.isLobbyLeader(this)) {
-                out.println("ERROR: Only the lobby leader can start the game.");
-            } else {
-                myLobby.startGame();
-            }
-            break;
-            case "GPS":
-            // GPS is used to accept location updates from clients
-            if(!greeted)
-            {
-                out.println("ERROR: Need to greet first.");
-            } else if(!isInLobby()) {
-                out.println("ERROR: Need to be in lobby.");
-            } else if(myLobby.getGameState()!= Lobby.IN_PROGRESS) {
-                out.println("ERROR: The game must be in progress.");
-            } else {
-                readLocation();
-                myLobby.playerUpdate(this);
-            }
-            break;
-            case "JOIN":
-            if(!greeted)
-            {
-                out.println("ERROR: Need to greet first.");
-            } else if(!isInLobby()) {
-            	out.println("Proceed with location.");
-                readLocation();
-                if(Lobby.lobbies.size() == 0)
-                {
-                    out.println("There are currently no lobbies.");
-                } else { 
-                    try
-                    {
-                        String lobbyID;
-                        out.println("Proceed with lobby ID.");
-                        if(Lobby.isJoinable(lobbyID = in.readLine()))
-                        {
-                            myLobby =  Lobby.addPlayerToLobby(this, lobbyID);
-                            out.println("Joining lobby " + lobbyID + "...");
-                        } else {
-                            out.println("ERROR: Lobby not found.");
-                        }
-                    } catch(IOException ex) {
-                        System.err.println(ex.getMessage());
-                        System.exit(7);
-                    }
-                }
-            } else if (this.isInLobby()){
-                out.println("ERROR: You are already in a lobby.");
-            } else {
-                out.println("ERROR: Something went wrong but I don't know what.");
-                System.exit(18);
-            }
-            break;
-
-            case "LOBBY": 
-            if(!greeted)
-            {
-                out.println("ERROR: Need to greet first.");
-            } else if(!this.isInLobby()) {
-                // List all lobbies
-                out.println(Lobby.listLobbies());
-            } else if(this.isInLobby()) {
-                out.println(myLobby.toString());
-            }
-            break;
-
-            case "LEAVE":
-            if(!greeted)
-            {
-                out.println("ERROR: Need to greet first.");
-            } else if (!this.isInLobby()) {
-                out.println("ERROR: You're not in a lobby.");
-            } else if(this.isInLobby()) {
-                Lobby.removePlayerFromLobby(this, myLobby);
-                out.println("You've left the lobby.");
-            } else {
-                out.println("ERROR: Something went wrong but I don't know what.");
-            }
-            break;
-            
-            case "DROP":
-            if(!greeted)
-            {
-                out.println("ERROR: Need to greet first.");
-            } else if (!this.isInLobby()) {
-                out.println("ERROR: You're not in a lobby.");
-            } else if(this.isInLobby()) {
-                try
-                {
-                    this.otherMac = in.readLine();
-                } catch(IOException ex) {
-                    System.err.println(ex.getMessage());
-                }
-                myLobby.playerUpdate(this);
-            } else {
-                out.println("ERROR: Something went wrong but I don't know what.");
-            } 
-
-            default: out.println("Command not understood.");
-        }
-    }
-
-    private void readBluetoothMAC()
-    {
-        try 
-        {
-            String tempBtMac = in.readLine();
-            tempBtMac.toUpperCase();
-            if(tempBtMac.matches(MACPAT))
-            {
-                System.out.println(this.toString() + " BT MAC: " + tempBtMac);
-                btMAC = tempBtMac;
-            }else
-            {
-                readBluetoothMAC();
-            }
-
-        } catch(Exception ex) {
-            System.err.println(ex.getMessage());
-            System.exit(10);
-        }
-    }
-
-    private void readUsername()
-    {
-        try 
-        {
-            String tempUsername = in.readLine();
-            System.out.println(this.toString() + " username: " + tempUsername);
-            username = tempUsername;
-        } catch(Exception ex) {
-            System.err.println(ex.getMessage());
-            System.exit(11);
-        }
-    } 
     
-    private void readLocation()
-    {
-        String location = "";
-        try 
-        {
-            location = in.readLine();
-            this.setPoint(location);
-        } catch(IOException ex) {
-            this.notifyError(ex.getMessage());
-            readLocation();
-        } catch(PointException ex) {
-            this.notifyError(ex.getMessage());
-            readLocation();
-        }
-    }
 
     public void run()
     {
-        System.out.println(this.toString() + "'s thread was started.");
-        out.println(this.toString() + "'s thread was started.");
+        comLink.send("LOG", new String[] {"info", this.toString() + "'s thread was started."});
 
         try
         {
             String incomingCommunication;
-            while(!(incomingCommunication = in.readLine()).equals("QUIT"))
-                processCommand(incomingCommunication.toUpperCase());
+            while(!(incomingCommunication = comLink.readLine()).equals("QUIT"))
+                comLink.processCommand(incomingCommunication.toUpperCase());
         } catch(IOException ex) {
-            this.notifyError(ex.getMessage());
+            comLink.send("LOG", new String[] {"ERROR", "IOException caught in Player.run(). This is what we know: " + ex.getMessage()});
         } /*catch(NullPointerException ex) {
             this.notifyError(this + " socket shutdown? NullPointerException.");
         } */
 
-        this.notifyError(this + " shutting down.");
+        comLink.send("LOG", new String[] {"INFO", this + " shutting down"});
         
         try
         {
-            out.close();
-            in.close();
-            socket.close();
+            comLink.close();
             if(this.isInLobby())
             {
                 Lobby.removePlayerFromLobby(this, myLobby);
             }
         } catch(IOException ex) {
             System.err.println(ex.getMessage());
-            System.exit(6);
         }
-    }
-
-    public void send(String message)
-    {
-        this.out.println(message);
     }
     
+    public void send(String object, String[] payload)
+    {
+        comLink.send(object, payload);
+    }
+    
+    public void setMyBluetoothMac(String mac)
+    {
+        this.myBluetoothMac = mac;
+    }
+
     public void setFlag(Flag newFlag)
     {
-        if(newFlag.getTeam() == this.getTeam())
-        {
-            this.send("You retrieved your flag.");
-        } else {
-            this.send("You captured your opponents flag.");
-        }
         this.myFlag = newFlag;
+        comLink.send("CAPTURE", new String[] {"flag", myFlag.toString(),
+                                              "player", this.toString()});    
     }
 
     public void setLifeState(int lifeState)
@@ -480,10 +259,15 @@ public class Player extends Point implements Runnable
             System.err.println(this + " attempted to set its lifestate to a invalid number");
         }
     }
-
-    public void setOtherMac(String mac)
+    
+    public void setLobby(Lobby lobby)
     {
-        this.otherMac = mac;
+        this.myLobby = lobby;
+    }
+
+    public void setObservedBluetoothMac(String mac)
+    {
+        this.observedBluetoothMac = mac;
     }
     
     public void setTeam(int team)
@@ -495,16 +279,16 @@ public class Player extends Point implements Runnable
             System.err.println(this + " attempted to set its team to a invalid number");
         }
     }
+    
+    public void setUsername(String username)
+    {
+        this.username = username;
+    }
 
     public void spawn()
-    {
-        if(this.isDead())
-        {
-        	this.setLifeState(Player.ALIVE);
-            System.out.println(this + " has spawned.");
-            this.send("You have now spawned.");
-        }
-    	
+    {   
+        this.setLifeState(Player.ALIVE);
+        comLink.send("SPAWN", new String[] {"player", this.toString()});
     }
     
     public String toString()
