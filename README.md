@@ -12,7 +12,22 @@ Usage
 - Compile the server. `javac CTFServer.java`
 - Start the server. `java CTFServer 4444`
 - Connect to the server from telnet or nc `nc localhost 4444`
-- Commands: `HELLO, CREATE, LOBBY, JOIN, LEAVE, DROP, QUIT`
+
+Protocol
+--------
+The CTF Protocol is in JSON. An example exchange looks like this. 
+```bash
+nc localhost 4444
+```
+```javascript
+{"ACTION":"HELLO","USERNAME":"andrewhood125","BLUETOOTH":"10:40:f3:97:28:9e"}
+{"ACTION":"CREATE","LOCATION":"33,-90","SIZE":10}
+{"ACTION":"LOG","LEVEL":"INFO","PAYLOAD":"You\u0027re now in lobby
+2C52A"}
+{"ACTION":"START"}
+{"ACTION":"LOG","LEVEL":"ERROR","PAYLOAD":"Not enough players to start
+game."}
+```
 
 Code Standards
 --------------

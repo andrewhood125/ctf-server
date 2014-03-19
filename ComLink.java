@@ -272,7 +272,7 @@ public class ComLink
                         send(jobj);
         }
     }
-    
+    /*
     private void readBluetoothMAC()
     {
         try 
@@ -292,50 +292,18 @@ public class ComLink
             System.err.println(ex.getMessage());
             System.exit(10);
         }
-    }
+    }*/
     
     public JsonObject readLine() throws IOException
     {
         JsonParser jp = new JsonParser();
         JsonElement je = jp.parse(in.readLine());
         JsonObject jo = je.getAsJsonObject();
-        //JsonElement action = jo.get("ACTION");
-        //System.out.println(action.getAsString());
         return jo;
-    }
-
-    private void readUsername()
-    {
-        try 
-        {
-            String tempUsername = in.readLine();
-            System.out.println(this.toString() + " username: " + tempUsername);
-            player.setUsername(tempUsername);
-        } catch(Exception ex) {
-            System.err.println(ex.getMessage());
-            System.exit(11);
-        }
-    }
-        
-    private void readLocation()
-    {
-        String location = "";
-        try 
-        {
-            location = in.readLine();
-            player.setPoint(location);
-        } catch(IOException ex) {
-            System.err.println(ex.getMessage());
-            readLocation();
-        } catch(PointException ex) {
-            System.err.println(ex.getMessage());
-            readLocation();
-        }
     }
     
     public void send(JsonObject obj)
     {
-        System.out.println(gson.toJson(obj));
         out.println(gson.toJson(obj));
     }
 }

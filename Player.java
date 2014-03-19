@@ -215,12 +215,6 @@ public class Player extends Point implements Runnable
 
     public void run()
     {
-        JsonObject jo = new JsonObject();
-        jo.addProperty("ACTION", "LOG");
-        jo.addProperty("LEVEL", "INFO");
-        jo.addProperty("PAYLOAD", this.toString() + "'s thread was started.");
-        comLink.send(jo);
-
         try
         {
             JsonObject incomingCommunication;
@@ -233,7 +227,7 @@ public class Player extends Point implements Runnable
             job.addProperty("PAYLOAD", "IOException caught in Player.run(). This is what we know: " + ex.getMessage());
             comLink.send(job);
         } catch(IllegalStateException ex) {
-            System.err.println("IllegalState" + ex.getMessage());
+            System.err.println("IllegalState " + ex.getMessage());
         }/*catch(NullPointerException ex) {
             this.notifyError(this + " socket shutdown? NullPointerException.");
         } */
