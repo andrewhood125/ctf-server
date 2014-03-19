@@ -55,7 +55,7 @@ public class ComLink
         socket.close();
     } 
     
-    public void parseCommunication(JsonObject jo)
+    public void parseCommunication(JsonObject jo) throws IllegalStateException
     {
         JsonElement action = jo.get("ACTION");
         switch(action.getAsString())
@@ -68,51 +68,70 @@ public class ComLink
                 JsonElement username = jo.get("USERNAME");
                 player.setUsername(username.getAsString());
             } else {
-                out.println("..hi.");
+                JsonObject jobj = new JsonObject();
+                jobj.addProperty("ACTION", "LOG");
+                jobj.addProperty("LEVEL", "INFO");
+                jobj.addProperty("PAYLOAD", "..hi.");
+                send(jobj);
             }
             break;
 
             case "CREATE": 
             if(!player.isInitialized())
             {
-                out.println("ERROR: Need to greet first.");
+                JsonObject jobj = new JsonObject();
+                jobj.addProperty("ACTION", "LOG");
+                jobj.addProperty("LEVEL", "ERROR");
+                jobj.addProperty("PAYLOAD", "Need to greet first.");
+                send(jobj);
             } else if(!player.isInLobby()) {
-                out.println("Proceed with location.");
-                readLocation();
-                double newLobbySize = 0;
+                JsonElement location = jo.get("LOCATION");
                 try 
                 {
-                    out.println("Proceed with arena size.");
-                    newLobbySize  = Double.parseDouble(in.readLine());
-                    player.setLobby(new Lobby(player, newLobbySize));
-                } catch(NumberFormatException ex) {
-                    System.err.println(ex.getMessage());
-                    //parseCommunication("CREATE");
-                } catch(IOException ex) {
-                    System.err.println("IOException while trying to create a new lobby: " + ex.getMessage());
-                    //System.exit(25);
+                    player.setPoint(location.getAsString());
+                } catch(PointException ex) {
+                    System.err.println(ex.getMessage());     
                 }
+                JsonElement arenaSize = jo.get("SIZE");
+                double newLobbySize = arenaSize.getAsDouble();
+                player.setLobby(new Lobby(player, newLobbySize));
+                
                 JsonObject job = new JsonObject();
                 job.addProperty("ACTION", "LOG");
                 job.addProperty("LEVEL", "INFO");
                 job.addProperty("PAYLOAD", "You're now in lobby " + player.getLobby().getLobbyID());
                 send(job);
             } else if(player.isInLobby()) {
-                out.println("You are already in a lobby.");
+                JsonObject job = new JsonObject();
+                job.addProperty("ACTION", "LOG");
+                job.addProperty("LEVEL", "ERROR");
+                job.addProperty("PAYLOAD", "You are already in a lobby.");
+                send(job);
             } else {
-                out.println("ERROR: Something went wrong but I don't know what.");
-                System.exit(17);
+                System.out.println("ERROR: Something went wrong but I don't know what.");
             }
             break;
 
             case "START":
             if(!player.isInLobby())
             {
-                out.println("ERROR: Need to greet first.");
+                JsonObject jobj = new JsonObject();
+                jobj.addProperty("ACTION", "LOG");
+                jobj.addProperty("LEVEL", "ERROR");
+                jobj.addProperty("PAYLOAD", "Need to greet first.");
+                send(jobj);
             } else if(!player.isInLobby()) {
-                out.println("ERROR: Need to be in lobby.");
+                JsonObject job = new JsonObject();
+                job.addProperty("ACTION", "LOG");
+                job.addProperty("LEVEL", "ERROR");
+                job.addProperty("PAYLOAD", "Need to be in lobby.");
+                send(job);
             } else if(!player.getLobby().isLobbyLeader(player)) {
-                out.println("ERROR: Only the lobby leader can start the game.");
+                JsonObject job = new JsonObject();
+                job.addProperty("ACTION", "LOG");
+                job.addProperty("LEVEL", "ERROR");
+                job.addProperty("PAYLOAD", "Only the lobby leader can start the game.");
+                send(job);
             } else {
                 player.getLobby().startGame();
             }
@@ -121,57 +140,82 @@ public class ComLink
             // GPS is used to accept location updates from clients
             if(!player.isInitialized())
             {
-                out.println("ERROR: Need to greet first.");
+                JsonObject jobj = new JsonObject();
+                jobj.addProperty("ACTION", "LOG");
+                jobj.addProperty("LEVEL", "ERROR");
+                jobj.addProperty("PAYLOAD", "Need to greet first.");
+                send(jobj);
             } else if(!player.isInLobby()) {
-                out.println("ERROR: Need to be in lobby.");
+                JsonObject job = new JsonObject();
+                job.addProperty("ACTION", "LOG");
+                job.addProperty("LEVEL", "ERROR");
+                job.addProperty("PAYLOAD", "Need to be in lobby.");
+                send(job);
             } else if(player.getLobby().getGameState()!= Lobby.IN_PROGRESS) {
-                out.println("ERROR: The game must be in progress.");
+                JsonObject job = new JsonObject();
+                job.addProperty("ACTION", "LOG");
+                job.addProperty("LEVEL", "ERROR");
+                job.addProperty("PAYLOAD", "The game must be in progress.");
+                send(job);
             } else {
-                readLocation();
+                JsonElement location = jo.get("LOCATION");
+                try 
+                {
+                    player.setPoint(location.getAsString());
+                } catch(PointException ex) {
+                    System.err.println(ex.getMessage());     
+                }
                 player.getLobby().playerUpdate(player);
             }
             break;
             case "JOIN":
             if(!player.isInitialized())
             {
-                out.println("ERROR: Need to greet first.");
+                JsonObject jobj = new JsonObject();
+                jobj.addProperty("ACTION", "LOG");
+                jobj.addProperty("LEVEL", "ERROR");
+                jobj.addProperty("PAYLOAD", "Need to greet first.");
+                send(jobj);
             } else if(!player.isInLobby()) {
-                out.println("Proceed with location.");
-                readLocation();
-                if(Lobby.lobbies.size() == 0)
+                JsonElement location = jo.get("LOCATION");
+                try 
                 {
-                    out.println("There are currently no lobbies.");
-                } else { 
-                    try
-                    {
-                        String lobbyID;
-                        out.println("Proceed with lobby ID.");
-                        if(Lobby.isJoinable(lobbyID = in.readLine()))
-                        {
-                            player.setLobby(Lobby.addPlayerToLobby(player, lobbyID));
-                            out.println("Joining lobby " + lobbyID + "...");
-                        } else {
-                            out.println("ERROR: Lobby not found.");
-                        }
-                    } catch(IOException ex) {
-                        System.err.println(ex.getMessage());
-                        System.exit(7);
-                    }
+                    player.setPoint(location.getAsString());
+                } catch(PointException ex) {
+                    System.err.println(ex.getMessage());     
+                }
+                
+                JsonElement id = jo.get("ID");
+                if(Lobby.isJoinable(id.getAsString()))
+                {
+                    player.setLobby(Lobby.addPlayerToLobby(player, id.getAsString()));
+                } else {
+                    JsonObject jobj = new JsonObject();
+                    jobj.addProperty("ACTION", "LOG");
+                    jobj.addProperty("LEVEL", "ERROR");
+                    jobj.addProperty("PAYLOAD", "Lobby not found.");
+                    send(jobj);
                 }
             } else if (player.isInLobby()){
-                out.println("ERROR: You are already in a lobby.");
+                JsonObject jobj = new JsonObject();
+                jobj.addProperty("ACTION", "LOG");
+                jobj.addProperty("LEVEL", "ERROR");
+                jobj.addProperty("PAYLOAD", "You are already in a lobby.");
+                send(jobj);
             } else {
-                out.println("ERROR: Something went wrong but I don't know what.");
-                System.exit(18);
+                System.err.println("ERROR: Something went wrong but I don't know what.");
             }
             break;
 
             case "LOBBY": 
             if(!player.isInitialized())
             {
-                out.println("ERROR: Need to greet first.");
+                JsonObject jobj = new JsonObject();
+                jobj.addProperty("ACTION", "LOG");
+                jobj.addProperty("LEVEL", "ERROR");
+                jobj.addProperty("PAYLOAD", "Need to greet first.");
+                send(jobj);
             } else if(!player.isInLobby()) {
-                // List all lobbies
                 out.println(Lobby.listLobbies());
             } else if(player.isInLobby()) {
                 out.println(player.getLobby().toString());
@@ -181,36 +225,51 @@ public class ComLink
             case "LEAVE":
             if(!player.isInitialized())
             {
-                out.println("ERROR: Need to greet first.");
+                JsonObject jobj = new JsonObject();
+                jobj.addProperty("ACTION", "LOG");
+                jobj.addProperty("LEVEL", "ERROR");
+                jobj.addProperty("PAYLOAD", "Need to greet first.");
+                send(jobj);
             } else if (!player.isInLobby()) {
-                out.println("ERROR: You're not in a lobby.");
+                JsonObject jobj = new JsonObject();
+                jobj.addProperty("ACTION", "LOG");
+                jobj.addProperty("LEVEL", "ERROR");
+                jobj.addProperty("PAYLOAD", "You're not in a lobby.");
+                send(jobj);
             } else if(player.isInLobby()) {
                 Lobby.removePlayerFromLobby(player, player.getLobby());
-                out.println("You've left the lobby.");
             } else {
-                out.println("ERROR: Something went wrong but I don't know what.");
+                System.err.println("ERROR: Something went wrong but I don't know what.");
             }
             break;
             
             case "DROP":
             if(!player.isInitialized())
             {
-                out.println("ERROR: Need to greet first.");
+                JsonObject jobj = new JsonObject();
+                jobj.addProperty("ACTION", "LOG");
+                jobj.addProperty("LEVEL", "ERROR");
+                jobj.addProperty("PAYLOAD", "Need to greet first.");
+                send(jobj);
             } else if (!player.isInLobby()) {
-                out.println("ERROR: You're not in a lobby.");
+                JsonObject jobj = new JsonObject();
+                jobj.addProperty("ACTION", "LOG");
+                jobj.addProperty("LEVEL", "ERROR");
+                jobj.addProperty("PAYLOAD", "You're not in a lobby.");
+                send(jobj);
             } else if(player.isInLobby()) {
-                try
-                {
-                    player.setObservedBluetoothMac(in.readLine());
-                } catch(IOException ex) {
-                    System.err.println(ex.getMessage());
-                }
+                JsonElement bluetooth = jo.get("BLUETOOTH");
+                player.setObservedBluetoothMac(bluetooth.getAsString());
                 player.getLobby().playerUpdate(player);
             } else {
-                out.println("ERROR: Something went wrong but I don't know what.");
+                System.err.println("ERROR: Something went wrong but I don't know what.");
             } 
 
-            default: out.println("Command not understood.");
+            default: JsonObject jobj = new JsonObject();
+                        jobj.addProperty("ACTION", "LOG");
+                        jobj.addProperty("LEVEL", "ERROR");
+                        jobj.addProperty("PAYLOAD", "Command not understood.");
+                        send(jobj);
         }
     }
     

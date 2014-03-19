@@ -232,7 +232,9 @@ public class Player extends Point implements Runnable
             job.addProperty("LEVEL", "ERROR");
             job.addProperty("PAYLOAD", "IOException caught in Player.run(). This is what we know: " + ex.getMessage());
             comLink.send(job);
-        } /*catch(NullPointerException ex) {
+        } catch(IllegalStateException ex) {
+            System.err.println("IllegalState" + ex.getMessage());
+        }/*catch(NullPointerException ex) {
             this.notifyError(this + " socket shutdown? NullPointerException.");
         } */
 
