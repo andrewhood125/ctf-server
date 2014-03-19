@@ -6,7 +6,7 @@
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
 
-
+import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -79,8 +79,11 @@ public class Player extends Point implements Runnable
         //I returned my flag to base
         if(this.isHoldingFlag(this.getTeam()) && this.isWithinArea(myLobby.getBase(this.getTeam())))
         {
-            myLobby.broadcast("SAVED", new String[] {"flag", myFlag.toString(),
-                                                     "player", this.toString()});
+            JsonObject jo = new JsonObject();
+            jo.addProperty("ACTION", "SAVED");
+            jo.addProperty("FLAG", myFlag.toString());
+            jo.addProperty("PLAYER", this.toString());
+            myLobby.broadcast(jo);
             this.dropFlag();
         }
     }
@@ -107,8 +110,11 @@ public class Player extends Point implements Runnable
     
     public void dropFlag()
     {
-        comLink.send("DROP", new String[] {"flag", myFlag.toString(),
-                                           "player", this.toString()});
+        JsonObject jo = new JsonObject();
+        jo.addProperty("ACTION", "DROP");
+        jo.addProperty("FLAG", myFlag.toString());
+        jo.addProperty("PLAYER", this.toString());
+        comLink.send(jo);
         this.myFlag = null;
     }
     
@@ -199,27 +205,42 @@ public class Player extends Point implements Runnable
     public void kill()
     {
         this.setLifeState(Player.DEAD);
-        comLink.send("KILL", new String[] {"player", this.toString()});
+        JsonObject jo = new JsonObject();
+        jo.addProperty("ACTION", "KILL");
+        jo.addProperty("PLAYER", this.toString());
+        comLink.send(jo);
     }
 
     
 
     public void run()
     {
-        comLink.send("LOG", new String[] {"info", this.toString() + "'s thread was started."});
+        JsonObject jo = new JsonObject();
+        jo.addProperty("ACTION", "LOG");
+        jo.addProperty("LEVEL", "INFO");
+        jo.addProperty("PAYLOAD", this.toString() + "'s thread was started.");
+        comLink.send(jo);
 
         try
         {
             String incomingCommunication;
             while(!(incomingCommunication = comLink.readLine()).equals("QUIT"))
-                comLink.processCommand(incomingCommunication.toUpperCase());
+                comLink.parseCommunication(incomingCommunication.toUpperCase());
         } catch(IOException ex) {
-            comLink.send("LOG", new String[] {"ERROR", "IOException caught in Player.run(). This is what we know: " + ex.getMessage()});
+            JsonObject job = new JsonObject();
+            job.addProperty("ACTION", "LOG");
+            job.addProperty("LEVEL", "ERROR");
+            job.addProperty("PAYLOAD", "IOException caught in Player.run(). This is what we know: " + ex.getMessage());
+            comLink.send(job);
         } /*catch(NullPointerException ex) {
             this.notifyError(this + " socket shutdown? NullPointerException.");
         } */
 
-        comLink.send("LOG", new String[] {"INFO", this + " shutting down"});
+        JsonObject jobj = new JsonObject();
+        jobj.addProperty("ACTION", "LOG");
+        jobj.addProperty("LEVEL", "INFO");
+        jobj.addProperty("PAYLOAD", this.toString() + " shutting down");
+        comLink.send(jobj);
         
         try
         {
@@ -233,9 +254,9 @@ public class Player extends Point implements Runnable
         }
     }
     
-    public void send(String object, String[] payload)
+    public void send(JsonObject obj)
     {
-        comLink.send(object, payload);
+        comLink.send(obj);
     }
     
     public void setMyBluetoothMac(String mac)
@@ -246,8 +267,11 @@ public class Player extends Point implements Runnable
     public void setFlag(Flag newFlag)
     {
         this.myFlag = newFlag;
-        comLink.send("CAPTURE", new String[] {"flag", myFlag.toString(),
-                                              "player", this.toString()});    
+        JsonObject jo = new JsonObject();
+        jo.addProperty("ACTION", "CAPTURE");
+        jo.addProperty("FLAG", myFlag.toString());
+        jo.addProperty("PLAYER", this.toString());
+        comLink.send(jo);    
     }
 
     public void setLifeState(int lifeState)
@@ -288,7 +312,10 @@ public class Player extends Point implements Runnable
     public void spawn()
     {   
         this.setLifeState(Player.ALIVE);
-        comLink.send("SPAWN", new String[] {"player", this.toString()});
+        JsonObject jo = new JsonObject();
+        jo.addProperty("ACTION", "SPAWN");
+        jo.addProperty("PLAYER", this.toString());
+        comLink.send(jo);
     }
     
     public String toString()

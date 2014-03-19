@@ -6,6 +6,7 @@
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
 
+import com.google.gson.JsonObject;
 import java.util.ArrayList;
 
 public class Lobby
@@ -83,18 +84,21 @@ public class Lobby
             newPlayer.setTeam(Lobby.RED_TEAM);
         }
         
-        broadcast("JOINED", new String[] {"player", newPlayer.toString(),
-                                              "location", newPlayer.getLocation(),
-                                              "team", newPlayer.getTeamString(),
-                                               "bluetooth", newPlayer.getMyBluetoothMac()});
+        JsonObject jo = new JsonObject();
+        jo.addProperty("ACTION", "JOINED");
+        jo.addProperty("LOCATION", newPlayer.getLocation());
+        jo.addProperty("PLAYER", newPlayer.getTeamString());
+        jo.addProperty("TEAM", newPlayer.getTeamString());
+        jo.addProperty("BLUETOOTH", newPlayer.getMyBluetoothMac());
+        broadcast(jo);
         players.add(newPlayer);
     }
 
-    public void broadcast(String object, String[] payload)
+    public void broadcast(JsonObject obj)
     {
         for(int i = 0; i < players.size(); i++)
         {
-            players.get(i).send(object, payload);
+            players.get(i).send(obj);
         }
     }
 
@@ -130,7 +134,10 @@ public class Lobby
         // Set the lobby status to at lobby
         this.setGameState(Lobby.AT_LOBBY);
         // Broadcast what ended the game
-        this.broadcast("STOP", new String[] {"winner", "BLUE, this is static"});
+        JsonObject jo = new JsonObject();
+        jo.addProperty("ACTION", "STOP");
+        jo.addProperty("WINNER", "BLUE, this is static");
+        this.broadcast(jo);
     }
     
     public boolean isFlagDropped(int team)
@@ -354,8 +361,11 @@ public class Lobby
         {
             if(!players.get(i).equals(player))
             {
-                players.get(i).send("GPS", new String[] {"player", player.getUsername(), 
-                                                         "location", player.getLocation()});
+                JsonObject jo = new JsonObject();
+                jo.addProperty("ACTION", "GPS");
+                jo.addProperty("LOCATION", player.getLocation());
+                jo.addProperty("PLAYER", player.getUsername());
+                players.get(i).send(jo);
             }
         }
         
@@ -425,7 +435,10 @@ public class Lobby
         this.incrementScore(player.getTeam());
         arena.setRandomLocation(player.getFlag());
         player.dropFlag();
-        broadcast("SCORE", new String[] {"team", player.getTeamString()});
+        JsonObject jo = new JsonObject();
+        jo.addProperty("ACTION", "SCORE");
+        jo.addProperty("TEAM", player.getTeamString());
+        broadcast(jo);
     }
 
     public void setGameState(int gameState)
@@ -441,17 +454,24 @@ public class Lobby
         if(this.getNumberOfPlayers()>=2)
         {
             setGameState(Lobby.IN_PROGRESS);
-            broadcast("START", new String[] {"timeleft", "static"});
+            JsonObject jo = new JsonObject();
+            jo.addProperty("ACTION", "START");
+            
+            broadcast(jo);
             System.out.println(this + " has been started.");
             
             this.killAllPlayers();
             // Set the end time to duration minutes after the start time. 
             long timeToAdd = duration*60*1000;
-            System.out.println("Curren time" + System.currentTimeMillis());
+            System.out.println("Current time " + System.currentTimeMillis());
             System.out.println("Time to add to current time: " + timeToAdd);
             this.endTime = System.currentTimeMillis() + timeToAdd;
         }else{
-            broadcast("LOG", new String[] {"ERROR", "Not enough players to start game."});
+            JsonObject jo = new JsonObject();
+            jo.addProperty("ACTION", "LOG");
+            jo.addProperty("LEVEL", "ERROR");
+            jo.addProperty("PAYLOAD", "Not enough players to start game.");
+            broadcast(jo);
         }
         
     }

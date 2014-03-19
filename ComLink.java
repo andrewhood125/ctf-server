@@ -7,6 +7,8 @@
  * @version 0.1
  */
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -19,6 +21,7 @@ public class ComLink
      * Instance variables
      */
     private BufferedReader in;
+    private Gson gson;
     private PrintWriter out;
     private Socket socket;
     private Player player;
@@ -32,11 +35,15 @@ public class ComLink
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println("New player connected from IP: " + socket.getInetAddress());
-            out.println("New player connected from IP: " + socket.getInetAddress());
         } catch(IOException ex) {
             System.err.println(ex.getMessage());
-            System.exit(4);
+            JsonObject jo = new JsonObject();
+            jo.addProperty("ACTION", "LOG");
+            jo.addProperty("LEVEL", "ERROR");
+            jo.addProperty("PAYLOAD", "I caught an IOException in the ComLink constructor, this is what we know: " + ex.getMessage());
+            this.send(jo);
         }
+        gson = new Gson();
     }
     
     public void close() throws IOException
@@ -44,9 +51,9 @@ public class ComLink
         out.close();
         in.close();
         socket.close();
-    }
+    } 
     
-    public void processCommand(String com)
+    public void parseCommunication(String com)
     {
         switch(com)
         {
@@ -78,12 +85,16 @@ public class ComLink
                     player.setLobby(new Lobby(player, newLobbySize));
                 } catch(NumberFormatException ex) {
                     System.err.println(ex.getMessage());
-                    processCommand("CREATE");
+                    parseCommunication("CREATE");
                 } catch(IOException ex) {
                     System.err.println("IOException while trying to create a new lobby: " + ex.getMessage());
                     System.exit(25);
                 }
-                send("LOG", new String[] {"INFO", "You're now in lobby " + player.getLobby().getLobbyID()});
+                JsonObject jo = new JsonObject();
+                jo.addProperty("ACTION", "LOG");
+                jo.addProperty("LEVEL", "INFO");
+                jo.addProperty("PAYLOAD", "You're now in lobby " + player.getLobby().getLobbyID());
+                send(jo);
             } else if(player.isInLobby()) {
                 out.println("You are already in a lobby.");
             } else {
@@ -200,7 +211,7 @@ public class ComLink
             default: out.println("Command not understood.");
         }
     }
-
+    
     private void readBluetoothMAC()
     {
         try 
@@ -221,6 +232,11 @@ public class ComLink
             System.exit(10);
         }
     }
+    
+    public String readLine() throws IOException
+    {
+        return in.readLine();
+    }
 
     private void readUsername()
     {
@@ -233,13 +249,8 @@ public class ComLink
             System.err.println(ex.getMessage());
             System.exit(11);
         }
-    } 
-    
-    public String readLine() throws IOException
-    {
-        return in.readLine();
     }
-    
+        
     private void readLocation()
     {
         String location = "";
@@ -256,13 +267,9 @@ public class ComLink
         }
     }
     
-    public void send(String object, String[] payload)
+    public void send(JsonObject obj)
     {
-        // Format json here and send it. 
-        System.err.println(object);
-        for(int i = 0; i+1 < payload.length; i+=2)
-        {
-            System.err.println(payload[i] + "\t" + payload[i+1]);
-        }
+        System.out.println(gson.toJson(obj));
+        out.println(gson.toJson(obj));
     }
 }
