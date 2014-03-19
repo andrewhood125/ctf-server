@@ -8,7 +8,9 @@
  */
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -53,18 +55,18 @@ public class ComLink
         socket.close();
     } 
     
-    public void parseCommunication(String com)
+    public void parseCommunication(JsonObject jo)
     {
-        switch(com)
+        JsonElement action = jo.get("ACTION");
+        switch(action.getAsString())
         {
             case "HELLO":
             if(!player.isInitialized())
             {
-                out.println("Proceed with blutooth MAC.");
-                readBluetoothMAC();
-                out.println("Proceed with username.");
-                readUsername();
-                out.println("Welcome " + player + ".");
+                JsonElement bluetooth = jo.get("BLUETOOTH");
+                player.setMyBluetoothMac(bluetooth.getAsString());
+                JsonElement username = jo.get("USERNAME");
+                player.setUsername(username.getAsString());
             } else {
                 out.println("..hi.");
             }
@@ -85,16 +87,16 @@ public class ComLink
                     player.setLobby(new Lobby(player, newLobbySize));
                 } catch(NumberFormatException ex) {
                     System.err.println(ex.getMessage());
-                    parseCommunication("CREATE");
+                    //parseCommunication("CREATE");
                 } catch(IOException ex) {
                     System.err.println("IOException while trying to create a new lobby: " + ex.getMessage());
-                    System.exit(25);
+                    //System.exit(25);
                 }
-                JsonObject jo = new JsonObject();
-                jo.addProperty("ACTION", "LOG");
-                jo.addProperty("LEVEL", "INFO");
-                jo.addProperty("PAYLOAD", "You're now in lobby " + player.getLobby().getLobbyID());
-                send(jo);
+                JsonObject job = new JsonObject();
+                job.addProperty("ACTION", "LOG");
+                job.addProperty("LEVEL", "INFO");
+                job.addProperty("PAYLOAD", "You're now in lobby " + player.getLobby().getLobbyID());
+                send(job);
             } else if(player.isInLobby()) {
                 out.println("You are already in a lobby.");
             } else {
@@ -233,9 +235,14 @@ public class ComLink
         }
     }
     
-    public String readLine() throws IOException
+    public JsonObject readLine() throws IOException
     {
-        return in.readLine();
+        JsonParser jp = new JsonParser();
+        JsonElement je = jp.parse(in.readLine());
+        JsonObject jo = je.getAsJsonObject();
+        //JsonElement action = jo.get("ACTION");
+        //System.out.println(action.getAsString());
+        return jo;
     }
 
     private void readUsername()

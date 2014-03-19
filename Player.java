@@ -223,9 +223,9 @@ public class Player extends Point implements Runnable
 
         try
         {
-            String incomingCommunication;
+            JsonObject incomingCommunication;
             while(!(incomingCommunication = comLink.readLine()).equals("QUIT"))
-                comLink.parseCommunication(incomingCommunication.toUpperCase());
+                comLink.parseCommunication(incomingCommunication);
         } catch(IOException ex) {
             JsonObject job = new JsonObject();
             job.addProperty("ACTION", "LOG");
