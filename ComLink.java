@@ -188,7 +188,12 @@ public class ComLink
                 JsonElement id = jo.get("ID");
                 if(Lobby.isJoinable(id.getAsString()))
                 {
+                    // Success!
                     player.setLobby(Lobby.addPlayerToLobby(player, id.getAsString()));
+                    JsonObject temp = new JsonObject();
+                    temp.addProperty("ACTION","JOIN");
+                    temp.addProperty("SUCCESS","TRUE");
+                    send(temp);
                 } else {
                     JsonObject jobj = new JsonObject();
                     jobj.addProperty("ACTION", "LOG");
