@@ -97,9 +97,9 @@ public class ComLink
                 player.setLobby(new Lobby(player, newLobbySize));
                 
                 JsonObject job = new JsonObject();
-                job.addProperty("ACTION", "LOG");
-                job.addProperty("LEVEL", "INFO");
-                job.addProperty("PAYLOAD", "You're now in lobby " + player.getLobby().getLobbyID());
+                job.addProperty("ACTION", "CREATE");
+                job.addProperty("ID", player.getLobby().getLobbyID());
+                job.addProperty("SUCCESS", "TRUE");
                 send(job);
             } else if(player.isInLobby()) {
                 JsonObject job = new JsonObject();
