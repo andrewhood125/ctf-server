@@ -164,11 +164,30 @@ An example of a reply from the server
   - No attributes
   - Describe the lobby you are in.
   - When you are in a lobby.
-  - Currently it replies in raw ASCII. This will be updated as needed.
+  - Dependant on situation.
 
 ```
 {
   "ACTION":"LOBBY"
+}
+```
+```
+{
+  "ACTION":"LOBBIES",
+  "LOBBIES": [
+    {
+      "LOBBY":"AB321",
+      "BLUE":4,
+      "RED",3",
+      "STATE",1
+    },
+    {
+      "LOBBY":"FFFFF",
+      "BLUE":15,
+      "RED",16",
+      "STATE",0
+    }
+  ]
 }
 ```
 - DROP
