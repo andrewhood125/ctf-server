@@ -216,7 +216,7 @@ public class ComLink
                 jobj.addProperty("PAYLOAD", "Need to greet first.");
                 send(jobj);
             } else if(!player.isInLobby()) {
-                out.println(Lobby.listLobbies());
+                send(Lobby.listLobbies());
             } else if(player.isInLobby()) {
                 out.println(player.getLobby().toString());
             }

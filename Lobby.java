@@ -6,6 +6,7 @@
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
 
@@ -229,6 +230,19 @@ public class Lobby
         return players.size();
     }
     
+    public int getNumberOfPlayers(int team)
+    {
+        int count = 0;
+        for(int i = 0; i < players.size(); i++)
+        {
+            if(players.get(i).getTeam() == team)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+    
     public String getTeamPlayers(int team)
     {
         String returnString = "";
@@ -293,21 +307,24 @@ public class Lobby
     }
     
 
-    public static String listLobbies()
+    public static JsonObject listLobbies()
     {
-        String returnString = "";
-        if(lobbies.size() == 0)
-        {
-            return "There are currently no lobbies.";
-        }
-
+        JsonObject jo = new JsonObject();
+        
+        JsonArray ja = new JsonArray();
         for(int i = 0; i < lobbies.size(); i++)
         {
-            returnString += lobbies.get(i).getLobbyID() + "," 
-            + lobbies.get(i).getNumberOfPlayers() + ","
-            + lobbies.get(i).getGameState() + "\n";
+            JsonObject temp = new JsonObject();
+            temp.addProperty("LOBBY",lobbies.get(i).getLobbyID());
+            temp.addProperty("BLUE", lobbies.get(i).getNumberOfPlayers(Lobby.BLUE_TEAM));
+            temp.addProperty("RED", lobbies.get(i).getNumberOfPlayers(Lobby.RED_TEAM));
+            temp.addProperty("STATE", lobbies.get(i).getGameState());
+            ja.add(temp);
         }
-        return returnString;
+        
+        jo.addProperty("ACTION","LOBBIES");
+        jo.add("LOBBIES", ja);
+        return jo;
     }
     
     /**
