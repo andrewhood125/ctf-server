@@ -391,19 +391,20 @@ public class Lobby
         }
     }
     
-    public void removePlayer(Player player)
+    public boolean removePlayer(Player player)
     {
         for(int i = 0; i < players.size(); i++)
         {
             if(players.get(i).equals(player))
             {
                 players.remove(i);
-                break;
+                return true;
             }
         }
+        return false;
     }
     
-    public static void removePlayerFromLobby(Player player, Lobby lobby)
+    public static boolean removePlayerFromLobby(Player player, Lobby lobby)
     {
         try
         {
@@ -415,12 +416,14 @@ public class Lobby
                     if(lobbies.get(i).equals(lobby))
                     {
                         lobbies.remove(i);
+                        return true;
                     }
                 }
             }
         } catch(Exception ex) {
             System.err.println("ERROR: Error removing " + player + " from " + lobby);
         }
+        return false;
     }
     
     public void scored(Player player)

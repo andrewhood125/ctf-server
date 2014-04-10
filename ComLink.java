@@ -242,7 +242,18 @@ public class ComLink
                 jobj.addProperty("PAYLOAD", "You're not in a lobby.");
                 send(jobj);
             } else if(player.isInLobby()) {
-                Lobby.removePlayerFromLobby(player, player.getLobby());
+                if(Lobby.removePlayerFromLobby(player, player.getLobby()))
+                {
+                    JsonObject temp = new JsonObject();
+                    temp.addProperty("ACTION","LEAVE");
+                    temp.addProperty("SUCCESS","TRUE");
+                    send(temp);
+                } else {
+                    JsonObject temp = new JsonObject();
+                    temp.addProperty("ACTION","LEAVE");
+                    temp.addProperty("SUCCESS","FALSE");
+                    send(temp);
+                }
             } else {
                 System.err.println("ERROR: Something went wrong but I don't know what.");
             }
