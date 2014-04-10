@@ -88,7 +88,7 @@ public class Lobby
         JsonObject jo = new JsonObject();
         jo.addProperty("ACTION", "JOINED");
         jo.addProperty("LOCATION", newPlayer.getLocation());
-        jo.addProperty("PLAYER", newPlayer.getTeamString());
+        jo.addProperty("PLAYER", newPlayer.getUsername());
         jo.addProperty("TEAM", newPlayer.getTeamString());
         jo.addProperty("BLUETOOTH", newPlayer.getMyBluetoothMac());
         broadcast(jo);

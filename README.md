@@ -27,24 +27,16 @@ java -cp gson-2.2.4.jar:./ CTFServer 4443
 
 Protocol
 --------
-The CTF Protocol is in JSON. An example exchange looks like this.  
+The CTF Protocol is in JSON. 
+
+#### What the server pushes
+###### While a player is in a lobby the server can push...
+When a player joins a lobby all other players will receive:
 
 ```
-{"ACTION":"HELLO","USERNAME":"andrewhood125","BLUETOOTH":"10:40:f3:97:28:9e"}
-{"ACTION":"CREATE","LOCATION":"33,-90","SIZE":10}
-```
-```
-{"ACTION":"LOG","LEVEL":"INFO","PAYLOAD":"You\u0027re now in lobby
-2C52A"}
-```
-```
-{"ACTION":"START"}
-```
-```
-{"ACTION":"LOG","LEVEL":"ERROR","PAYLOAD":"Not enough players to start
-game."}
-```
+{"ACTION":"JOINED","LOCATION":"33.0,-90.0","PLAYER":"DORITO","TEAM":"Blue","BLUETOOTH":"12:12:34:56:78:90"}
 
+```
 #### Actions  
 - Action
   - Attribute belonging to action
