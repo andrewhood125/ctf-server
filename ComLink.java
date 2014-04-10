@@ -67,6 +67,10 @@ public class ComLink
                 player.setMyBluetoothMac(bluetooth.getAsString());
                 JsonElement username = jo.get("USERNAME");
                 player.setUsername(username.getAsString());
+                JsonObject temp = new JsonObject();
+                temp.addProperty("ACTION","HELLO");
+                temp.addProperty("SUCCESS","TRUE");
+                send(temp);
             } else {
                 JsonObject jobj = new JsonObject();
                 jobj.addProperty("ACTION", "LOG");
