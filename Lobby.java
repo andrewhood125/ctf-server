@@ -397,6 +397,7 @@ public class Lobby
         {
             if(players.get(i).equals(player))
             {
+                players.get(i).setLobby(null);
                 players.remove(i);
                 return true;
             }
