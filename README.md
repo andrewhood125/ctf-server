@@ -35,7 +35,19 @@ When a player joins a lobby all other players will receive:
 
 ```
 {"ACTION":"JOINED","LOCATION":"33.0,-90.0","PLAYER":"DORITO","TEAM":"Blue","BLUETOOTH":"12:12:34:56:78:90"}
+```
+###### While a player is in a game the server can push...
+When the game is started
 
+```
+{"ACTION":"START"}
+{"ACTION":"KILL","PLAYER":"andrewhood125"}
+```
+
+When a player updates their location
+
+```
+{"ACTION":"GPS","LOCATION":"-33.0,-90.0","PLAYER":"DORITO"}
 ```
 #### Actions  
 - Action
