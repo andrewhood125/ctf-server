@@ -405,26 +405,22 @@ public class Lobby
         return false;
     }
     
-    public static boolean removePlayerFromLobby(Player player, Lobby lobby)
+    public static void removePlayerFromLobby(Player player, Lobby lobby)
     {
         try
         {
             lobby.removePlayer(player);
+            JsonObject jo = new JsonObject();
+            jo.addProperty("ACTION","LEFT");
+            jo.addProperty("PLAYER", player.getUsername());
+            lobby.broadcast(jo);
             if(lobby.getNumberOfPlayers() == 0)
             {
-                for(int  i = 0; 0 < lobbies.size(); i++)
-                {
-                    if(lobbies.get(i).equals(lobby))
-                    {
-                        lobbies.remove(i);
-                        return true;
-                    }
-                }
+                lobbies.remove(lobby);
             }
         } catch(Exception ex) {
             System.err.println("ERROR: Error removing " + player + " from " + lobby);
         }
-        return false;
     }
     
     public void scored(Player player)
