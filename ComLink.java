@@ -227,7 +227,7 @@ public class ComLink
             } else if(!player.isInLobby()) {
                 send(Lobby.listLobbies());
             } else if(player.isInLobby()) {
-                out.println(player.getLobby().toString());
+                out.println(player.getLobby().toJson());
             }
             break;
 

@@ -494,5 +494,18 @@ public class Lobby
                 + "|                                  |\n"
                 + "----------------" + this.arena.getSouth() + "----------------\n";
     }
+    
+    public JsonObject toJson()
+    {
+        JsonObject jo = new JsonObject();
+        jo.addProperty("ACTION","LOBBY");
+        jo.addProperty("ID", this.getLobbyID());
+        jo.addProperty("STATUS", this.getGameState());
+        jo.addProperty("NORTH", arena.getNorth());
+        jo.addProperty("SOUTH", arena.getSouth());
+        jo.addProperty("EAST", arena.getEast());
+        jo.addProperty("WEST", arena.getWest());
+        return jo;
+    }
 }
 
