@@ -439,6 +439,10 @@ public class Lobby
         if(gameState >= 0 && gameState <= 1)
         {
             this.gameState = gameState;
+            JsonObject temp = new JsonObject();
+            temp.addProperty("ACTION","STATE");
+            temp.addProperty("STATE", this.gameState);
+            broadcast(temp);
         } 
     }
 

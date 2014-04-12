@@ -227,7 +227,13 @@ public class ComLink
             } else if(!player.isInLobby()) {
                 send(Lobby.listLobbies());
             } else if(player.isInLobby()) {
-                out.println(player.getLobby().toJson());
+                if(player.getLobby().isLobbyLeader(player) && jo.has("STATE"))
+                {
+                    JsonElement state = jo.get("STATE");
+                    player.getLobby().setGameState(state.getAsInt());
+                } else {
+                    out.println(player.getLobby().toJson());
+                }
             }
             break;
 
