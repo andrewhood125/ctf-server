@@ -71,8 +71,6 @@ public class CTFServer
             System.err.println("Error getting git info." + ex.getMessage());
         }
         
-        System.out.println(CTFServer.commit + "\n" + CTFServer.commitMsg);
-
         ServerSocket serverSocket = null;
         try
         {
