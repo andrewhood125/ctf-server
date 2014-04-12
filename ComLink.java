@@ -255,7 +255,12 @@ public class ComLink
                 System.err.println("ERROR: Something went wrong but I don't know what.");
             }
             break;
-            
+            case "VERSION":
+            JsonObject version = new JsonObject();
+            version.addProperty("COMMIT",CTFServer.commit);
+            version.addProperty("MESSAGE",CTFServer.commitMsg);
+            send(version);
+            break;
             case "DROP":
             if(!player.isInitialized())
             {
