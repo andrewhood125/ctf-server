@@ -43,19 +43,22 @@ public class Lobby
      */
     Lobby(Player host, double arenaSize)
     {
+        this(host, arenaSize, 0.005);
+    }
+    
+    Lobby(Player host, double arenaSize, double arenaAccuracy)
+    {
         this.players = new ArrayList<Player>();
         this.addNewPlayer(host);
         this.lobbyID = generateLobbyID();
         // Create arena based on arenaSize and Players gps coordinates.
         this.arena = new Arena(host.getLatitude(), host.getLongitude(), arenaSize);
-        // accuracy should be provided during lobby creation in the future defaults to 1 right now. 
-        int radius = 1;
         this.duration = 5;
 
-        this.redFlag = new Flag(Lobby.RED_TEAM, 0, 0, radius, this.arena);
-        this.blueFlag = new Flag(Lobby.BLUE_TEAM, 0, 0, radius, this.arena);
-        this.redBase = new Base(Lobby.RED_TEAM, 0, 0, radius, this.arena);
-        this.blueBase = new Base(Lobby.BLUE_TEAM, 0, 0, radius, this.arena);
+        this.redFlag = new Flag(Lobby.RED_TEAM, 0, 0, arenaAccuracy, this.arena);
+        this.blueFlag = new Flag(Lobby.BLUE_TEAM, 0, 0, arenaAccuracy, this.arena);
+        this.redBase = new Base(Lobby.RED_TEAM, 0, 0, arenaAccuracy, this.arena);
+        this.blueBase = new Base(Lobby.BLUE_TEAM, 0, 0, arenaAccuracy, this.arena);
         this.setGameState(Lobby.AT_LOBBY);
         //this.size = arenaSize;
         // Add this new Lobby to the lobbies list

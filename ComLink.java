@@ -98,7 +98,10 @@ public class ComLink
                 }
                 JsonElement arenaSize = jo.get("SIZE");
                 double newLobbySize = arenaSize.getAsDouble();
-                player.setLobby(new Lobby(player, newLobbySize));
+                JsonElement arenaAccuracy = jo.get("ACCURACY");
+                double newLobbyAccuracy = arenaAccuracy.getAsDouble();
+                
+                player.setLobby(new Lobby(player, newLobbySize, newLobbyAccuracy));
                 
                 JsonObject job = new JsonObject();
                 job.addProperty("ACTION", "CREATE");

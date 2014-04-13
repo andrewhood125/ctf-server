@@ -14,15 +14,10 @@ Getting Started
 ```
 git clone http://git.nowaddhero.com/andrewhood125/ctf-server.git
 ```
-- Compile the server.
+- Compile and run the server.
 
 ```
-javac -classpath "*" *.java
-```
-- Start the server. 
-
-```
-java -cp gson-2.2.4.jar:./ CTFServer 4443
+cd ctf-server && make
 ```
 
 Protocol
@@ -248,7 +243,7 @@ CopyPasta For Easy Server Debugging
 -----------------------------------
 ## User 1
 `{"ACTION":"HELLO","USERNAME":"andrewhood125","BLUETOOTH":"10:40:f3:97:28:9e"}`
-`{"ACTION":"CREATE","LOCATION":"-33,-90","SIZE":"0.5"}`
+`{"ACTION":"CREATE","LOCATION":"-33,-90","SIZE":"0.5", "ACCURACY":0.0023}`
 
 ## User 2
 `{"ACTION":"HELLO","USERNAME":"spec-ops81","BLUETOOTH":"01:23:45:67:89:ab"}`
