@@ -209,7 +209,12 @@ public class ComLink
                 {
                     player.setPoint(location.getAsString());
                 } catch(PointException ex) {
-                    System.err.println(ex.getMessage());     
+                    System.err.println(ex.getMessage());
+                    JsonObject temp = new JsonObject();
+                    temp.addProperty("ACTION","LOG");
+                    temp.addProperty("LEVEL","ERROR");
+                    temp.addProperty("PAYLOAD","BAD LOCATION");
+                    this.send(temp);
                 }
                 player.getLobby().playerUpdate(player);
             }
