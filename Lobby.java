@@ -92,7 +92,7 @@ public class Lobby
         jo.addProperty("ACTION", "JOINED");
         jo.addProperty("LOCATION", newPlayer.getLocation());
         jo.addProperty("PLAYER", newPlayer.getUsername());
-        jo.addProperty("TEAM", newPlayer.getTeamString());
+        jo.addProperty("TEAM", newPlayer.getTeam());
         jo.addProperty("BLUETOOTH", newPlayer.getMyBluetoothMac());
         broadcast(jo);
         players.add(newPlayer);
