@@ -5,6 +5,7 @@
  * 
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
+import com.google.gson.JsonObject;
 
 public class Flag extends Area
 {
@@ -44,5 +45,13 @@ public class Flag extends Area
         this.setEast(this.getRadius());
         this.setSouth(this.getRadius());
         this.setWest(this.getRadius());
+    }
+    
+    public JsonObject toJson()
+    {
+        JsonObject jo = new JsonObject();
+        jo.addProperty("TEAM", this.team);
+        jo.addProperty("LOCATION", this.getLocation());
+        return jo;
     }
 }

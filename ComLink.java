@@ -8,6 +8,7 @@
  */
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -116,6 +117,26 @@ public class ComLink
                 send(job);
             } else {
                 System.out.println("ERROR: Something went wrong but I don't know what.");
+            }
+            break;
+            
+            case "FLAG":
+            if(player.isInLobby())
+            {
+                // Build the json response
+                JsonObject red = player.getLobby().getFlag(Lobby.RED_TEAM).toJson();
+                red.addProperty("HOLDER", player.getLobby().getFlagHolder(Lobby.RED_TEAM));
+                JsonObject blue = player.getLobby().getFlag(Lobby.BLUE_TEAM).toJson();
+                blue.addProperty("HOLDER", player.getLobby().getFlagHolder(Lobby.BLUE_TEAM));
+                
+                JsonArray ja = new JsonArray();
+                ja.add(red);
+                ja.add(blue);
+                
+                JsonObject temp = new JsonObject();
+                temp.addProperty("ACTION","FLAG");
+                temp.add("FLAGS",ja);
+                this.send(temp);
             }
             break;
 

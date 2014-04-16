@@ -197,11 +197,11 @@ public class Lobby
             Flag tempFlag = tempPlayer.getFlag();
             if(tempFlag != null && tempFlag.getTeam() == team)
             {
-                return players.get(i) + " @ " + players.get(i).getLocation();
+                return tempPlayer.toString();
             }
         }
         
-        return "dropped @ " + this.getFlag(team).getLocation();
+        return "null";
     }
 
     public int getGameState()
