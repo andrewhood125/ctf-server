@@ -139,6 +139,24 @@ public class ComLink
                 this.send(temp);
             }
             break;
+            
+            case "BASE":
+            if(player.isInLobby())
+            {
+                // Build the json response
+                JsonObject red = player.getLobby().getBase(Lobby.RED_TEAM).toJson();
+                JsonObject blue = player.getLobby().getBase(Lobby.BLUE_TEAM).toJson();
+                
+                JsonArray ja = new JsonArray();
+                ja.add(red);
+                ja.add(blue);
+                
+                JsonObject temp = new JsonObject();
+                temp.addProperty("ACTION","BASE");
+                temp.add("BASES",ja);
+                this.send(temp);
+            }
+            break;
 
             case "START":
             if(!player.isInLobby())

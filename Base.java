@@ -6,6 +6,7 @@
  * 
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
+import com.google.gson.JsonObject;
 
 public class Base extends Area
 {
@@ -27,6 +28,14 @@ public class Base extends Area
     public int getTeam()
     {
         return this.team;
+    }
+    
+    public JsonObject toJson()
+    {
+        JsonObject jo = new JsonObject();
+        jo.addProperty("TEAM", this.team);
+        jo.addProperty("LOCATION", this.getLocation());
+        return jo;
     }
     
     public void updateLocation(double latitude, double longitude)
