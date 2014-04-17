@@ -5,3 +5,4 @@ echo exec('killall java');
 echo exec('git pull');
 // Fork and restart the server redirecting output to index.html
 print `bash -c "(make &> index.html) &"`
+?>
