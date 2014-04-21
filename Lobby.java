@@ -508,6 +508,12 @@ public class Lobby
         jo.addProperty("SOUTH", arena.getSouth());
         jo.addProperty("EAST", arena.getEast());
         jo.addProperty("WEST", arena.getWest());
+        JsonArray ja = new JsonArray();
+        for(int i = 0; i < players.size(); i++)
+        {
+            ja.add(players.get(i).toJson());
+        }
+        jo.add("PLAYERS", ja);
         return jo;
     }
 }

@@ -324,4 +324,14 @@ public class Player extends Point implements Runnable
         }
         
     }
+    
+    public JsonObject toJson()
+    {
+        JsonObject jo = new JsonObject();
+        jo.addProperty("USERNAME", this.getUsername());
+        jo.addProperty("BLUETOOTH", this.getMyBluetoothMac());
+        jo.addProperty("LOCATION", this.getLocation());
+        jo.addProperty("TEAM", this.getTeam());
+        return jo;
+    }
 }
