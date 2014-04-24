@@ -250,6 +250,9 @@ CopyPasta For Easy Server Debugging
 `{"ACTION":"LOBBY"}`  
 `{"ACTION":"JOIN", "ID":"` `","LOCATION":"33,-90"}`
   
+## User 3
+`{"ACTION":"HELLO","USERNAME":"dorito","BLUETOOTH":"13:40:f3:97:28:9e"}`
+`{"ACTION":"LOBBY"}` 
 
 License
 -------
