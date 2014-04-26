@@ -393,6 +393,13 @@ public class Lobby
         {
             this.endGame("Max score limit hit");
         }
+        
+        // Check if the user has gone out of bounds. 
+        if(player.isOutOfBounds())
+        {
+            player.kill();
+        }
+        
     }
     
     public boolean removePlayer(Player player)

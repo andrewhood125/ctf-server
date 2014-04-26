@@ -201,6 +201,20 @@ public class Player extends Point implements Runnable
             return true;
         }
     }
+    
+    public boolean isOutOfBounds()
+    {
+        Arena arena = myLobby.getArena();
+        if(this.getLatitude() > arena.getNorth() || 
+           this.getLatitude() < arena.getSouth() || 
+           this.getLongitude() > arena.getEast() || 
+           this.getLongitude() < arena.getWest())
+        {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public void kill()
     {
