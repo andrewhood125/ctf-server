@@ -17,6 +17,7 @@ public class Lobby
      */
     public static final int AT_LOBBY = 0;
     public static final int IN_PROGRESS = 1;
+    public static final int WAITING = 2;
     public static final int SPECTATOR = 0;
     public static final int RED_TEAM = 1;
     public static final int BLUE_TEAM = 2;
@@ -439,7 +440,7 @@ public class Lobby
 
     public void setGameState(int gameState)
     {
-        if(gameState >= 0 && gameState <= 1)
+        if(gameState >= 0 && gameState <= 2)
         {
             this.gameState = gameState;
             JsonObject temp = new JsonObject();
