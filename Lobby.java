@@ -117,7 +117,7 @@ public class Lobby
         // Broadcast what ended the game
         JsonObject jo = new JsonObject();
         jo.addProperty("ACTION", "STOP");
-        jo.addProperty("WINNER", "BLUE, this is static");
+        jo.addProperty("INFO", message);
         this.broadcast(jo);
     }
     
@@ -400,6 +400,11 @@ public class Lobby
             player.kill();
         }
         
+        // If less than two players return to lobby.
+        if(players.size() < 2)
+        {
+            this.endGame("Too few players to continue.");
+        }
     }
     
     public boolean removePlayer(Player player)
