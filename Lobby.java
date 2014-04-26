@@ -54,7 +54,7 @@ public class Lobby
         this.lobbyID = generateLobbyID();
         // Create arena based on arenaSize and Players gps coordinates.
         this.arena = new Arena(host.getLatitude(), host.getLongitude(), arenaSize);
-        this.duration = 5;
+        this.duration = 30;
 
         this.redFlag = new Flag(Lobby.RED_TEAM, 0, 0, arenaAccuracy, this.arena);
         this.blueFlag = new Flag(Lobby.BLUE_TEAM, 0, 0, arenaAccuracy, this.arena);
@@ -342,7 +342,7 @@ public class Lobby
         {
             //Check if scored
             player.checkIfScored();
-        } else { 
+        } else if(player.isAlive()) { 
             // Check if the player picked up a flag 
             player.checkIfPickedUpFlag();
         }
@@ -367,7 +367,7 @@ public class Lobby
         }
         
         // Check if player has come within range of the opposite team flag holder
-        if(player.getObservedBluetoothMac() != "")
+        if(player.isAlive() && player.getObservedBluetoothMac() != "")
         {
             Player otherPlayer = this.findPlayerByMAC(player.getObservedBluetoothMac());
             // We are on opposite teams and other player is holding my flag. 

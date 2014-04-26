@@ -156,6 +156,11 @@ public class Player extends Point implements Runnable
     {
         return username;
     }
+    
+    public boolean isAlive()
+    {
+        return lifeState == Player.ALIVE;
+    }
 
     public boolean isDead()
     {
