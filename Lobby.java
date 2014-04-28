@@ -516,6 +516,7 @@ public class Lobby
         JsonObject jo = new JsonObject();
         jo.addProperty("ACTION","LOBBY");
         jo.addProperty("ID", this.getLobbyID());
+        jo.addProperty("ACCURACY", redFlag.getRadius());
         jo.addProperty("STATUS", this.getGameState());
         jo.addProperty("NORTH", arena.getNorth());
         jo.addProperty("SOUTH", arena.getSouth());
