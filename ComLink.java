@@ -58,6 +58,11 @@ public class ComLink
     
     public void parseCommunication(JsonObject jo) throws IllegalStateException
     {
+        if(player.getLobby() != null)
+        {
+            player.getLobby().dumpLobby();
+        }
+        
         JsonElement action = jo.get("ACTION");
         switch(action.getAsString())
         {
@@ -103,7 +108,7 @@ public class ComLink
                 double newLobbyAccuracy = arenaAccuracy.getAsDouble();
                 
                 player.setLobby(new Lobby(player, newLobbySize, newLobbyAccuracy));
-                
+                Lobby.dumpLobbies();
                 JsonObject job = new JsonObject();
                 job.addProperty("ACTION", "CREATE");
                 job.addProperty("ID", player.getLobby().getLobbyID());

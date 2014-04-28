@@ -8,6 +8,8 @@
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class Lobby
@@ -105,6 +107,61 @@ public class Lobby
         {
             players.get(i).send(obj);
         }
+    }
+    
+    public static void dumpLobbies()
+    {
+        PrintWriter lobbiesFile = null;
+        JsonArray ja = new JsonArray();
+        try
+        {
+            lobbiesFile = new PrintWriter("lobbies.json");
+        } catch(FileNotFoundException ex) {
+            System.err.println(ex.getMessage());
+        }
+        
+        // dump the lobbies to a file
+        for(int i = 0; i < lobbies.size(); i++)
+        {
+            ja.add(lobbies.get(i).toJson());
+        }
+        lobbiesFile.println(ja.toString());
+        lobbiesFile.close();
+    }
+    
+    public void dumpLobby()
+    {
+        PrintWriter lobby = null;
+        JsonArray ja = new JsonArray();
+        try
+        {
+            lobby = new PrintWriter("lobbies/" + this.getLobbyID() + ".json");
+        } catch(FileNotFoundException ex) {
+            System.err.println(ex.getMessage());
+        }   
+        
+        ja.add(this.toJson());
+        
+        JsonArray flags = new JsonArray();
+        flags.add(redFlag.toJson());
+        flags.add(blueFlag.toJson());
+        JsonObject flag = new JsonObject();
+        flag.addProperty("ACTION","FLAG");
+        flag.add("FLAGS",flags);     
+        ja.add(flag);
+        
+        
+        JsonArray bases = new JsonArray();
+        bases.add(redBase.toJson());
+        bases.add(blueBase.toJson());
+        JsonObject base = new JsonObject();
+        base.addProperty("ACTION","BASE");
+        base.add("BASES",bases);     
+        ja.add(bases);
+        
+        lobby.println(ja.toString());
+        
+        lobby.close();
     }
     
     public void endGame(String message)
@@ -433,6 +490,7 @@ public class Lobby
             if(lobby.getNumberOfPlayers() == 0)
             {
                 lobbies.remove(lobby);
+                Lobby.dumpLobbies();
             }
         } catch(Exception ex) {
             System.err.println("ERROR: Error removing " + player + " from " + lobby);

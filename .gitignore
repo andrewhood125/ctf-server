@@ -4,3 +4,5 @@
 *.bluej
 .classpath
 index.html
+lobbies.json
+lobbies/
