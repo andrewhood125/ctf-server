@@ -157,7 +157,7 @@ public class Lobby
         JsonObject base = new JsonObject();
         base.addProperty("ACTION","BASE");
         base.add("BASES",bases);     
-        ja.add(bases);
+        ja.add(base);
         
         lobby.println(ja.toString());
         
