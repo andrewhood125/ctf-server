@@ -110,12 +110,16 @@ public class Player extends Point implements Runnable
     
     public void dropFlag()
     {
-        JsonObject jo = new JsonObject();
-        jo.addProperty("ACTION", "DROP");
-        jo.addProperty("FLAG", myFlag.toString());
-        jo.addProperty("PLAYER", this.toString());
-        comLink.send(jo);
-        this.myFlag = null;
+        if(myFlag != null)
+        {
+            JsonObject jo = new JsonObject();
+            jo.addProperty("ACTION", "DROP");
+            jo.addProperty("FLAG", myFlag.toString());
+            jo.addProperty("PLAYER", this.toString());
+            comLink.send(jo);
+            this.myFlag = null;
+        }
+        
     }
     
     public Flag getFlag()
@@ -223,6 +227,11 @@ public class Player extends Point implements Runnable
 
     public void kill()
     {
+        if(this.isHoldingFlag())
+        {
+            myFlag.setRandomLocation(myFlag);
+        }
+        this.dropFlag();
         this.setLifeState(Player.DEAD);
         JsonObject jo = new JsonObject();
         jo.addProperty("ACTION", "KILL");
