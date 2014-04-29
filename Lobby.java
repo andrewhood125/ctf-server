@@ -83,10 +83,11 @@ public class Lobby
 
     public void addNewPlayer(Player newPlayer)
     {
-        if(players.size() % 2 != 0 )
+        int bluePlayers = this.getNumberOfPlayers(Lobby.BLUE_TEAM);
+        int redPlayers = this.getNumberOfPlayers(Lobby.RED_TEAM);
+        if(bluePlayers < redPlayers) 
         {
-            newPlayer.setTeam(Lobby.BLUE_TEAM);
-            
+            newPlayer.setTeam(Lobby.BLUE_TEAM);  
         } else {
             newPlayer.setTeam(Lobby.RED_TEAM);
         }
