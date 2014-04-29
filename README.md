@@ -249,6 +249,14 @@ CopyPasta For Easy Server Debugging
 `{"ACTION":"HELLO","USERNAME":"spec-ops81","BLUETOOTH":"01:23:45:67:89:ab"}`
 `{"ACTION":"LOBBY"}`  
 `{"ACTION":"JOIN", "ID":"` `","LOCATION":"33,-90"}`
+
+## User 1
+`{"ACTION":"START"}`
+`{"ACTION":"BASE"}`
+`{"ACTION":"GPS",`
+`{"ACTION":"FLAG"}`
+`{"ACTION":"GPS",`
+`{"ACTION":"GPS","LOCATION":"-33,-90"}`
   
 ## User 3
 `{"ACTION":"HELLO","USERNAME":"dorito","BLUETOOTH":"13:40:f3:97:28:9e"}`
