@@ -44,6 +44,11 @@ public class Point implements Locatable
         return this.longitude;
     }
     
+    public Point getPoint()
+    {
+        return this;
+    }
+    
     public void setPoint(String location) throws PointException
     {
         if(location.contains(","))

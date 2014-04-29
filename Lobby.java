@@ -394,9 +394,10 @@ public class Lobby
      */
     public void playerUpdate(Player player)
     {
-        // Check if player has scored if the player is holding the flag
         if(player.isHoldingFlag())
         {
+            // Update the flag to the players location. 
+            player.getFlag().setPoint(player.getPoint());
             //Check if scored
             player.checkIfScored();
         } else if(player.isAlive()) { 
