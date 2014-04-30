@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ctf-web</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="js/purl.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script>
+    var map;
+    var json;
+    var markers = [];
+    var id = $.url().param('id')
+    var bluePlayerIcon = "images/blue_marker.png";
+    var redPlayerIcon = "images/red_marker.png";
+    var blueFlagIcon = "images/ctf_logo_blue.png";
+    var redFlagIcon = "images/ctf_logo_red.png";
+    var blueBaseIcon = "images/blue_base.jpg";
+    var redBaseIcon = "images/red_base.jpg";
+
+    var ctf = {
+      jsonFile: "../lobbies/" + id + ".json",
+      accuracy: '',
+      status: '',
+      north: '',
+      south: '',
+      east: '',
+      west: '',
+      players: [],
+      flags: [],
+      bases: []
+    }
+
+    function loadJson()
+    {
+      json = $.getJSON( ctf.jsonFile + "?t=" + new Date().getTime(), function() {
+      console.log(ctf.jsonFile + " refreshed.");
+      });
+      json.done(function () {
+        parseJson();
+      });
+      setTimeout(loadJson, 500);
+    }
+
+    function parseJson()
+    {
+      ctf.accuracy = json.responseJSON[0].ACCURACY;
+      ctf.status = json.responseJSON[0].STATUS;
+      ctf.north = json.responseJSON[0].NORTH;
+      ctf.south = json.responseJSON[0].SOUTH;
+      ctf.east = json.responseJSON[0].EAST;
+      ctf.west = json.responseJSON[0].WEST;
+      ctf.players = json.responseJSON[0].PLAYERS;
+      ctf.flags = json.responseJSON[1].FLAGS;
+      ctf.bases = json.responseJSON[2].BASES;
+
+      updateMarkers();
+    }
+
+    function updateMarkers()
+    {
+      clearMarkers();
+      // For each player, base and flag add markers
+      for(var i = 0; i < ctf.players.length; i++)
+      {
+        addMarker(ctf.players[i], "player");
+      }
+      for(var i = 0; i < ctf.flags.length; i++)
+      {
+        addMarker(ctf.flags[i], "flag");
+      }
+      for(var i = 0; i < ctf.bases.length; i++)
+      {
+        addMarker(ctf.bases[i], "base");
+      }
+    }
+
+    // Add a marker to the map and push to the array.
+    function addMarker(entity, type) {
+      // Get the lat and long as doubles from location
+      var stringLatLng = entity.LOCATION.split(",");
+      var image;
+      var marker_title;
+      if(type == "player")
+      {
+        marker_title = entity.USERNAME;
+        if(entity.TEAM == 1)
+        {
+          image = bluePlayerIcon;
+        } else if(entity.TEAM == 2) {
+          image = redPlayerIcon;
+        }
+      } else if(type == "flag") {
+        if(entity.TEAM == 1)
+        {
+          marker_title = "Blue Flag";
+          image = blueFlagIcon;
+        } else if(entity.TEAM == 2) {
+          marker_title = "Red Flag";
+          image = redFlagIcon;
+        } 
+      } else if(type == "base") {
+        if(entity.TEAM == 1)
+        {
+          marker_title = "Blue Base";
+          image = blueBaseIcon;
+        } else if(entity.TEAM == 2) {
+          marker_title = "Red Base";
+          image = redBaseIcon;
+        } 
+      }
+
+      var markerIcon = {
+        size: new google.maps.Size(64, 64),
+        url: image
+    };
+
+      var markerPosition = new google.maps.LatLng(stringLatLng[0],stringLatLng[1]);
+      var markerIcon = new google.maps.MarkerImage(image, null, null, null, new google.maps.Size(32,32));
+      var marker = new google.maps.Marker({
+        position: markerPosition,
+        map: map,
+        icon: markerIcon,
+        title: marker_title
+      });
+      markers.push(marker);
+    }
+
+    // Sets the map on all markers in the array.
+    function setAllMap(map) {
+      for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(map);
+      }
+    }
+
+    // Removes the markers from the map, but keeps them in the array.
+    function clearMarkers() {
+      setAllMap(null);
+    }
+
+    // Shows any markers currently in the array.
+    function showMarkers() {
+      setAllMap(map);
+    }
+
+    // Deletes all markers in the array by removing references to them.
+    function deleteMarkers() {
+      clearMarkers();
+      markers = [];
+    }
+
+    function initialize() {
+      var mapOptions = {
+        zoom: 8,
+        center: new google.maps.LatLng(35.1279224,-89.9405429)
+      };
+      map = new google.maps.Map(document.getElementById('map-canvas'),
+          mapOptions);
+    }
+
+    setTimeout(loadJson, 1);
+    google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+  </body>
+</html>
