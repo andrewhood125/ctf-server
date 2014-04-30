@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>CTF-Web</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    body {
+      padding-top: 50px;
+    }
+    .starter-template {
+      padding: 40px 15px;
+      text-align: center;
+    }
+    </style>
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">CTF-Web</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="starter-template">
+        <h1>Lobbies</h1>
+      </div>
+        <table class="table table-hover" id="myTable">
+          <tr>
+              <th>Lobby Name</th> 
+              <th>Number of Players</th> 
+              <th>Status</th> 
+              <th>View</th>   
+          </tr>
+        </table>
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script language="javascript">
+      $.getJSON("../lobbies.json", callbackFuncWithData);
+      function callbackFuncWithData(data)
+      {
+        var table = document.getElementById("myTable");
+        for (var i=0;i<data.length;i++)
+        { 
+          var row = table.insertRow(i+1);
+          var cell1 = row.insertCell(0);
+          var cell2 = row.insertCell(1);
+          var cell3 = row.insertCell(2);
+          var cell4 = row.insertCell(3);
+          cell1.innerHTML = data[i]["ID"];
+          cell2.innerHTML = data[i]["PLAYERS"].length;
+          var stats = data[i]["STATUS"];
+          if(stats == 1){
+            cell3.innerHTML = "At Lobby";
+          }else if (stats == 0){
+            cell3.innerHTML = "In Progress";
+            var s1 = '<form class="form-horizontal" method="GET" action="map.html"><input type="hidden" name="id" value="';
+            var s2 = '" /><button type="submit" class="btn btn-success">Go!</button></form>';
+            var s3 = s1.concat(data[i]["ID"]);
+            cell4.innerHTML = s3.concat(s2);
+          }else if (stats == 2){
+            cell3.innerHTML = "Waiting";
+          }else{
+            cell3.innerHTML = "Error";
+          }
+
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -3,5 +3,5 @@
 *.ctxt
 *.bluej
 .classpath
-index.html
+/index.html
 lobbies.json
