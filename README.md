@@ -243,7 +243,7 @@ CopyPasta For Easy Server Debugging
 -----------------------------------
 ## User 1
 `{"ACTION":"HELLO","USERNAME":"andrewhood125","BLUETOOTH":"10:40:f3:97:28:9e"}`
-`{"ACTION":"CREATE","LOCATION":"35.1279224,-89.9405429","SIZE":"0.5", "ACCURACY":0.0023}`
+`{"ACTION":"CREATE","LOCATION":"35.1279224,-89.9405429","SIZE":"0.0009", "ACCURACY":0.00005}`
 
 ## User 2
 `{"ACTION":"HELLO","USERNAME":"spec-ops81","BLUETOOTH":"01:23:45:67:89:ab"}`
