@@ -37,9 +37,9 @@ public class ComLink
         {
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            System.out.println("New player connected from IP: " + socket.getInetAddress());
+            CTFServer.log("INFO", "New player connected from IP: " + socket.getInetAddress());
         } catch(IOException ex) {
-            System.err.println(ex.getMessage());
+            CTFServer.log("ERROR", ex.getMessage());
             JsonObject jo = new JsonObject();
             jo.addProperty("ACTION", "LOG");
             jo.addProperty("LEVEL", "ERROR");
@@ -100,7 +100,7 @@ public class ComLink
                 {
                     player.setPoint(location.getAsString());
                 } catch(PointException ex) {
-                    System.err.println(ex.getMessage());     
+                    CTFServer.log("ERROR", ex.getMessage());   
                 }
                 JsonElement arenaSize = jo.get("SIZE");
                 double newLobbySize = arenaSize.getAsDouble();
@@ -121,7 +121,7 @@ public class ComLink
                 job.addProperty("PAYLOAD", "You are already in a lobby.");
                 send(job);
             } else {
-                System.out.println("ERROR: Something went wrong but I don't know what.");
+                CTFServer.log("ERROR", "Something went wrong but I don't know what.");
             }
             break;
             
@@ -215,7 +215,7 @@ public class ComLink
                 {
                     player.setPoint(location.getAsString());
                 } catch(PointException ex) {
-                    System.err.println(ex.getMessage());
+                    CTFServer.log("ERROR", ex.getMessage());
                     JsonObject temp = new JsonObject();
                     temp.addProperty("ACTION","LOG");
                     temp.addProperty("LEVEL","ERROR");
@@ -239,7 +239,7 @@ public class ComLink
                 {
                     player.setPoint(location.getAsString());
                 } catch(PointException ex) {
-                    System.err.println(ex.getMessage());     
+                    CTFServer.log("ERROR", ex.getMessage());   
                 }
                 
                 JsonElement id = jo.get("ID");
@@ -265,7 +265,7 @@ public class ComLink
                 jobj.addProperty("PAYLOAD", "You are already in a lobby.");
                 send(jobj);
             } else {
-                System.err.println("ERROR: Something went wrong but I don't know what.");
+                CTFServer.log("ERROR", "Something went wrong but I don't know what.");
             }
             break;
 
@@ -311,7 +311,7 @@ public class ComLink
                 temp.addProperty("SUCCESS","TRUE");
                 send(temp);
             } else {
-                System.err.println("ERROR: Something went wrong but I don't know what.");
+                CTFServer.log("ERROR", "Something went wrong but I don't know what.");
             }
             break;
             case "VERSION":
@@ -339,7 +339,7 @@ public class ComLink
                 player.setObservedBluetoothMac(bluetooth.getAsString());
                 player.getLobby().playerUpdate(player);
             } else {
-                System.err.println("ERROR: Something went wrong but I don't know what.");
+                CTFServer.log("ERROR", "Something went wrong but I don't know what.");
             } 
 
             default: JsonObject jobj = new JsonObject();
@@ -349,27 +349,6 @@ public class ComLink
                         send(jobj);
         }
     }
-    /*
-    private void readBluetoothMAC()
-    {
-        try 
-        {
-            String tempBtMac = in.readLine();
-            tempBtMac.toUpperCase();
-            if(tempBtMac.matches(Player.MACPAT))
-            {
-                System.out.println(this.toString() + " BT MAC: " + tempBtMac);
-                player.setMyBluetoothMac(tempBtMac);
-            }else
-            {
-                readBluetoothMAC();
-            }
-
-        } catch(Exception ex) {
-            System.err.println(ex.getMessage());
-            System.exit(10);
-        }
-    }*/
     
     public JsonObject readLine() throws IOException
     {

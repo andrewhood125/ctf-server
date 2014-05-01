@@ -118,8 +118,14 @@ public class Player extends Point implements Runnable
             jo.addProperty("PLAYER", this.toString());
             comLink.send(jo);
             this.myFlag = null;
+            CTFServer.log("INFO", this.toString() + " dropped the flag.");
         }
         
+    }
+    
+    public int getLifeState()
+    {
+        return this.lifeState;
     }
     
     public Flag getFlag()
@@ -234,6 +240,7 @@ public class Player extends Point implements Runnable
         this.dropFlag();
         this.setLifeState(Player.DEAD);
         JsonObject jo = new JsonObject();
+        CTFServer.log("INFO", this.toString() + " has been killed.");
         jo.addProperty("ACTION", "KILL");
         jo.addProperty("PLAYER", this.toString());
         comLink.send(jo);
@@ -295,7 +302,8 @@ public class Player extends Point implements Runnable
         jo.addProperty("ACTION", "CAPTURE"); 
         jo.addProperty("FLAG", myFlag.getTeam());
         jo.addProperty("PLAYER", this.toString());
-        comLink.send(jo);    
+        comLink.send(jo);
+        CTFServer.log("INFO", this.toString() + " picked up " + newFlag.getTeam() + " flag.");
     }
 
     public void setLifeState(int lifeState)
@@ -340,6 +348,7 @@ public class Player extends Point implements Runnable
         jo.addProperty("ACTION", "SPAWN");
         jo.addProperty("PLAYER", this.toString());
         comLink.send(jo);
+        CTFServer.log("INFO", this.toString() + " spawned.");
     }
     
     public String toString()
@@ -360,6 +369,7 @@ public class Player extends Point implements Runnable
         jo.addProperty("BLUETOOTH", this.getMyBluetoothMac());
         jo.addProperty("LOCATION", this.getLocation());
         jo.addProperty("TEAM", this.getTeam());
+        jo.addProperty("STATUS", this.getLifeState());
         return jo;
     }
 }

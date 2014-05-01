@@ -45,6 +45,11 @@ public class CTFServer
         CTFServer.commitMsg = temp;
     }
     
+    public static void log(String tag, String message)
+    {
+        System.out.println("[" + tag + "]: " + message);
+    }
+    
     public static void main(String[] args)
     {
         if(args.length != 1)
@@ -66,9 +71,9 @@ public class CTFServer
         {
             loadGitInfo();
         } catch(IOException ex) {
-            System.err.println("Error getting git info." + ex.getMessage());
+            CTFServer.log("ERROR", "Error getting git info." + ex.getMessage());
         } catch(InterruptedException ex) {
-            System.err.println("Error getting git info." + ex.getMessage());
+            CTFServer.log("ERROR", "Error getting git info." + ex.getMessage());
         }
         
         ServerSocket serverSocket = null;
@@ -76,10 +81,10 @@ public class CTFServer
         {
             // Setup a socket locally to listen and accept connections
             serverSocket = new ServerSocket(portNumber);
-            System.out.println("CTFServer listening for connections.");
-            System.out.println(serverSocket);
+            CTFServer.log("INFO", "CTFServer listening for connections.");
+            CTFServer.log("INFO", serverSocket.toString());
         } catch(IOException ex) {
-            System.err.println(ex.getMessage());
+            CTFServer.log("ERROR", ex.getMessage());
             System.exit(3);
         }
 
@@ -94,7 +99,7 @@ public class CTFServer
                 Thread newPlayerThread = new Thread(newPlayer);
                 newPlayerThread.start();
             } catch(IOException ex) {
-                System.err.println(ex.getMessage());
+                CTFServer.log("ERROR", ex.getMessage());
                 System.exit(3);
             }
         }

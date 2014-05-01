@@ -74,6 +74,7 @@ public class Lobby
         {
             if(lobbies.get(i).getLobbyID().equals(lobbyID))
             {
+                CTFServer.log("INFO", newPlayer.getUsername() + " added to lobby " + lobbies.get(i).getLobbyID());
                 lobbies.get(i).addNewPlayer(newPlayer);
                 return lobbies.get(i);
             }
@@ -99,6 +100,7 @@ public class Lobby
         jo.addProperty("TEAM", newPlayer.getTeam());
         jo.addProperty("BLUETOOTH", newPlayer.getMyBluetoothMac());
         broadcast(jo);
+        CTFServer.log("INFO", newPlayer.getUsername() + " added to lobby " + this.getLobbyID());
         players.add(newPlayer);
     }
 
@@ -118,7 +120,7 @@ public class Lobby
         {
             lobbiesFile = new PrintWriter("lobbies.json");
         } catch(FileNotFoundException ex) {
-            System.err.println(ex.getMessage());
+            CTFServer.log("ERROR", ex.getMessage());
         }
         
         // dump the lobbies to a file
@@ -128,6 +130,7 @@ public class Lobby
         }
         lobbiesFile.println(ja.toString());
         lobbiesFile.close();
+        CTFServer.log("INFO", "Regenerating lobbies.json");
     }
     
     public void dumpLobby()
@@ -138,7 +141,7 @@ public class Lobby
         {
             lobby = new PrintWriter("lobbies/" + this.getLobbyID() + ".json");
         } catch(FileNotFoundException ex) {
-            System.err.println(ex.getMessage());
+            CTFServer.log("ERROR", ex.getMessage());
         }   
         
         ja.add(this.toJson());
@@ -331,7 +334,7 @@ public class Lobby
         } else if(team == Lobby.RED_TEAM) {
             redScore++;
         } else {
-            System.err.println("Attempted to score on a invalid team: " + team);
+            CTFServer.log("ERROR", this.getLobbyID() + ": attempted to score on a invalid team: " + team);
         }
     }
 
@@ -496,7 +499,7 @@ public class Lobby
                 Lobby.dumpLobbies();
             }
         } catch(Exception ex) {
-            System.err.println("ERROR: Error removing " + player + " from " + lobby);
+            CTFServer.log("ERROR", "Error removing " + player + " from " + lobby);
         }
     }
     
@@ -532,13 +535,11 @@ public class Lobby
             jo.addProperty("ACTION", "START");
             
             broadcast(jo);
-            System.out.println(this + " has been started.");
+            CTFServer.log("INFO", this.getLobbyID() + " has been started.");
             
             this.killAllPlayers();
             // Set the end time to duration minutes after the start time. 
             long timeToAdd = duration*60*1000;
-            System.out.println("Current time " + System.currentTimeMillis());
-            System.out.println("Time to add to current time: " + timeToAdd);
             this.endTime = System.currentTimeMillis() + timeToAdd;
         }else{
             JsonObject jo = new JsonObject();
@@ -548,28 +549,6 @@ public class Lobby
             broadcast(jo);
         }
         
-    }
-    
-    public String toString()
-    {
-        return "LOBBY=====" + this.getGameStateString() + "======" + this.lobbyID + "\n"
-                + "End Time " + endTime + "\n"
-                + "Current Time " + System.currentTimeMillis() + "\n"
-                + "Time left " + (endTime - System.currentTimeMillis()) + "\n"
-                + "Red Team " + this.redScore + " {" + this.getTeamPlayers(Lobby.RED_TEAM) + "}\n"
-                + "Red Base {" + redBase.getLocation() + "}\n"
-                + "Red Flag held by " + this.getFlagHolder(Lobby.RED_TEAM) + "\n"
-                + "Blue Team " + this.blueScore + " {" + this.getTeamPlayers(Lobby.BLUE_TEAM) + "}\n"
-                + "Blue Base {" + blueBase.getLocation() + "}\n"
-                + "Blue Flag held by " + this.getFlagHolder(Lobby.BLUE_TEAM) + "\n"
-                + "----------------" + this.arena.getNorth() + "----------------\n"
-                + "|                                  |\n"
-                + "|                                  |\n"
-                + this.arena.getWest() + "\n"
-                + "|                                    " + this.arena.getEast() + "\n"
-                + "|                                  |\n"
-                + "|                                  |\n"
-                + "----------------" + this.arena.getSouth() + "----------------\n";
     }
     
     public JsonObject toJson()

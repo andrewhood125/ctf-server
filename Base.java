@@ -45,9 +45,9 @@ public class Base extends Area
             this.setLatitude(latitude);
             this.setLongitude(longitude);
         } catch(LatitudeException ex) {
-            System.err.println(ex.getMessage());
+            CTFServer.log("ERROR", ex.getMessage());
         } catch(LongitudeException ex) {
-            System.err.println(ex.getMessage());
+            CTFServer.log("ERROR", ex.getMessage());
         }
         
         this.setNorth(this.getRadius());

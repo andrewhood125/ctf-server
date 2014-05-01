@@ -23,9 +23,9 @@ public class Point implements Locatable
             this.setLatitude(latitude);
             this.setLongitude(longitude);
         } catch(LatitudeException ex) {
-            System.err.println(ex.getMessage());
+            CTFServer.log("ERROR", ex.getMessage());
         } catch(LongitudeException ex) {
-            System.err.println(ex.getMessage());
+            CTFServer.log("ERROR", ex.getMessage());
         }
     }
     
@@ -61,15 +61,15 @@ public class Point implements Locatable
                 {
                     this.setLatitude(Double.parseDouble(coord[0]));
                     this.setLongitude(Double.parseDouble(coord[1]));
-                    System.out.println(this + " set point to: " + this.getLocation());
+                    CTFServer.log("INFO", this + " set point to: " + this.getLocation());
                 } catch(NullPointerException ex) {
                     throw new PointException(location);
                 } catch(NumberFormatException ex) {
                     throw new PointException(location);
                 } catch(LatitudeException ex) {
-                    System.err.println(ex.getMessage());
+                    CTFServer.log("ERROR", ex.getMessage());
                 } catch(LongitudeException ex) {
-                    System.err.println(ex.getMessage());
+                    CTFServer.log("ERROR", ex.getMessage());
                 }
             } else {
                 throw new PointException(location);
@@ -86,9 +86,9 @@ public class Point implements Locatable
             this.setLatitude(point.getLatitude());
             this.setLongitude(point.getLongitude());
         } catch(LatitudeException ex) {
-            System.err.println(ex.getMessage());
+            CTFServer.log("ERROR", ex.getMessage());
         } catch(LongitudeException ex) {
-            System.err.println(ex.getMessage());
+            CTFServer.log("ERROR", ex.getMessage());
         }
     }
     
