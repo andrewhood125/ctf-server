@@ -40,7 +40,7 @@ public class Lobby
     private int blueScore, duration, gameState, redScore;
     private String lobbyID;
     private long endTime;
-
+    private Point epicenter;
     /**
      * Constructors
      */
@@ -57,7 +57,7 @@ public class Lobby
         // Create arena based on arenaSize and Players gps coordinates.
         this.arena = new Arena(host.getLatitude(), host.getLongitude(), arenaSize);
         this.duration = 30;
-
+        this.epicenter = host.getPoint();
         this.redFlag = new Flag(Lobby.RED_TEAM, 0, 0, arenaAccuracy, this.arena);
         this.blueFlag = new Flag(Lobby.BLUE_TEAM, 0, 0, arenaAccuracy, this.arena);
         this.redBase = new Base(Lobby.RED_TEAM, 0, 0, arenaAccuracy, this.arena);
@@ -577,6 +577,7 @@ public class Lobby
         jo.addProperty("ACTION","LOBBY");
         jo.addProperty("ID", this.getLobbyID());
         jo.addProperty("ACCURACY", redFlag.getRadius());
+        jo.addProperty("EPICENTER", epicenter.getLocation());
         jo.addProperty("STATUS", this.getGameState());
         jo.addProperty("NORTH", arena.getNorth());
         jo.addProperty("SOUTH", arena.getSouth());

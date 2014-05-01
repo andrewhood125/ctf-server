@@ -77,9 +77,9 @@
           cell1.innerHTML = data[i]["ID"];
           cell2.innerHTML = data[i]["PLAYERS"].length;
           var stats = data[i]["STATUS"];
-          if(stats == 1){
+          if(stats == 0){
             cell3.innerHTML = "At Lobby";
-          }else if (stats == 0){
+          }else if (stats == 1){
             cell3.innerHTML = "In Progress";
             var s1 = '<form class="form-horizontal" method="GET" action="map.html"><input type="hidden" name="id" value="';
             var s2 = '" /><button type="submit" class="btn btn-success">Go!</button></form>';

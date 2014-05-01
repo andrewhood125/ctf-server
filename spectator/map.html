@@ -29,6 +29,7 @@
     var ctf = {
       jsonFile: "../lobbies/" + id + ".json",
       accuracy: '',
+      epicenter: '35.1279224,-89.9405429',
       status: '',
       north: '',
       south: '',
@@ -53,6 +54,7 @@
     function parseJson()
     {
       ctf.accuracy = json.responseJSON[0].ACCURACY;
+      ctf.epicenter = json.responseJSON[0].EPICENTER;
       ctf.status = json.responseJSON[0].STATUS;
       ctf.north = json.responseJSON[0].NORTH;
       ctf.south = json.responseJSON[0].SOUTH;
@@ -158,9 +160,10 @@
     }
 
     function initialize() {
+      var stringLatLng = ctf.epicenter.split(",");
       var mapOptions = {
-        zoom: 8,
-        center: new google.maps.LatLng(35.1279224,-89.9405429)
+        zoom: 18,
+        center: new google.maps.LatLng(stringLatLng[0],stringLatLng[1])
       };
       map = new google.maps.Map(document.getElementById('map-canvas'),
           mapOptions);
