@@ -25,11 +25,12 @@
     var redFlagIcon = "images/ctf_logo_red.png";
     var blueBaseIcon = "images/blue_base.jpg";
     var redBaseIcon = "images/red_base.jpg";
+    var initialized = 0;
 
     var ctf = {
       jsonFile: "../lobbies/" + id + ".json",
       accuracy: '',
-      epicenter: '35.1279224,-89.9405429',
+      epicenter: '35.12113674,-89.93842138',
       status: '',
       north: '',
       south: '',
@@ -64,6 +65,11 @@
       ctf.flags = json.responseJSON[1].FLAGS;
       ctf.bases = json.responseJSON[2].BASES;
 
+      if(initialized == 0)
+      {
+        initialize();
+        initialized = 1;
+      }
       updateMarkers();
     }
 
@@ -160,6 +166,7 @@
     }
 
     function initialize() {
+      loadJson();
       var stringLatLng = ctf.epicenter.split(",");
       var mapOptions = {
         zoom: 18,
@@ -170,7 +177,7 @@
     }
 
     setTimeout(loadJson, 1);
-    google.maps.event.addDomListener(window, 'load', initialize);
+    //google.maps.event.addDomListener(window, 'load', initialize);
 
     </script>
   </head>

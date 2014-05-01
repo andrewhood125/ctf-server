@@ -185,6 +185,7 @@ public class ComLink
                 send(job);
             } else {
                 player.getLobby().startGame();
+                Lobby.dumpLobbies();
             }
             break;
             case "GPS":
