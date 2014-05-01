@@ -421,6 +421,7 @@ public class Lobby
                 jo.addProperty("ACTION", "GPS");
                 jo.addProperty("LOCATION", player.getLocation());
                 jo.addProperty("PLAYER", player.getUsername());
+                jo.addProperty("TEAM", player.getTeam());
                 players.get(i).send(jo);
             }
         }
