@@ -47,7 +47,7 @@ public class CTFServer
     
     public static void log(String tag, String message)
     {
-        System.out.println("[" + tag + "]: " + message);
+        System.out.println("[" + tag + "]: " + message + "<br>");
     }
     
     public static void main(String[] args)

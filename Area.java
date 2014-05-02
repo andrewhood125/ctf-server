@@ -90,13 +90,14 @@ public abstract class Area extends Point
     public void setRandomLocation(Base base)
     {
         Area arena = base.getArea();
+        int areaWidthAwayFromBoundry = 4;
         double width = ((arena.getEast() - arena.getWest()) / 6) - base.getRadius()*2;
         double newLongitude = Math.random()*width;
         switch(base.getTeam())
         {
-            case Lobby.RED_TEAM: newLongitude += arena.getWest() + base.getRadius(); break;
+            case Lobby.RED_TEAM: newLongitude += arena.getWest() + base.getRadius()*areaWidthAwayFromBoundry; break;
             case Lobby.BLUE_TEAM: newLongitude *= -1;
-                                  newLongitude += arena.getEast() - base.getRadius(); break;
+                                  newLongitude += arena.getEast() - base.getRadius()*areaWidthAwayFromBoundry; break;
         }
         double height = (arena.getNorth() - arena.getSouth()) - base.getRadius()*2;
         double newLatitude = Math.random()*height;
@@ -107,6 +108,7 @@ public abstract class Area extends Point
     public void setRandomLocation(Flag flag)
     {
         Area arena = flag.getArea();
+        int areaWidthAwayFromBoundry = 4;
         // Get width of the arena
         // Get width of a single Q
         // Double the Q
@@ -115,9 +117,9 @@ public abstract class Area extends Point
         double newLongitude = Math.random()*width;
         switch(flag.getTeam())
         {
-            case Lobby.RED_TEAM: newLongitude += arena.getWest() + flag.getRadius(); break;
+            case Lobby.RED_TEAM: newLongitude += arena.getWest() + flag.getRadius()*areaWidthAwayFromBoundry; break;
             case Lobby.BLUE_TEAM: newLongitude *= -1;
-                                  newLongitude += arena.getEast() - flag.getRadius(); break;
+                                  newLongitude += arena.getEast() - flag.getRadius()*areaWidthAwayFromBoundry; break;
         }
         
         // Get height of the arena

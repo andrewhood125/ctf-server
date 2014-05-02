@@ -303,6 +303,7 @@ public class Player extends Point implements Runnable
         jo.addProperty("FLAG", myFlag.getTeam());
         jo.addProperty("PLAYER", this.toString());
         comLink.send(jo);
+        this.getLobby().broadcast(jo);
         CTFServer.log("INFO", this.toString() + " picked up " + newFlag.getTeam() + " flag.");
     }
 
