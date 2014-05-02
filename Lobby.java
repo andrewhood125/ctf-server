@@ -506,6 +506,7 @@ public class Lobby
     public void scored(Player player)
     {
         this.incrementScore(player.getTeam());
+        CTFServer.log("INFO", player.getUsername() + " has scored.");
         arena.setRandomLocation(player.getFlag());
         player.dropFlag();
         JsonObject jo = new JsonObject();
@@ -563,6 +564,8 @@ public class Lobby
         jo.addProperty("SOUTH", arena.getSouth());
         jo.addProperty("EAST", arena.getEast());
         jo.addProperty("WEST", arena.getWest());
+        jo.addProperty("RED_SCORE", redScore);
+        jo.addProperty("BLUE_SCORE", blueScore);
         JsonArray ja = new JsonArray();
         for(int i = 0; i < players.size(); i++)
         {
