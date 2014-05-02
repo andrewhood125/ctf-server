@@ -19,8 +19,10 @@
     var json;
     var markers = [];
     var id = $.url().param('id')
-    var bluePlayerIcon = "images/blue_marker.png";
-    var redPlayerIcon = "images/red_marker.png";
+    var bluePlayerIconDead = "images/blue_marker_dead.png";
+    var bluePlayerIconAlive = "images/blue_marker_alive.png";
+    var redPlayerIconDead = "images/red_marker_dead.png";
+    var redPlayerIconAlive = "images/red_marker_alive.png";
     var blueFlagIcon = "images/ctf_logo_blue.png";
     var redFlagIcon = "images/ctf_logo_red.png";
     var blueBaseIcon = "images/blue_base.jpg";
@@ -102,9 +104,22 @@
         marker_title = entity.USERNAME;
         if(entity.TEAM == 1)
         {
-          image = bluePlayerIcon;
+          if(entity.STATUS == 0)
+          {
+            // player is dead
+            image = bluePlayerIconDead;
+          } else if(entity.STATUS == 1) {
+            image = bluePlayerIconAlive;
+          }
+          
         } else if(entity.TEAM == 2) {
-          image = redPlayerIcon;
+          if(entity.STATUS == 0)
+          {
+            // player is dead
+            image = redPlayerIconDead;
+          } else if(entity.STATUS == 1) {
+            image = redPlayerIconAlive;
+          }
         }
       } else if(type == "flag") {
         if(entity.TEAM == 1)
