@@ -126,6 +126,7 @@ public class Lobby
         // dump the lobbies to a file
         for(int i = 0; i < lobbies.size(); i++)
         {
+            lobbies.get(i).dumpLobby();
             ja.add(lobbies.get(i).toJson());
         }
         lobbiesFile.println(ja.toString());

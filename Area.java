@@ -87,21 +87,23 @@ public abstract class Area extends Point
         this.radius = radius;
     }
     
+    
     public void setRandomLocation(Base base)
     {
         Area arena = base.getArea();
-        int areaWidthAwayFromBoundry = 4;
-        double width = ((arena.getEast() - arena.getWest()) / 6) - base.getRadius()*areaWidthAwayFromBoundry;
-        double newLongitude = Math.random()*width;
+        double Q = (arena.getEast() - arena.getWest()) / 6.0;
+        double offset = Math.random()*Q;
+        double newLongitude = 0;
         switch(base.getTeam())
         {
-            case Lobby.RED_TEAM: newLongitude += arena.getWest() + base.getRadius()*2; break;
-            case Lobby.BLUE_TEAM: newLongitude *= -1;
-                                  newLongitude += arena.getEast() - base.getRadius()*2; break;
+            // Offset the red base by Q/2 and the western longitude. 
+            case Lobby.RED_TEAM: newLongitude = arena.getWest() + Q/2 + offset; break;
+            // offset the blue base by Q/2 and the eastern longitude. 
+            case Lobby.BLUE_TEAM: newLongitude = arena.getEast() - Q/2 - offset; break;
         }
-        double height = (arena.getNorth() - arena.getSouth()) - base.getRadius()*areaWidthAwayFromBoundry;
+        double height = arena.getNorth() - arena.getSouth() - Q;
         double newLatitude = Math.random()*height;
-        newLatitude += arena.getSouth() + base.getRadius();
+        newLatitude += arena.getSouth() + Q/2;
         base.updateLocation(newLatitude, newLongitude);
         CTFServer.log("INFO", "Base " + base.getTeam() + " new location: " + base.getLocation());
     }
@@ -109,27 +111,19 @@ public abstract class Area extends Point
     public void setRandomLocation(Flag flag)
     {
         Area arena = flag.getArea();
-        int areaWidthAwayFromBoundry = 4;
-        // Get width of the arena
-        // Get width of a single Q
-        // Double the Q
-        //Subtract the diameter of the flag
-        double width = ((arena.getEast() - arena.getWest())/6*2) - flag.getRadius()*areaWidthAwayFromBoundry;
-        double newLongitude = Math.random()*width;
+        double Q = (arena.getEast() - arena.getWest()) / 6.0;
+        double offset = Math.random()*Q;
+        double newLongitude = 0;
         switch(flag.getTeam())
         {
-            case Lobby.RED_TEAM: newLongitude += arena.getWest() + flag.getRadius()*2; break;
-            case Lobby.BLUE_TEAM: newLongitude *= -1;
-                                  newLongitude += arena.getEast() - flag.getRadius()*2; break;
+            // Offset the red base by Q/2 and the western longitude. 
+            case Lobby.RED_TEAM: newLongitude = arena.getWest() + Q/2 + offset; break;
+            // offset the blue base by Q/2 and the eastern longitude. 
+            case Lobby.BLUE_TEAM: newLongitude = arena.getEast() - Q/2 - offset; break;
         }
-        
-        // Get height of the arena
-        // Subtract the diameter of the flag
-        double height = (arena.getNorth() - arena.getSouth()) - flag.getRadius()*areaWidthAwayFromBoundry;
-        
-        // Height is now the range to generate the latitude
-        // Now add south and flag radius
-        double newLatitude = Math.random()*height + arena.getSouth() + flag.getRadius();
+        double height = arena.getNorth() - arena.getSouth() - Q;
+        double newLatitude = Math.random()*height;
+        newLatitude += arena.getSouth() + Q/2;
         flag.updateLocation(newLatitude, newLongitude);
         CTFServer.log("INFO", "Flag " + flag.getTeam() + " new location: " + flag.getLocation());
     }
