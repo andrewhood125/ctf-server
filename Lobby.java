@@ -21,8 +21,8 @@ public class Lobby
     public static final int IN_PROGRESS = 1;
     public static final int WAITING = 2;
     public static final int SPECTATOR = 0;
-    public static final int RED_TEAM = 1;
-    public static final int BLUE_TEAM = 2;
+    public static final int RED_TEAM = 2;
+    public static final int BLUE_TEAM = 1;
     public static final int MAX_SCORE = 5;
 
     /**

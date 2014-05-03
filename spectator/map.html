@@ -15,31 +15,55 @@
         position: absolute;
         bottom: 0px;
         width: 100%;
-        height: 50px;
-        background-color: #000;
+        height: 75px;
+        background-color: #ccc;
+        text-align: right;
         z-index:3;
-        text-align: center;
-        color: #FFFFFF;
-        font-size: 40px;
+        color: #000;
+        font-size: 60px;
         font-family: 'Open Sans', sans-serif;
       }
+      #counter {
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100px;
+        z-index:4;
+      }
+
       #redPoints {
         color: #FF0000;
       }
       #bluePoints {
         color: #306EFF;
       }
+      br { clear: both; }
+      .cntSeparator {
+        font-size: 54px;
+        margin: 10px 7px;
+        color: #000;
+      }
+      .desc { margin: 7px 3px; }
+      .desc div {
+        float: left;
+        font-family: Arial;
+        width: 70px;
+        margin-right: 65px;
+        font-size: 13px;
+        font-weight: bold;
+        color: #000;
+      }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="js/purl.js"></script>
+    <script src="js/jquery.countdown.js" type="text/javascript" charset="utf-8"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-    <script src="js/ctf.js">
-    
-
-    </script>
+    <script src="js/ctf.js"></script>
   </head>
   <body>
     <div id="map-canvas"></div>
+    <div id="counter"></div>
     <div id="footer">
       <span id="redPoints">0</span>:<span id="bluePoints">0</span>
     </div>

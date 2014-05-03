@@ -9,6 +9,7 @@ var redPlayerIconAlive = "images/red_marker_alive.png";
 var blueFlagIcon = "images/ctf_logo_blue.png";
 var redFlagIcon = "images/ctf_logo_red.png";
 var radiusInMeters = '';
+var endTime;
 
 var ctf = {
   jsonFile: "../lobbies/" + id + ".json",
@@ -281,10 +282,24 @@ function initialParseJson()
   ctf.players = json.responseJSON[0].PLAYERS;
   ctf.flags = json.responseJSON[1].FLAGS;
   ctf.bases = json.responseJSON[2].BASES;
+  endTime = json.responseJSON[0].END_TIME;
   console.log("4: setRadiusInMeters");
   setRadiusInMeters();
   console.log("6: initialize");
   initialize();
+  initializeCounter();
+}
+
+function initializeCounter()
+{
+  var timeLeft = (endTime - new Date().getTime())/1000/60;
+  $(function(){
+    $('#counter').countdown({
+      image: 'images/digits.png',
+      startTime: parseInt(timeLeft,10) + ':00',
+      format: 'mm:ss'
+    });
+  });
 }
 
 function initializeMarkers()
