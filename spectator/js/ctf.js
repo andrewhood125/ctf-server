@@ -19,6 +19,8 @@ var ctf = {
   south: '',
   east: '',
   west: '',
+  blueScore: '0',
+  redScore: '0',
   players: [],
   flags: [],
   bases: []
@@ -44,10 +46,19 @@ function parseJson()
   ctf.south = json.responseJSON[0].SOUTH;
   ctf.east = json.responseJSON[0].EAST;
   ctf.west = json.responseJSON[0].WEST;
+  ctf.redScore = json.responseJSON[0].RED_SCORE;
+  ctf.blueScore = json.responseJSON[0].BLUE_SCORE;
   ctf.players = json.responseJSON[0].PLAYERS;
   ctf.flags = json.responseJSON[1].FLAGS;
   ctf.bases = json.responseJSON[2].BASES;
   updateMarkers();
+  updateScore();
+}
+
+function updateScore()
+{
+  $('#redPoints').html(ctf.redScore);
+  $('#bluePoints').html(ctf.blueScore);
 }
 
 function updateMarkers()
