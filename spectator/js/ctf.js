@@ -225,7 +225,7 @@ function initialize() {
     fillOpacity: 0.35
   });
 
-  var redBaseLatLng = ctf.bases[1].LOCATION.split(",");
+  var redBaseLatLng = ctf.bases[0].LOCATION.split(",");
   var redBase = {
       strokeColor: '#FF0000',
       strokeOpacity: 0.8,
@@ -238,7 +238,7 @@ function initialize() {
     };
     redBase = new google.maps.Circle(redBase);
 
-  var blueBaseLatLng = ctf.bases[0].LOCATION.split(",");
+  var blueBaseLatLng = ctf.bases[1].LOCATION.split(",");
   var blueBase = {
       strokeColor: '#0000FF',
       strokeOpacity: 0.8,
