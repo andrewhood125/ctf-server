@@ -243,12 +243,12 @@ CopyPasta For Easy Server Debugging
 -----------------------------------
 ## User 1
 `{"ACTION":"HELLO","USERNAME":"andrewhood125","BLUETOOTH":"10:40:f3:97:28:9e"}`
-`{"ACTION":"CREATE","LOCATION":"35.1279224,-89.9405429","SIZE":"0.0009", "ACCURACY":0.00005}`
+`{"ACTION":"CREATE","LOCATION":"35.12109549,-89.93835153","SIZE":"0.0007", "ACCURACY":0.00026}`
 
 ## User 2
 `{"ACTION":"HELLO","USERNAME":"spec-ops81","BLUETOOTH":"01:23:45:67:89:ab"}`
 `{"ACTION":"LOBBY"}`  
-`{"ACTION":"JOIN", "ID":"` `","LOCATION":"35.1289224,-89.9406429"}`
+`{"ACTION":"JOIN", "ID":"` `","LOCATION":"35.12113808,-89.93849768"}`
 
 ## User 1
 `{"ACTION":"START"}`
@@ -256,7 +256,7 @@ CopyPasta For Easy Server Debugging
 `{"ACTION":"GPS",`
 `{"ACTION":"FLAG"}`
 `{"ACTION":"GPS",`
-`{"ACTION":"GPS","LOCATION":"-33,-90"}`
+`{"ACTION":"GPS","LOCATION":"35.12113808,-89.93849768"}`
   
 ## User 3
 `{"ACTION":"HELLO","USERNAME":"dorito","BLUETOOTH":"13:40:f3:97:28:9e"}`
