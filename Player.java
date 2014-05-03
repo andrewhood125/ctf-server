@@ -244,6 +244,7 @@ public class Player extends Point implements Runnable
         jo.addProperty("ACTION", "KILL");
         jo.addProperty("PLAYER", this.toString());
         comLink.send(jo);
+        myLobby.broadcast(jo);
     }
 
     
@@ -349,6 +350,7 @@ public class Player extends Point implements Runnable
         jo.addProperty("ACTION", "SPAWN");
         jo.addProperty("PLAYER", this.toString());
         comLink.send(jo);
+        myLobby.broadcast(jo);
         CTFServer.log("INFO", this.toString() + " spawned.");
     }
     
