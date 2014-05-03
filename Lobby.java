@@ -469,6 +469,7 @@ public class Lobby
         {
             this.endGame("Too few players to continue.");
         }
+        player.getLobby().dumpLobby();
     }
     
     public boolean removePlayer(Player player)
@@ -567,6 +568,7 @@ public class Lobby
         jo.addProperty("WEST", arena.getWest());
         jo.addProperty("RED_SCORE", redScore);
         jo.addProperty("BLUE_SCORE", blueScore);
+        jo.addProperty("END_TIME", endTime);
         JsonArray ja = new JsonArray();
         for(int i = 0; i < players.size(); i++)
         {
