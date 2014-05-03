@@ -47,18 +47,44 @@ function parseJson()
   ctf.players = json.responseJSON[0].PLAYERS;
   ctf.flags = json.responseJSON[1].FLAGS;
   ctf.bases = json.responseJSON[2].BASES;
+  updateMarkers();
 }
 
 function updateMarkers()
 {
+  var count = 0;
+  console.log(markers);
   // For each player, base and flag add markers
   for(var i = 0; i < ctf.players.length; i++)
   {
-    addMarker(ctf.players[i], "player");
+    var stringLatLng = ctf.players[i].LOCATION.split(",");
+    markers[count].setPosition(new google.maps.LatLng(stringLatLng[0], stringLatLng[1]));
+    if(ctf.players[i].TEAM == 1)
+    {
+      if(ctf.players[i].STATUS == 0)
+      {
+        // player is dead
+        markers[count].setIcon(bluePlayerIconDead);
+      } else if(ctf.players[i].STATUS == 1) {
+        markers[count].setIcon(bluePlayerIconAlive);
+      }
+      
+    } else if(ctf.players[i].TEAM == 2) {
+      if(ctf.players[i].STATUS == 0)
+      {
+        // player is dead
+        markers[count].setIcon(redPlayerIconDead);
+      } else if(ctf.players[i].STATUS == 1) {
+        markers[count].setIcon(redPlayerIconAlive);
+      }
+    }
+    count++;
   }
   for(var i = 0; i < ctf.flags.length; i++)
   {
-    addMarker(ctf.flags[i], "flag");
+    var stringLatLng = ctf.flags[i].LOCATION.split(",");
+    markers[count].setPosition(new google.maps.LatLng(stringLatLng[0], stringLatLng[1]));
+    count++;
   }
 }
 
@@ -159,7 +185,6 @@ function initialize() {
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
   var arena;
-  var bermudaTriangle;
 
   // Define the LatLng coordinates for the polygon's path.
   var arenaCoords = [
@@ -213,20 +238,12 @@ function initialize() {
       radius: radiusInMeters
     };
     blueBase = new google.maps.Circle(blueBase);
-// Construct the polygon.
-  // arena = new google.maps.Polygon({
-  //   paths: worldCoords,
-  //   strokeColor: '#FF0000',
-  //   strokeOpacity: 0.8,
-  //   strokeWeight: 2,
-  //   fillColor: '#FF0000',
-  //   fillOpacity: 0.35
-  // });
 
 
   arena.setMap(map);
-  updateMarkers();
+  initializeMarkers();
   setAllMap(map);
+  loadJson();
 }
 
 //setTimeout(loadJson, 1);
@@ -257,6 +274,19 @@ function initialParseJson()
   setRadiusInMeters();
   console.log("6: initialize");
   initialize();
+}
+
+function initializeMarkers()
+{
+  // For each player, base and flag add markers
+  for(var i = 0; i < ctf.players.length; i++)
+  {
+    addMarker(ctf.players[i], "player");
+  }
+  for(var i = 0; i < ctf.flags.length; i++)
+  {
+    addMarker(ctf.flags[i], "flag");
+  }
 }
 
 function setRadiusInMeters()

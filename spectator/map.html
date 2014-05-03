@@ -4,11 +4,30 @@
     <title>ctf-web</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <style>
       html, body, #map-canvas {
         height: 100%;
         margin: 0px;
         padding: 0px
+      }
+      #footer {
+        position: absolute;
+        bottom: 0px;
+        width: 100%;
+        height: 50px;
+        background-color: #000;
+        z-index:3;
+        text-align: center;
+        color: #FFFFFF;
+        font-size: 40px;
+        font-family: 'Open Sans', sans-serif;
+      }
+      #redPoints {
+        color: #FF0000;
+      }
+      #bluePoints {
+        color: #306EFF;
       }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -21,5 +40,8 @@
   </head>
   <body>
     <div id="map-canvas"></div>
+    <div id="footer">
+      <span id="redPoints">0</span>:<span id="bluePoints">0</span>
+    </div>
   </body>
 </html>
