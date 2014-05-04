@@ -295,7 +295,7 @@ public class ComLink
                     JsonElement state = jo.get("STATE");
                     player.getLobby().setGameState(state.getAsInt());
                 } else {
-                    out.println(player.getLobby().toJson());
+                    send(player.getLobby().toJson());
                 }
             }
             break;
