@@ -260,6 +260,7 @@ public class ComLink
                     JsonObject temp = new JsonObject();
                     temp.addProperty("ACTION","JOIN");
                     temp.addProperty("SUCCESS","TRUE");
+                    temp.addProperty("TEAM",player.getTeam());
                     send(temp);
                 } else {
                     JsonObject jobj = new JsonObject();
