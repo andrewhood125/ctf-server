@@ -26,16 +26,17 @@ public class CTFServer
     public static String commitMsg = "Not Set";
     public static ArrayList<Player> webPlayers = new ArrayList<Player>();
     
-    public static void handleWebPlayer(Player player, JsonObject jo)
+    public static void handleWebPlayer(Player player, JsonObject jo, String callback)
     {
         CTFServer.log("INFO", "Handling: " + jo.toString());
         JsonElement action = jo.get("ACTION");
         // If greeting then create a new player and add them to the webPlayerList
         if(action.getAsString().equals("HELLO"))
         {
-            player.getComLink().parseCommunication(jo);
             JsonElement webID = jo.get("WEB_ID");
             player.setWebID(webID.getAsString());
+            player.setCallback(callback);
+            player.getComLink().parseCommunication(jo);
             webPlayers.add(player);
         } else {
             for(int i = 0; i < webPlayers.size(); i++)
@@ -43,6 +44,7 @@ public class CTFServer
                 JsonElement webID = jo.get("WEB_ID");
                 if(webPlayers.get(i).getWebID().equals(webID.getAsString()))
                 {
+                    webPlayers.get(i).setCallback(callback);
                     webPlayers.get(i).setComLink(player.getComLink());
                     webPlayers.get(i).getComLink().setPlayer(webPlayers.get(i));
                     webPlayers.get(i).getComLink().parseCommunication(jo);

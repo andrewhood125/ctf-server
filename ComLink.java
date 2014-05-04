@@ -371,9 +371,12 @@ public class ComLink
             int start = message.indexOf("{");
             int end = 1 + message.indexOf("}");
             String json = message.substring(start,end);
+            int callback_start = message.indexOf("=", end);
+            int callback_end = message.indexOf("&", callback_start);
+            String callback = message.substring(callback_start + 1, callback_end);
             try
             {
-                readJson(URLDecoder.decode(json, "UTF-8"));
+                readJson(URLDecoder.decode(json, "UTF-8"), callback);
             } catch(UnsupportedEncodingException ex) {
                 CTFServer.log("ERROR", "Unsupported Encoding.");
             }
@@ -387,13 +390,13 @@ public class ComLink
         
     }
     
-    public void readJson(String message) throws Exception
+    public void readJson(String message, String callback) throws Exception
     {
         JsonParser jp = new JsonParser();
         JsonElement je = jp.parse(message);
         JsonObject jo = je.getAsJsonObject();
         CTFServer.log("DEBUG", "HTTP Json Reading.. " + message);
-        CTFServer.handleWebPlayer(player, jo);
+        CTFServer.handleWebPlayer(player, jo, callback);
         throw new Exception("Web Player Request Complete.");   
     }
     
@@ -424,7 +427,14 @@ public class ComLink
     public void send(JsonObject obj)
     {
         CTFServer.log("DEBUG", "Sending... " + obj.toString());
-        out.println(gson.toJson(obj));
+        if(player.isWebPlayer())
+        {
+            String response = player.getCallback() + "(" + obj.toString() + ")";
+            out.println(response);
+        } else {
+            out.println(gson.toJson(obj));
+        }
+        
     }
     
     public void setPlayer(Player player)

@@ -34,6 +34,8 @@ public class Player extends Point implements Runnable
     private int lifeState;
     private boolean isWebPlayer;
     private String webID;
+    private String callback;
+    
     /**
      * Constructors
      */
@@ -131,6 +133,11 @@ public class Player extends Point implements Runnable
             CTFServer.log("INFO", this.toString() + " dropped the flag.");
         }
         
+    }
+    
+    public String getCallback()
+    {
+        return callback;
     }
     
     public ComLink getComLink()
@@ -250,6 +257,11 @@ public class Player extends Point implements Runnable
             return false;
         }
     }
+    
+    public boolean isWebPlayer()
+    {
+        return isWebPlayer;
+    }
 
     public void kill()
     {
@@ -295,10 +307,12 @@ public class Player extends Point implements Runnable
     
     public void send(JsonObject obj)
     {
-        if(!isWebPlayer)
-        {
-            comLink.send(obj);
-        }
+        comLink.send(obj);
+    }
+    
+    public void setCallback(String callback)
+    {
+        this.callback = callback;
     }
     
     public void setMyBluetoothMac(String mac)
@@ -361,6 +375,7 @@ public class Player extends Point implements Runnable
     public void setWebID(String webID)
     {
         this.webID = webID;
+        this.isWebPlayer = true;
     }
 
     public void spawn()
