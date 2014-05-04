@@ -12,6 +12,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.MalformedJsonException;
+import com.google.gson.JsonSyntaxException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -350,16 +352,69 @@ public class ComLink
         }
     }
     
+    public JsonObject readHTTP(String message)
+    {
+        // Attempt to read message and construct a json request
+        //from it and then process it as if it were coming from a 
+        //regular client
+        if(message.contains("json_ctf_server"))
+        {
+            CTFServer.log("HTTP", message);
+            // parse out json 
+            int start = message.indexOf("{");
+            int end = 1 + message.indexOf("}");
+            String json = message.substring(start,end);
+            CTFServer.log("HTTP", json);
+            return readJson(json);
+        } else {
+            CTFServer.log("DISCARDED HTTP", "Reading.. " + message);
+        }
+        JsonObject jo = new JsonObject();
+        jo.addProperty("ACTION","NOTHING");
+        return jo;
+    }
+    
+    public JsonObject readJson(String message)
+    {
+        try
+        {
+            JsonParser jp = new JsonParser();
+            JsonElement je = jp.parse(message);
+            JsonObject jo = je.getAsJsonObject();
+            CTFServer.log("VALID JSON", "Reading.. " + message);
+            return jo;
+        } catch (Exception ex) {
+            CTFServer.log("ERROR", message);
+        }
+        
+        JsonObject jo = new JsonObject();
+        jo.addProperty("ACTION","NOTHING");
+        return jo;
+    }
+    
     public JsonObject readLine() throws IOException
     {
-        JsonParser jp = new JsonParser();
-        JsonElement je = jp.parse(in.readLine());
-        JsonObject jo = je.getAsJsonObject();
-        return jo;
+        String message = "";
+        try
+        {
+            JsonParser jp = new JsonParser();
+            message = in.readLine();
+            JsonElement je = jp.parse(message);
+            JsonObject jo = je.getAsJsonObject();
+            CTFServer.log("VALID JSON", "Reading.. " + message);
+            return jo;
+        } catch (MalformedJsonException ex) {
+            return readHTTP(message);
+        } catch (JsonSyntaxException ex) {
+            return readHTTP(message);
+        } catch(Exception ex) {
+            return readHTTP(message);
+        }
     }
     
     public void send(JsonObject obj)
     {
+        CTFServer.log("DEBUG", "Sending... " + obj.toString());
         out.println(gson.toJson(obj));
     }
 }
