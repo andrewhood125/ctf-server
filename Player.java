@@ -293,7 +293,7 @@ public class Player extends Point implements Runnable
         } catch(IllegalStateException ex) {
             CTFServer.log("THREAD CRITICAL", "IllegalStateException was thrown for: " + incomingCommunication.toString());
         } catch(NullPointerException ex) {
-            CTFServer.log("THREA CRITICAL", this + " socket shutdown? NullPointerException.");
+            CTFServer.log("THREAD CRITICAL", this + " socket shutdown? NullPointerException.");
         } catch(Exception ex) {
             CTFServer.log("THREAD CRITICAL", "Exception caught from player: " + ex.getMessage());
         } 
