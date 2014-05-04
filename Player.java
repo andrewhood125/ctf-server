@@ -32,7 +32,8 @@ public class Player extends Point implements Runnable
     private Lobby myLobby;
     private int team;
     private int lifeState;
-
+    private boolean isWebPlayer;
+    private String webID;
     /**
      * Constructors
      */
@@ -42,6 +43,15 @@ public class Player extends Point implements Runnable
         comLink = new ComLink(socket, this);
         this.setObservedBluetoothMac("");
         this.setMyBluetoothMac("");
+    }
+    
+    Player(Socket socket, boolean isWebPLayer)
+    {
+        super(35.1174,-89.9711);   // Initialize location to Memphis, TN.
+        comLink = new ComLink(socket, this);
+        this.setObservedBluetoothMac("");
+        this.setMyBluetoothMac("");
+        this.isWebPlayer = isWebPlayer;
     }
     
     public void checkIfPickedUpFlag()
@@ -123,6 +133,11 @@ public class Player extends Point implements Runnable
         
     }
     
+    public ComLink getComLink()
+    {
+        return comLink;
+    }
+    
     public int getLifeState()
     {
         return this.lifeState;
@@ -165,6 +180,11 @@ public class Player extends Point implements Runnable
     public String getUsername()
     {
         return username;
+    }
+    
+    public String getWebID()
+    {
+        return webID;
     }
     
     public boolean isAlive()
@@ -257,23 +277,14 @@ public class Player extends Point implements Runnable
             while(!(incomingCommunication = comLink.readLine()).equals("QUIT"))
                 comLink.parseCommunication(incomingCommunication);
         } catch(IOException ex) {
-            JsonObject job = new JsonObject();
-            job.addProperty("ACTION", "LOG");
-            job.addProperty("LEVEL", "ERROR");
-            job.addProperty("PAYLOAD", "IOException caught in Player.run(). This is what we know: " + ex.getMessage());
-            comLink.send(job);
+            CTFServer.log("THREAD CRITICAL", "IOException was thrown for: " + incomingCommunication.toString());
         } catch(IllegalStateException ex) {
-            CTFServer.log("ERROR", "IllegalStateException was thrown for: " + incomingCommunication.toString());
-        }/*catch(NullPointerException ex) {
-            this.notifyError(this + " socket shutdown? NullPointerException.");
-        } */
-
-        JsonObject jobj = new JsonObject();
-        jobj.addProperty("ACTION", "LOG");
-        jobj.addProperty("LEVEL", "INFO");
-        jobj.addProperty("PAYLOAD", this.toString() + " shutting down");
-        comLink.send(jobj);
-        
+            CTFServer.log("THREAD CRITICAL", "IllegalStateException was thrown for: " + incomingCommunication.toString());
+        } catch(NullPointerException ex) {
+            CTFServer.log("THREA CRITICAL", this + " socket shutdown? NullPointerException.");
+        } catch(Exception ex) {
+            CTFServer.log("THREAD CRITICAL", "Exception caught from player: " + ex.getMessage());
+        } 
 
         comLink.close();
         if(this.isInLobby())
@@ -284,12 +295,20 @@ public class Player extends Point implements Runnable
     
     public void send(JsonObject obj)
     {
-        comLink.send(obj);
+        if(!isWebPlayer)
+        {
+            comLink.send(obj);
+        }
     }
     
     public void setMyBluetoothMac(String mac)
     {
         this.myBluetoothMac = mac;
+    }
+    
+    public void setComLink(ComLink comLink)
+    {
+        this.comLink = comLink;
     }
 
     public void setFlag(Flag newFlag)
@@ -337,6 +356,11 @@ public class Player extends Point implements Runnable
     public void setUsername(String username)
     {
         this.username = username;
+    }
+    
+    public void setWebID(String webID)
+    {
+        this.webID = webID;
     }
 
     public void spawn()

@@ -6,6 +6,10 @@
  * Copyright (c) 2014 Andrew Hood. All rights reserved.
  */
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.File;
@@ -20,7 +24,34 @@ public class CTFServer
 { 
     public static String commit = "Not Set";
     public static String commitMsg = "Not Set";
+    public static ArrayList<Player> webPlayers = new ArrayList<Player>();
     
+    public static void handleWebPlayer(Player player, JsonObject jo)
+    {
+        CTFServer.log("INFO", "Handling: " + jo.toString());
+        JsonElement action = jo.get("ACTION");
+        // If greeting then create a new player and add them to the webPlayerList
+        if(action.getAsString().equals("HELLO"))
+        {
+            player.getComLink().parseCommunication(jo);
+            JsonElement webID = jo.get("WEB_ID");
+            player.setWebID(webID.getAsString());
+            webPlayers.add(player);
+        } else {
+            for(int i = 0; i < webPlayers.size(); i++)
+            {
+                JsonElement webID = jo.get("WEB_ID");
+                if(webPlayers.get(i).getWebID().equals(webID.getAsString()))
+                {
+                    webPlayers.get(i).setComLink(player.getComLink());
+                    webPlayers.get(i).getComLink().setPlayer(webPlayers.get(i));
+                    webPlayers.get(i).getComLink().parseCommunication(jo);
+                }
+            }
+            // Otherwise find the player in the list and process their command.
+        }
+        
+    }
     
     public static void loadGitInfo() throws IOException, InterruptedException
     {

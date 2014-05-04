@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.URLDecoder;
 
@@ -352,67 +353,64 @@ public class ComLink
             } 
 
             default: JsonObject jobj = new JsonObject();
-                        jobj.addProperty("ACTION", "LOG");
-                        jobj.addProperty("LEVEL", "ERROR");
-                        jobj.addProperty("PAYLOAD", "Command not understood.");
-                        send(jobj);
+                    jobj.addProperty("ACTION", "LOG");
+                    jobj.addProperty("LEVEL", "ERROR");
+                    jobj.addProperty("PAYLOAD", "Command not understood.");
+                    send(jobj);
         }
     }
     
-    public JsonObject readHTTP(String message)
+    public JsonObject readHTTP(String message) throws Exception
     {
         // Attempt to read message and construct a json request
         //from it and then process it as if it were coming from a 
         //regular client
-        if(message != null && message.contains("json_ctf_server"))
+        if(message.contains("json_ctf_server"))
         {
-            CTFServer.log("HTTP", message);
             // parse out json 
             int start = message.indexOf("{");
             int end = 1 + message.indexOf("}");
             String json = message.substring(start,end);
-            CTFServer.log("HTTP", json);
-            return readJson(json);
+            try
+            {
+                readJson(URLDecoder.decode(json, "UTF-8"));
+            } catch(UnsupportedEncodingException ex) {
+                CTFServer.log("ERROR", "Unsupported Encoding.");
+            }
         } else {
-            CTFServer.log("DISCARDED HTTP", "Reading.. " + message);
-        }
-        JsonObject jo = new JsonObject();
-        jo.addProperty("ACTION","NOTHING");
-        close();
-        return jo;
-    }
-    
-    public JsonObject readJson(String message)
-    {
-        String decoded = URLDecoder.decode(message);
-        try
-        {
-            
-            JsonParser jp = new JsonParser();
-            JsonElement je = jp.parse(decoded);
-            JsonObject jo = je.getAsJsonObject();
-            CTFServer.log("VALID JSON", "Reading.. " + message);
-            CTFServer.log("DECODED", decoded);
-            return jo;
-        } catch (Exception ex) {
-            CTFServer.log("ERROR", message);
+            CTFServer.log("DEBUG", "HTTP Discarded: " + message);
         }
         
         JsonObject jo = new JsonObject();
         jo.addProperty("ACTION","NOTHING");
         return jo;
+        
     }
     
-    public JsonObject readLine() throws IOException
+    public void readJson(String message) throws Exception
+    {
+        JsonParser jp = new JsonParser();
+        JsonElement je = jp.parse(message);
+        JsonObject jo = je.getAsJsonObject();
+        CTFServer.log("DEBUG", "HTTP Json Reading.. " + message);
+        CTFServer.handleWebPlayer(player, jo);
+        throw new Exception("Web Player Request Complete.");   
+    }
+    
+    public JsonObject readLine() throws IOException, Exception
     {
         String message = "";
         try
         {
             JsonParser jp = new JsonParser();
             message = in.readLine();
+            if(message == null)
+            {
+                throw new Exception("Message is null");
+            }
             JsonElement je = jp.parse(message);
             JsonObject jo = je.getAsJsonObject();
-            CTFServer.log("VALID JSON", "Reading.. " + message);
+            CTFServer.log("DEBUG", "Socket JSON Reading.. " + jo.toString());
             return jo;
         } catch (MalformedJsonException ex) {
             return readHTTP(message);
@@ -427,5 +425,10 @@ public class ComLink
     {
         CTFServer.log("DEBUG", "Sending... " + obj.toString());
         out.println(gson.toJson(obj));
+    }
+    
+    public void setPlayer(Player player)
+    {
+        this.player = player;
     }
 }
