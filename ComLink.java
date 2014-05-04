@@ -232,6 +232,10 @@ public class ComLink
                     temp.addProperty("PAYLOAD","BAD LOCATION");
                     this.send(temp);
                 }
+                JsonObject temp = new JsonObject();
+                temp.addProperty("ACTION","GPS");
+                temp.addProperty("SUCCESS","TRUE");
+                this.send(temp);
                 player.getLobby().playerUpdate(player);
             }
             break;
