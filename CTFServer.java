@@ -17,7 +17,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 public class CTFServer
@@ -80,7 +83,9 @@ public class CTFServer
     
     public static void log(String tag, String message)
     {
-        System.out.println("[" + tag + "]: " + message + "<br>");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        System.out.println("[" + dateFormat.format(date) + "][" + tag + "]: " + message + "<br>");
     }
     
     public static void main(String[] args)
@@ -114,6 +119,8 @@ public class CTFServer
         {
             // Setup a socket locally to listen and accept connections
             serverSocket = new ServerSocket(portNumber);
+            CTFServer.log("INFO", "Version: " + commit);
+            CTFServer.log("INFO", "Commit Message: " + commitMsg);
             CTFServer.log("INFO", "CTFServer listening for connections.");
             CTFServer.log("INFO", serverSocket.toString());
         } catch(IOException ex) {
