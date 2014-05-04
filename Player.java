@@ -251,9 +251,9 @@ public class Player extends Point implements Runnable
 
     public void run()
     {
+        JsonObject incomingCommunication = new JsonObject();
         try
         {
-            JsonObject incomingCommunication;
             while(!(incomingCommunication = comLink.readLine()).equals("QUIT"))
                 comLink.parseCommunication(incomingCommunication);
         } catch(IOException ex) {
@@ -263,7 +263,7 @@ public class Player extends Point implements Runnable
             job.addProperty("PAYLOAD", "IOException caught in Player.run(). This is what we know: " + ex.getMessage());
             comLink.send(job);
         } catch(IllegalStateException ex) {
-            System.err.println("IllegalState " + ex.getMessage());
+            CTFServer.log("ERROR", "IllegalStateException was thrown for: " + incomingCommunication.toString());
         }/*catch(NullPointerException ex) {
             this.notifyError(this + " socket shutdown? NullPointerException.");
         } */
@@ -274,15 +274,11 @@ public class Player extends Point implements Runnable
         jobj.addProperty("PAYLOAD", this.toString() + " shutting down");
         comLink.send(jobj);
         
-        try
+
+        comLink.close();
+        if(this.isInLobby())
         {
-            comLink.close();
-            if(this.isInLobby())
-            {
-                Lobby.removePlayerFromLobby(this, myLobby);
-            }
-        } catch(IOException ex) {
-            System.err.println(ex.getMessage());
+            Lobby.removePlayerFromLobby(this, myLobby);
         }
     }
     

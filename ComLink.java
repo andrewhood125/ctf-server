@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.URLDecoder;
 
 public class ComLink
 {
@@ -51,11 +52,17 @@ public class ComLink
         gson = new Gson();
     }
     
-    public void close() throws IOException
+    public void close()
     {
         out.close();
-        in.close();
-        socket.close();
+        try 
+        {
+            in.close();
+            socket.close();
+        } catch(IOException ex) {
+            CTFServer.log("ERROR", ex.getMessage());
+        }
+        
     } 
     
     public void parseCommunication(JsonObject jo) throws IllegalStateException
@@ -357,7 +364,7 @@ public class ComLink
         // Attempt to read message and construct a json request
         //from it and then process it as if it were coming from a 
         //regular client
-        if(message.contains("json_ctf_server"))
+        if(message != null && message.contains("json_ctf_server"))
         {
             CTFServer.log("HTTP", message);
             // parse out json 
@@ -371,17 +378,21 @@ public class ComLink
         }
         JsonObject jo = new JsonObject();
         jo.addProperty("ACTION","NOTHING");
+        close();
         return jo;
     }
     
     public JsonObject readJson(String message)
     {
+        String decoded = URLDecoder.decode(message);
         try
         {
+            
             JsonParser jp = new JsonParser();
-            JsonElement je = jp.parse(message);
+            JsonElement je = jp.parse(decoded);
             JsonObject jo = je.getAsJsonObject();
             CTFServer.log("VALID JSON", "Reading.. " + message);
+            CTFServer.log("DECODED", decoded);
             return jo;
         } catch (Exception ex) {
             CTFServer.log("ERROR", message);

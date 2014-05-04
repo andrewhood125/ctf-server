@@ -63,7 +63,7 @@ public class CTFServer
         {
             portNumber = Integer.parseInt(args[0]);
         } catch(NumberFormatException ex) {
-            System.err.println(ex.getMessage());
+            CTFServer.log("CRITICAL", ex.getMessage());
             System.exit(2);
         }
         
@@ -84,7 +84,7 @@ public class CTFServer
             CTFServer.log("INFO", "CTFServer listening for connections.");
             CTFServer.log("INFO", serverSocket.toString());
         } catch(IOException ex) {
-            CTFServer.log("ERROR", ex.getMessage());
+            CTFServer.log("CRITICAL", ex.getMessage());
             System.exit(3);
         }
 
@@ -99,7 +99,7 @@ public class CTFServer
                 Thread newPlayerThread = new Thread(newPlayer);
                 newPlayerThread.start();
             } catch(IOException ex) {
-                CTFServer.log("ERROR", ex.getMessage());
+                CTFServer.log("CRITICAL", ex.getMessage());
                 System.exit(3);
             }
         }
