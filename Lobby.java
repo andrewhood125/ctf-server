@@ -52,8 +52,8 @@ public class Lobby
     Lobby(Player host, double arenaSize, double arenaAccuracy)
     {
         this.players = new ArrayList<Player>();
-        this.addNewPlayer(host);
         this.lobbyID = generateLobbyID();
+        this.addNewPlayer(host);  
         // Create arena based on arenaSize and Players gps coordinates.
         this.arena = new Arena(host.getLatitude(), host.getLongitude(), arenaSize);
         this.duration = 30;
