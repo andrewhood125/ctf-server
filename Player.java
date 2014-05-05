@@ -275,7 +275,7 @@ public class Player extends Point implements Runnable
         CTFServer.log("INFO", this.toString() + " has been killed.");
         jo.addProperty("ACTION", "KILL");
         jo.addProperty("PLAYER", this.toString());
-        comLink.send(jo);
+        jo.addProperty("TEAM", this.getTeam());
         myLobby.broadcast(jo);
     }
 

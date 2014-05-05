@@ -66,6 +66,8 @@ public class Lobby
         this.accuracyInMeters = Lobby.distance(0, 0, arenaAccuracy, 0);
         //this.size = arenaSize;
         // Add this new Lobby to the lobbies list
+        CTFServer.log("INFO", "[Lobby Construction] Accuracy In Meters: " + accuracyInMeters);
+        CTFServer.log("INFO", "[Lobby Construction] ID: " + lobbyID);
         Lobby.lobbies.add(this);
     }
 
@@ -420,23 +422,23 @@ public class Lobby
         } else if(player.isAlive()) { 
             // Check if the player picked up a flag 
             player.checkIfPickedUpFlag();
-            
-            // Check if I'm within half accuracy of live enemy player.
-            for(int i = 0; i < players.size(); i++)
-            {
-                if(players.get(i).getTeam() != player.getTeam() && players.get(i).isAlive())
-                {
-                   double playerGap = Lobby.distance(player.getLatitude(), player.getLongitude(), players.get(i).getLatitude(), players.get(i).getLongitude());
-                   if(playerGap < accuracyInMeters / 2)
-                   {
-                       player.kill();
-                       players.get(i).kill();
-                       CTFServer.log("INFO", players.toString() + " and " + players.get(i).toString() + " came within " + accuracyInMeters / 2 + " of each other and were obliterated.");
-                   }
-                }
-            }
         }
         
+        // Check if I'm within half accuracy of live enemy player.
+        for(int i = 0; i < players.size(); i++)
+        {
+            if(players.get(i).getTeam() != player.getTeam() && players.get(i).isAlive() && player.isAlive())
+            {
+               double playerGap = Lobby.distance(player.getLatitude(), player.getLongitude(), players.get(i).getLatitude(), players.get(i).getLongitude());
+               CTFServer.log("INFO", player.getUsername() + " and " + players.get(i).getUsername() + " are " + playerGap + " meters away from each other.");
+               if(playerGap < accuracyInMeters)
+               {
+                   player.kill();
+                   players.get(i).kill();
+                   CTFServer.log("INFO", players.toString() + " and " + players.get(i).toString() + " came within " + accuracyInMeters / 2 + " of each other and were obliterated.");
+               }
+            }
+        }
         
 
         // Check if player is dead and came back to base to be spawned again
