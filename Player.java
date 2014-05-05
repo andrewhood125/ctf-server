@@ -126,7 +126,7 @@ public class Player extends Point implements Runnable
         {
             JsonObject jo = new JsonObject();
             jo.addProperty("ACTION", "DROP");
-            jo.addProperty("FLAG", myFlag.toString());
+            jo.addProperty("FLAG", myFlag.getTeam());
             jo.addProperty("PLAYER", this.toString());
             comLink.send(jo);
             this.myFlag = null;
