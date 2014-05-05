@@ -41,6 +41,7 @@ public class Lobby
     private String lobbyID;
     private long endTime;
     private Point epicenter;
+    private double accuracyInMeters;
     /**
      * Constructors
      */
@@ -62,6 +63,7 @@ public class Lobby
         this.blueFlag = new Flag(Lobby.BLUE_TEAM, 0, 0, arenaAccuracy, this.arena);
         this.redBase = new Base(Lobby.RED_TEAM, 0, 0, arenaAccuracy, this.arena);
         this.blueBase = new Base(Lobby.BLUE_TEAM, 0, 0, arenaAccuracy, this.arena);
+        this.accuracyInMeters = Lobby.distance(0, 0, arenaAccuracy, 0);
         //this.size = arenaSize;
         // Add this new Lobby to the lobbies list
         Lobby.lobbies.add(this);
@@ -109,6 +111,17 @@ public class Lobby
         {
             players.get(i).send(obj);
         }
+    }
+    
+    public static double distance(double lat1, double lon1, double lat2, double lon2)
+    {
+        double R = 6378.137; // Radius of earth in KM
+        double dLat = (lat2 - lat1) * Math.PI / 180;
+        double dLon = (lon2 - lon1) * Math.PI / 180;
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double d = R * c;
+        return d * 1000; // meters
     }
     
     public static void dumpLobbies()
@@ -407,7 +420,24 @@ public class Lobby
         } else if(player.isAlive()) { 
             // Check if the player picked up a flag 
             player.checkIfPickedUpFlag();
+            
+            // Check if I'm within half accuracy of live enemy player.
+            for(int i = 0; i < players.size(); i++)
+            {
+                if(players.get(i).getTeam() != player.getTeam() && players.get(i).isAlive())
+                {
+                   double playerGap = Lobby.distance(player.getLatitude(), player.getLongitude(), players.get(i).getLatitude(), players.get(i).getLongitude());
+                   if(playerGap < accuracyInMeters / 2)
+                   {
+                       player.kill();
+                       players.get(i).kill();
+                       CTFServer.log("INFO", players.toString() + " and " + players.get(i).toString() + " came within " + accuracyInMeters / 2 + " of each other and were obliterated.");
+                   }
+                }
+            }
         }
+        
+        
 
         // Check if player is dead and came back to base to be spawned again
         // Or the player is holding their flag and returning it to their base.
