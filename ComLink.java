@@ -116,14 +116,13 @@ public class ComLink
                 double newLobbySize = arenaSize.getAsDouble();
                 JsonElement arenaAccuracy = jo.get("ACCURACY");
                 double newLobbyAccuracy = arenaAccuracy.getAsDouble();
-                
-                player.setLobby(new Lobby(player, newLobbySize, newLobbyAccuracy));
-                Lobby.dumpLobbies();
                 JsonObject job = new JsonObject();
+                player.setLobby(new Lobby(player, newLobbySize, newLobbyAccuracy));
                 job.addProperty("ACTION", "CREATE");
                 job.addProperty("ID", player.getLobby().getLobbyID());
                 job.addProperty("SUCCESS", "TRUE");
                 send(job);
+                Lobby.dumpLobbies();
             } else if(player.isInLobby()) {
                 JsonObject job = new JsonObject();
                 job.addProperty("ACTION", "LOG");
@@ -365,7 +364,7 @@ public class ComLink
         }
     }
     
-    public JsonObject readHTTP(String message) throws Exception
+    public JsonObject readHTTP(String message) throws WebPlayerException
     {
         // Attempt to read message and construct a json request
         //from it and then process it as if it were coming from a 
@@ -373,18 +372,21 @@ public class ComLink
         if(message.contains("json_ctf_server"))
         {
             // parse out json 
-            int start = message.indexOf("{");
-            int end = 1 + message.indexOf("}");
-            String json = message.substring(start,end);
-            int callback_start = message.indexOf("=", end);
-            int callback_end = message.indexOf("&", callback_start);
-            String callback = message.substring(callback_start + 1, callback_end);
+            String decoded = "";
             try
             {
-                readJson(URLDecoder.decode(json, "UTF-8"), callback);
+                decoded = URLDecoder.decode(message, "UTF-8");
             } catch(UnsupportedEncodingException ex) {
                 CTFServer.log("ERROR", "Unsupported Encoding.");
             }
+            int start = decoded.indexOf("{");
+            int end = 1 + decoded.indexOf("}");
+            String json = decoded.substring(start,end);
+            int callback_start = message.indexOf("=", end);
+            int callback_end = message.indexOf("&", callback_start);
+            String callback = message.substring(callback_start + 1, callback_end);
+            readJson(json, callback);
+            
         } else {
             CTFServer.log("DEBUG", "HTTP Discarded: " + message);
         }
@@ -395,17 +397,17 @@ public class ComLink
         
     }
     
-    public void readJson(String message, String callback) throws Exception
+    public void readJson(String message, String callback) throws WebPlayerException
     {
         JsonParser jp = new JsonParser();
         JsonElement je = jp.parse(message);
         JsonObject jo = je.getAsJsonObject();
         CTFServer.log("DEBUG", "HTTP Json Reading.. " + message);
         CTFServer.handleWebPlayer(player, jo, callback);
-        throw new Exception("Web Player Request Complete.");   
+        throw new WebPlayerException("Web Player Request Complete.");   
     }
     
-    public JsonObject readLine() throws IOException, Exception
+    public JsonObject readLine() throws IOException, WebPlayerException
     {
         String message = "";
         try
@@ -434,8 +436,18 @@ public class ComLink
         CTFServer.log("DEBUG", "Sending... " + obj.toString());
         if(player.isWebPlayer())
         {
-            String response = player.getCallback() + "(" + obj.toString() + ")";
+            String responseHeaders = "HTTP/1.1 200 Ok\n" + 
+                                     "Content-Type: application/javascript; charset=UTF-8\n" + "\n";
+            String response = responseHeaders + player.getCallback() + "(" + obj.toString() + ")";
+            //String response = responseHeaders + obj.toString();
             out.println(response);
+            try
+            {
+                in.close();
+            } catch(IOException ex) {
+                CTFServer.log("ERROR", "IOException while closing buffered reader.");
+            }
+            
         } else {
             out.println(gson.toJson(obj));
         }

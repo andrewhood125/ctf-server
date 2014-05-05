@@ -31,29 +31,31 @@ public class CTFServer
     
     public static void handleWebPlayer(Player player, JsonObject jo, String callback)
     {
-        CTFServer.log("INFO", "Handling: " + jo.toString());
+        String message = jo.toString();
+        CTFServer.log("INFO", "Handling: " + message);
         JsonElement action = jo.get("ACTION");
-        // If greeting then create a new player and add them to the webPlayerList
-        if(action.getAsString().equals("HELLO"))
+        
+        boolean playerFound = false;
+        for(int i = 0; i < webPlayers.size(); i++)
+        {
+            JsonElement webID = jo.get("WEB_ID");
+            if(webPlayers.get(i).getWebID().equals(webID.getAsString()))
+            {
+                webPlayers.get(i).setCallback(callback);
+                webPlayers.get(i).setComLink(player.getComLink());
+                webPlayers.get(i).getComLink().setPlayer(webPlayers.get(i));
+                webPlayers.get(i).getComLink().parseCommunication(jo);
+                playerFound = true;
+            }
+        }
+        
+        if(!playerFound)
         {
             JsonElement webID = jo.get("WEB_ID");
             player.setWebID(webID.getAsString());
             player.setCallback(callback);
             player.getComLink().parseCommunication(jo);
             webPlayers.add(player);
-        } else {
-            for(int i = 0; i < webPlayers.size(); i++)
-            {
-                JsonElement webID = jo.get("WEB_ID");
-                if(webPlayers.get(i).getWebID().equals(webID.getAsString()))
-                {
-                    webPlayers.get(i).setCallback(callback);
-                    webPlayers.get(i).setComLink(player.getComLink());
-                    webPlayers.get(i).getComLink().setPlayer(webPlayers.get(i));
-                    webPlayers.get(i).getComLink().parseCommunication(jo);
-                }
-            }
-            // Otherwise find the player in the list and process their command.
         }
         
     }

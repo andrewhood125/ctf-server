@@ -62,7 +62,6 @@ public class Lobby
         this.blueFlag = new Flag(Lobby.BLUE_TEAM, 0, 0, arenaAccuracy, this.arena);
         this.redBase = new Base(Lobby.RED_TEAM, 0, 0, arenaAccuracy, this.arena);
         this.blueBase = new Base(Lobby.BLUE_TEAM, 0, 0, arenaAccuracy, this.arena);
-        this.setGameState(Lobby.AT_LOBBY);
         //this.size = arenaSize;
         // Add this new Lobby to the lobbies list
         Lobby.lobbies.add(this);
