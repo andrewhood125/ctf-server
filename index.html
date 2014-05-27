@@ -4,75 +4,399 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Ctf-server by andrewhood125</title>
+
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/andrewhood125/ctf-server">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/andrewhood125/ctf-server/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/andrewhood125/ctf-server/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
-
     <div class="wrapper">
+      <header>
+        <h1>Ctf-server</h1>
+        <p>Capture The Flag Server</p>
 
+        <p class="view"><a href="https://github.com/andrewhood125/ctf-server">View the Project on GitHub <small>andrewhood125/ctf-server</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/andrewhood125/ctf-server/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/andrewhood125/ctf-server/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/andrewhood125/ctf-server">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
       <section>
-        <div id="title">
-          <h1>Ctf-server</h1>
-          <p>Capture The Flag Server</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/andrewhood125">andrewhood125</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
+        <h1>
+<a name="ctf-server" class="anchor" href="#ctf-server"><span class="octicon octicon-link"></span></a>ctf-server</h1>
 
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+<p>The server to support capture the flag.</p>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<h2>
+<a name="author" class="anchor" href="#author"><span class="octicon octicon-link"></span></a>Author</h2>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<p>Andrew Hood <a href="mailto:andrewhood125@gmail.com">andrewhood125@gmail.com</a></p>
+
+<h2>
+<a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting Started</h2>
+
+<ul>
+<li>Clone ctf-server.</li>
+</ul><pre><code>git clone http://git.nowaddhero.com/andrewhood125/ctf-server.git
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<ul>
+<li>Compile and run the server.</li>
+</ul><pre><code>cd ctf-server &amp;&amp; make
+</code></pre>
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<h2>
+<a name="protocol" class="anchor" href="#protocol"><span class="octicon octicon-link"></span></a>Protocol</h2>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>The CTF Protocol is in JSON. </p>
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+<h4>
+<a name="what-the-server-pushes" class="anchor" href="#what-the-server-pushes"><span class="octicon octicon-link"></span></a>What the server pushes</h4>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<h6>
+<a name="while-a-player-is-in-a-lobby-the-server-can-push" class="anchor" href="#while-a-player-is-in-a-lobby-the-server-can-push"><span class="octicon octicon-link"></span></a>While a player is in a lobby the server can push...</h6>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<p>When a player joins a lobby all other players will receive:</p>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<pre><code>{"ACTION":"JOINED","LOCATION":"33.0,-90.0","PLAYER":"DORITO","TEAM":"Blue","BLUETOOTH":"12:12:34:56:78:90"}
+</code></pre>
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+<h6>
+<a name="while-a-player-is-in-a-game-the-server-can-push" class="anchor" href="#while-a-player-is-in-a-game-the-server-can-push"><span class="octicon octicon-link"></span></a>While a player is in a game the server can push...</h6>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<p>When the game is started</p>
+
+<pre><code>{"ACTION":"START"}
+{"ACTION":"KILL","PLAYER":"andrewhood125"}
+</code></pre>
+
+<p>When a player updates their location</p>
+
+<pre><code>{"ACTION":"GPS","LOCATION":"-33.0,-90.0","PLAYER":"DORITO"}
+</code></pre>
+
+<h4>
+<a name="actions" class="anchor" href="#actions"><span class="octicon octicon-link"></span></a>Actions</h4>
+
+<ul>
+<li>Action
+
+<ul>
+<li>Attribute belonging to action
+
+<ul>
+<li>Acceptable values</li>
+<li>Description</li>
+</ul>
+</li>
+<li>Another attribute
+
+<ul>
+<li>Acceptable values</li>
+<li>Description</li>
+</ul>
+</li>
+<li>What this command does.</li>
+<li>When this action can be used.</li>
+<li>What this action will reply with.</li>
+</ul>
+</li>
+</ul><pre><code> Example of this command being used
+</code></pre>
+
+<pre><code>An example of a reply from the server
+</code></pre>
+
+<ul>
+<li>HELLO
+
+<ul>
+<li>USERNAME
+
+<ul>
+<li>Alphanumeric</li>
+<li>Used to identify a user in a lobby</li>
+</ul>
+</li>
+<li>BLUETOOTH
+
+<ul>
+<li>A valid bluetooth mac</li>
+<li>Sets your users bluetooth mac on the server which is distributed to other players for the game logic.</li>
+</ul>
+</li>
+<li>Sets up your user. </li>
+<li>Upon establishing a connection to the server. Used only once. Greeting someone more than once is... awkward.</li>
+<li>If you have not yet greeted you will not recieve a response. If you have already greeted than you will recieve info level log.<br>
+</li>
+</ul>
+</li>
+</ul><pre><code>{
+  "ACTION":"HELLO",
+  "USERNAME":"andrewhood125",
+  "BLUETOOTH":"10:40:f3:97:2a:33"
+}
+</code></pre>
+
+<ul>
+<li>CREATE
+
+<ul>
+<li>LOCATION
+
+<ul>
+<li>DOUBLE,DOUBLE That is.. lattitude comma longitude.</li>
+<li>Used to determine the arena boundaries for the lobby you're creating.</li>
+</ul>
+</li>
+<li>SIZE
+
+<ul>
+<li>Double</li>
+<li>The distance to the North and South boundaries from your current location. The East and West boundaries will be SIZE*2 away to form the rectangle.</li>
+</ul>
+</li>
+<li>Creates a lobby.</li>
+<li>After you have greeted while you are not in a lobby.</li>
+<li>Replies with info level log.</li>
+</ul>
+</li>
+</ul><pre><code>{
+  "ACTION":"CREATE",
+  "LOCATION":"33.23432423,-89.34232232",
+  "SIZE":"0.2"
+}
+</code></pre>
+
+<pre><code>{"ACTION":"LOG","LEVEL":"INFO","PAYLOAD":"You\u0027re now in lobby
+2C52A"}
+</code></pre>
+
+<ul>
+<li>START
+
+<ul>
+<li> Starts the game. </li>
+<li>When you are in a lobby that you have created with more than 1 player. </li>
+<li>WHAT DOES START REPLY</li>
+</ul>
+</li>
+</ul><pre><code>{
+  "ACTION":"START"
+}
+</code></pre>
+
+<ul>
+<li>GPS
+
+<ul>
+<li>LOCATION
+
+<ul>
+<li>DOUBLE,DOUBLE That is.. lattitude comma longitude.</li>
+<li>Your updated location.</li>
+</ul>
+</li>
+<li>Updates your location.</li>
+<li>When you are in a lobby.</li>
+<li>No reply.</li>
+</ul>
+</li>
+</ul><pre><code>{
+  "ACTION":"GPS",
+  "LOCATION":"33.23432443,-89.34232232"
+}
+
+</code></pre>
+
+<ul>
+<li>JOIN
+
+<ul>
+<li>LOCATION
+
+<ul>
+<li>DOUBLE,DOUBLE That is.. lattitude comma longitude.</li>
+<li>Your location at the time of joining the lobby.</li>
+</ul>
+</li>
+<li>ID
+
+<ul>
+<li>5 Chars [0-9A-F]</li>
+<li>The ID of the lobby you are trying to join.</li>
+</ul>
+</li>
+<li>Joins a lobby.</li>
+<li>When you have greeted while you are not in a lobby.</li>
+<li>WHAT DOES JOIN REPLY</li>
+</ul>
+</li>
+</ul><pre><code>{
+  "ACTION":"JOIN",
+  "LOCATION":"33.23432423,-89.34232232",
+  "SIZE":"0.2"
+}
+</code></pre>
+
+<ul>
+<li>LEAVE
+
+<ul>
+<li>No attributes</li>
+<li>Leave the lobby you are currently in.</li>
+<li>When you are in a lobby.</li>
+<li>No reply.</li>
+</ul>
+</li>
+</ul><pre><code>{
+  "ACTION":"LEAVE"
+}
+</code></pre>
+
+<ul>
+<li>LOBBY
+
+<ul>
+<li>No attributes</li>
+<li>Describe the lobby you are in.</li>
+<li>When you are in a lobby.</li>
+<li>Dependant on situation.</li>
+</ul>
+</li>
+</ul><pre><code>{
+  "ACTION":"LOBBY"
+}
+</code></pre>
+
+<pre><code>{
+  "ACTION":"LOBBIES",
+  "LOBBIES": [
+    {
+      "LOBBY":"AB321",
+      "BLUE":4,
+      "RED",3",
+      "STATE",1
+    },
+    {
+      "LOBBY":"FFFFF",
+      "BLUE":15,
+      "RED",16",
+      "STATE",0
+    }
+  ]
+}
+</code></pre>
+
+<ul>
+<li>DROP
+
+<ul>
+<li>BLUETOOTH
+
+<ul>
+<li>A bluetooth mac of a user on the opposite team</li>
+<li>The mac of a user you heard.</li>
+</ul>
+</li>
+<li>Alert the server you are withing range of a user</li>
+<li>When the game is in progress</li>
+<li>No reply.</li>
+</ul>
+</li>
+</ul><pre><code>{
+  "ACTION":"DROP",
+  "BLUETOOTH":"10:40:f3:97:2a:33"
+}
+</code></pre>
+
+<ul>
+<li>QUIT
+
+<ul>
+<li>Quit is a special case it is just "QUIT"! At least for now. </li>
+</ul>
+</li>
+</ul><h2>
+<a name="code-standards" class="anchor" href="#code-standards"><span class="octicon octicon-link"></span></a>Code Standards</h2>
+
+<ul>
+<li>No tabs</li>
+<li>Indent 4 spaces</li>
+<li>Curly braces on new line except for stacked else if else and catch blocks.</li>
+</ul><pre><code>if(someCondition)  
+{
+    // This looks funny in markdown
+} else {
+    // Other statement
+}
+
+try
+{
+    // Something risky
+} catch(RiskyException ex) {
+    // Save the day
+}
+</code></pre>
+
+<ul>
+<li>Constants at top of class in all caps.</li>
+<li>Class methods Constructors first then alphabetical.</li>
+<li>Imports should be alphabetized.</li>
+<li>Instance variables should be initialized only in the constructor;</li>
+<li>Constants and static variables should be initialized at declaration.</li>
+<li>All instance variables and non static methods  should always be referenced with <code>this</code> to  prevent confusion.</li>
+<li>If a class has getters or setters use them.</li>
+<li>Variables within a category {static, instance, constants} should be
+alphabetized.</li>
+</ul><h2>
+<a name="copypasta-for-easy-server-debugging" class="anchor" href="#copypasta-for-easy-server-debugging"><span class="octicon octicon-link"></span></a>CopyPasta For Easy Server Debugging</h2>
+
+<h2>
+<a name="user-1" class="anchor" href="#user-1"><span class="octicon octicon-link"></span></a>User 1</h2>
+
+<p><code>{"ACTION":"HELLO","USERNAME":"andrewhood125","BLUETOOTH":"10:40:f3:97:28:9e"}</code>
+<code>{"ACTION":"CREATE","LOCATION":"35.12109549,-89.93835153","SIZE":"0.0007", "ACCURACY":0.00026}</code></p>
+
+<h2>
+<a name="user-2" class="anchor" href="#user-2"><span class="octicon octicon-link"></span></a>User 2</h2>
+
+<p><code>{"ACTION":"HELLO","USERNAME":"spec-ops81","BLUETOOTH":"01:23:45:67:89:ab"}</code>
+<code>{"ACTION":"LOBBY"}</code><br><code>{"ACTION":"JOIN", "ID":"</code> <code>","LOCATION":"35.12113808,-89.93849768"}</code></p>
+
+<h2>
+<a name="user-1-1" class="anchor" href="#user-1-1"><span class="octicon octicon-link"></span></a>User 1</h2>
+
+<p><code>{"ACTION":"START"}</code>
+<code>{"ACTION":"BASE"}</code>
+<code>{"ACTION":"GPS",</code>
+<code>{"ACTION":"FLAG"}</code>
+<code>{"ACTION":"GPS",</code>
+<code>{"ACTION":"GPS","LOCATION":"35.12113808,-89.93849768"}</code></p>
+
+<h2>
+<a name="user-3" class="anchor" href="#user-3"><span class="octicon octicon-link"></span></a>User 3</h2>
+
+<p><code>{"ACTION":"HELLO","USERNAME":"dorito","BLUETOOTH":"13:40:f3:97:28:9e"}</code>
+<code>{"ACTION":"LOBBY"}</code> </p>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Copyright (c) Andrew Hood 2014. All rights reserved.</p>
       </section>
-
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/andrewhood125">andrewhood125</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    <script src="javascripts/scale.fix.js"></script>
     
   </body>
 </html>
